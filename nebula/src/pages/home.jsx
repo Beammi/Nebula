@@ -1,7 +1,10 @@
 import SearchBar from "@/components/SearchBar"
-
-export default function Home(){
-    return(
-        <SearchBar text="hi"></SearchBar>
-    )
+import ProfileButton from "@/components/ProfileButton"
+export default function Home() {
+  return (
+    <div className="flex items-center justify-between p-4">
+      <SearchBar text="Search"></SearchBar>
+      <ProfileButton text="NL"></ProfileButton>
+    </div>
+  )
 }
