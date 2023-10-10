@@ -5,6 +5,7 @@ import readyAdventurePic from '../../public/images/time_ready.png'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
 import Navbar from '@/components/Navbar'
+import TextInput from '@/components/TextInput'
 
 export default function Register() {
   return (
@@ -19,25 +20,11 @@ export default function Register() {
               <form className="card-body">
 
                 <h2 className='font-bold text-2xl text-center'>Register</h2>
-                <div className="divider before:bg-grey after:bg-grey"></div> 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold text-black">Email Address</span>
-                  </label>
-                  <input type="email" placeholder="Enter email" className="input input-bordered bg-light-grey border-black" required />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold text-black">Password</span>
-                  </label>
-                  <input type="password" placeholder="Enter Password" className="input input-bordered bg-light-grey border-black" required />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold text-black">Confirm Password</span>
-                  </label>
-                  <input type="password" placeholder="Confirm Password" className="input input-bordered bg-light-grey border-black" required />
-                </div>
+                <div className="divider before:bg-grey after:bg-grey"></div>                 
+
+                <TextInput textLabel="Email Address" inputType="email" placeholder="Enter email"/>                
+                <TextInput textLabel="Password" inputType="password" placeholder="Enter Password"/>
+                <TextInput textLabel="Confirm Password" inputType="password" placeholder="Confirm Password"/>
 
                 <div className="flex justify-center">
                   {/* <button className="btn btn-primary bg-blue w-fit">Register</button> */}
