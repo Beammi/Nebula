@@ -5,6 +5,7 @@ import timeAdventurePic from '../../public/images/time_adventure.png'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
 import Navbar from '@/components/Navbar'
+import TextInput from '@/components/TextInput'
 
 export default function Login() {
   return (
@@ -19,20 +20,10 @@ export default function Login() {
               <form className="card-body">
 
                 <h2 className='font-bold text-2xl text-center'>Login</h2>
-                <div className="divider before:bg-grey after:bg-grey"></div> 
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold text-black">Email Address</span>
-                  </label>
-                  <input type="email" placeholder="Enter email" className="input input-bordered bg-light-grey border-black" required />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-bold text-black">Password</span>
-                  </label>
-                  <input type="password" placeholder="Enter Password" className="input input-bordered bg-light-grey border-black" required />
-                </div>
-                
+                <div className="divider before:bg-grey after:bg-grey"></div>
+                                 
+                <TextInput textLabel="Email Address" inputType="email" placeholder="Enter email"/>                
+                <TextInput textLabel="Password" inputType="password" placeholder="Enter Password"/>
 
                 <div className="flex justify-center">
                   <Button buttonStyle="btn btn-primary bg-blue w-fit" label="Login"></Button>
