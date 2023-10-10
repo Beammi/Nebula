@@ -4,12 +4,13 @@ import SearchBar from '../components/SearchBar'
 import timeAdventurePic from '../../public/images/time_adventure.png'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
+import Navbar from '@/components/Navbar'
 
 export default function Login() {
   return (
     <>
-
-        <div className="hero min-h-screen bg-white">
+        <Navbar />
+        <div className="hero p-10 bg-white">
           <div className="hero-content flex-col md:flex-row gap-32">
 
             <figure><Image src={timeAdventurePic} alt="adventure pic" className="pt-2" width={520}/></figure>
@@ -40,7 +41,7 @@ export default function Login() {
                 <div className='flex justify-center'>
                   <label className="label">
                     <label className='font-normal text-sm'>Don't have an account?</label>
-                    <a href="#" className="label-text-alt link link-hover indent-1 text-blue ">Register</a>
+                    <a href="/register" className="label-text-alt link link-hover indent-1 text-blue text-sm">Register</a>
                   </label>
                 </div>
 
