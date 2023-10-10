@@ -4,12 +4,13 @@ import SearchBar from '../components/SearchBar'
 import readyAdventurePic from '../../public/images/time_ready.png'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
+import Navbar from '@/components/Navbar'
 
 export default function Register() {
   return (
     <>
-
-        <div className="hero min-h-screen bg-white">
+        <Navbar />
+        <div className="hero p-10 bg-white">
           <div className="hero-content flex-col md:flex-row gap-32">
 
             <figure><Image src={readyAdventurePic} alt="adventure pic" className="pt-2" width={520}/></figure>
@@ -46,7 +47,7 @@ export default function Register() {
                 <div className='flex justify-center'>
                   <label className="label">
                     <label className='font-normal text-sm'>Have an account?</label>
-                    <a href="#" className="label-text-alt link link-hover indent-1 text-blue ">Log In</a>
+                    <a href="/login" className="label-text-alt link link-hover indent-1 text-blue text-sm">Log In</a>
                   </label>
                 </div>
 
