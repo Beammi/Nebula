@@ -4,7 +4,7 @@ export default function Footer(){
     return(
         <footer className="footer p-8 w-full bg-black text-alternative">
             <div>
-                <a className="btn btn-ghost normal-case text-2xl text-alternative" href="/">Nebula</a>
+                <a className="btn btn-ghost normal-case text-2xl text-alternative" href="/Intro">Nebula</a>
                 <p>Copyright © 2023 - All right reserved by Nebula</p>
             </div>
             <nav>
