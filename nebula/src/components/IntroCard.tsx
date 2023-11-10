@@ -1,8 +1,8 @@
-import React from "react";
-import Image from "next/image";
-import pinOnMap from "../../public/images/image4.png";
-import peopleHoldMap from "../../public/images/image5.png";
-import holidays from "../../public/images/holidays.png";
+import React from "react"
+import Image from "next/image"
+import pinOnMap from "../../public/images/image4.png"
+import peopleHoldMap from "../../public/images/image5.png"
+import holidays from "../../public/images/holidays.png"
 
 export default function IntroCard() {
   return (
@@ -14,12 +14,13 @@ export default function IntroCard() {
           </figure>
         </div>
         <h1 className="text-center text-blue font-black text-2xl my-8">
-          card1
+          Interactive Map Exploration
         </h1>
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos, porro
-          pariatur harum, voluptatibus adipisci aspernatur doloremque minus
-          deleniti corporis aliquid magni sunt velit fuga dicta!
+          Discover the world around you like never before with Nebula’s
+          Interactive Map. Zoom, pan, and explore a dynamic map to find local
+          events, hidden gems, and popular spots curated by a community of
+          explorers.
         </p>
       </div>
       <div className="flex flex-col items-center mx-4 my-4 md:my-8">
@@ -29,12 +30,13 @@ export default function IntroCard() {
           </figure>
         </div>
         <h1 className="text-center text-blue font-black text-2xl my-8">
-          card2
+          Community-Driven Discoveries
         </h1>
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos, porro
-          pariatur harum, voluptatibus adipisci aspernatur doloremque minus
-          deleniti corporis aliquid magni sunt velit fuga dicta!
+          Be part of a vibrant community where every user is both an explorer
+          and a guide. With Nebula, you can create your own 'Nebu' - marking
+          your favorite spots and sharing unique experiences - or browse the
+          Nebus shared by others.
         </p>
       </div>
       <div className="flex flex-col items-center mx-4 my-4 md:my-8">
@@ -44,14 +46,14 @@ export default function IntroCard() {
           </figure>
         </div>
         <h1 className="text-center text-blue font-black text-2xl my-8">
-          card3
+          Personalized User Experience
         </h1>
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos, porro
-          pariatur harum, voluptatibus adipisci aspernatur doloremque minus
-          deleniti corporis aliquid magni sunt velit fuga dicta!
+          Customize your journey with Nebula. Create your profile to keep track
+          of your adventures, save your favorite Nebus, and get personalized
+          recommendations based on your interests and activities.
         </p>
       </div>
     </>
-  );
+  )
 }

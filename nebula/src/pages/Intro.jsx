@@ -16,7 +16,7 @@ export default function Intro() {
             for everyone
           </span>
           <span className="text-xl md:text-3xl text-[#8e88ee] font-black">
-            lorem ills uoispof
+            in every place
           </span>
         </div>
       </div>
