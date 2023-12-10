@@ -1,12 +1,12 @@
 import React from "react"
 
-interface ITextInput {
+interface ITextInputWithLabel {
     textLabel?: string
     inputType?: string //can be text, email, password
     placeholder?: string
 }
 
-const TextInput: React.FunctionComponent<ITextInput> = ({ textLabel, inputType, placeholder }) => {
+const TextInputWithLabel: React.FunctionComponent<ITextInputWithLabel> = ({ textLabel, inputType, placeholder }) => {
     return(
         <div className="form-control">
             <label className="label">
@@ -17,4 +17,4 @@ const TextInput: React.FunctionComponent<ITextInput> = ({ textLabel, inputType, 
     )
 }
 
-export default TextInput
+export default ITextInputWithLabel

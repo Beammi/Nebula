@@ -5,7 +5,7 @@ import readyAdventurePic from '../../public/images/time_ready.png'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
 import Navbar from '@/components/Navbar'
-import TextInput from '@/components/TextInput'
+import TextInput from '@/components/TextInputWithLabel'
 
 export default function Register() {
   return (
