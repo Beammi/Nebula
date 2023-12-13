@@ -17,4 +17,4 @@ const TextInputWithLabel: React.FunctionComponent<ITextInputWithLabel> = ({ text
     )
 }
 
-export default ITextInputWithLabel
+export default TextInputWithLabel
