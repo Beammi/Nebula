@@ -9,14 +9,15 @@ import TextInput from '@/components/TextInputWithLabel'
 import googleIcon from '../../public/images/google-icon.png'
 import facebookIcon from '../../public/images/fb-icon.png'
 import twitterIcon from '../../public/images/twitter-icon.png'
+import Link from 'next/link'
 
 export default function Login() {
   return (
     <>
         <div className='h-screen'>
           <Navbar />
-          <div className="hero p-10 bg-white h-fit min-h-screen">
-            <div className="hero-content flex-col md:flex-row gap-32">
+          <div className="hero bg-white h-fit min-h-screen">
+            <div className="hero-content flex flex-col justify-center md:flex-row md:gap-32">
 
               <figure><Image src={timeAdventurePic} alt="adventure pic" className="pt-2" width={520}/></figure>
 
@@ -44,21 +45,21 @@ export default function Login() {
                   <div className='flex flex-col justify-center text-center'>
                     {/* <label className="label"> */}
                       <label className='font-normal text-lg mb-2'>Or Login with</label>
-                      <div className='flex flex-col justify-center md:flex-row md:gap-x-2'>
-                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
-                          <figure><Image src={googleIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
-                          <label className='drop-shadow-2xl'>Google</label>
-                        </div>
+                      <div className='flex justify-center md:flex-row gap-x-2'>                      
+                        <Link href="https://www.google.com/" className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>                        
+                          <figure><Image src={googleIcon} alt="adventure pic" className="py-2 md:mx-1 mx-3 cursor-pointer" width={20}/></figure>
+                          <label className='cursor-pointer'>Google</label>
+                        </Link>              
 
-                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
-                          <figure><Image src={facebookIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
-                          <label>Facebook</label>
-                        </div>
+                        <Link href="https://www.facebook.com/" className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
+                          <figure><Image src={facebookIcon} alt="adventure pic" className="py-2 md:mx-1 mx-3 cursor-pointer" width={20}/></figure>
+                          <label className='cursor-pointer'>Facebook</label>
+                        </Link>
 
-                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
-                          <figure><Image src={twitterIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
-                          <label>Twitter</label>
-                        </div>
+                        <Link href="https://www.twitter.com/" className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
+                          <figure><Image src={twitterIcon} alt="adventure pic" className="py-2 md:mx-1 mx-3 cursor-pointer" width={20}/></figure>
+                          <label className='cursor-pointer'>Twitter</label>
+                        </Link>
                       </div>
                     {/* </label> */}
                   </div>
