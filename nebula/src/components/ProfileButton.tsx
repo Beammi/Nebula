@@ -13,7 +13,7 @@ interface IProfileButton {
           <button className={`btn btn-circle text-white ${randomColor} p-4`} onClick={() => setIsOpen(!IsOpen)}>
             {text}
           </button>
-          <div className={`flex flex-col bg-white absolute right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
+          <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
                   <li>Profile</li>
                   <li>Your Nebu</li>
