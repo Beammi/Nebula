@@ -45,17 +45,17 @@ export default function Login() {
                     {/* <label className="label"> */}
                       <label className='font-normal text-lg mb-2'>Or Login with</label>
                       <div className='flex flex-col justify-center md:flex-row md:gap-x-2'>
-                        <div className='flex flex-row items-center border-2 rounded-md px-2'>
+                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
                           <figure><Image src={googleIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
-                          <label>Google</label>
+                          <label className='drop-shadow-2xl'>Google</label>
                         </div>
 
-                        <div className='flex flex-row items-center border-2 rounded-md px-2'>
+                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
                           <figure><Image src={facebookIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
                           <label>Facebook</label>
                         </div>
 
-                        <div className='flex flex-row items-center border-2 rounded-md px-2'>
+                        <div className='flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer'>
                           <figure><Image src={twitterIcon} alt="adventure pic" className="py-2 mr-1" width={20}/></figure>
                           <label>Twitter</label>
                         </div>
