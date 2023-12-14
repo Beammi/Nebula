@@ -19,7 +19,7 @@ export default function Login() {
             <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-white border-2 border-black text-black">
               <form className="card-body">
 
-                <h2 className='font-bold text-2xl text-center'>Login</h2>
+                <h2 className='font-bold text-2xl text-center'>Login Natthapong</h2>
                 <div className="divider before:bg-grey after:bg-grey"></div>
                                  
                 <TextInput textLabel="Email Address" inputType="email" placeholder="Enter email"/>                
