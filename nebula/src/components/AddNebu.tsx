@@ -1,10 +1,10 @@
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
-    const action = props.action
+  const action = props.action;
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-        addNebuState ? "opacity-100 drop-shadow-2xl" : "rounded-sm opacity-0"
+        addNebuState ? "opacity-100 drop-shadow-2xl" : "rounded-sm opacity-0 hidden"
       } `}
     >
       <div className="modal-box">
@@ -13,7 +13,9 @@ export default function AddNebu(props) {
         <div className="modal-action">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn" onClick={action}>Close</button>
+            <button className="btn" onClick={action}>
+              Close
+            </button>
           </form>
         </div>
       </div>
