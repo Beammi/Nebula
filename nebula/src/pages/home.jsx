@@ -18,8 +18,8 @@ export default function Home() {
       <div className="absolute z-10 top-0 left-0 right-0 flex items-center justify-between p-4">
         <div className="flex">
           <SearchBar text="Search" />
-          <Button buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden mx-2" label="Cafe with wifi"></Button>
-          <Button buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden" label="Restaurant"></Button>
+          <Button buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden mx-2 border-none" label="Cafe with wifi"></Button>
+          <Button buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden border-none" label="Restaurant"></Button>
         </div>
         <div className="flex">
           <div className="flex">
