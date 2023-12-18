@@ -1,4 +1,6 @@
 import Button from "./Button";
+import Image from "next/image"
+import plus from "../../public/images/plus.png"
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
@@ -23,7 +25,15 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Tags</h3>
-            <Button buttonStyle="btn btn-primary bg-yellow w-fit" label="Add Nebu"></Button>
+            <Button buttonStyle="btn btn-primary bg-yellow w-fit border-none" label="#office"></Button>
+          </div> 
+          <div className="flex flex-col mt-4">
+            <h3 className="text-lg">Image</h3>
+            <button className=" bg-white rounded-3xl mt-2 hover:bg-red w-fit p-2"><Image src={plus} alt="plus" width={25} height={25} /></button>
+          </div> 
+          <div className="flex mt-4">
+            <h3 className="text-lg">Time Limit</h3>
+            <input type="button" className="bg-black text-black" placeholder="hello"></input>
           </div> 
         </form>
       </div>
