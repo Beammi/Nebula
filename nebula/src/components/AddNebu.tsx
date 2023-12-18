@@ -1,23 +1,31 @@
+import Button from "./Button";
+
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
   const action = props.action;
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-        addNebuState ? "opacity-100 drop-shadow-2xl" : "rounded-sm opacity-0 hidden"
+        addNebuState
+          ? "visible opacity-100 drop-shadow-2xl"
+          : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Hello!</h3>
-        <p className="py-4">Press ESC key or click the button below to close</p>
-        <div className="modal-action">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn" onClick={action}>
-              Close
-            </button>
-          </form>
-        </div>
+      <div className="modal-box bg-white w-screen">
+        <form action="" className="text-black">
+          <div className="flex flex-col">
+            <h3 className="text-lg">Title</h3>
+            <input type="text" className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue" />
+          </div>
+          <div className="flex flex-col mt-4">
+            <h3 className="text-lg">Description</h3>
+            <textarea name="postContent" rows={5} cols={40} className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue" />
+          </div>
+          <div className="flex flex-col mt-4">
+            <h3 className="text-lg">Tags</h3>
+            <Button buttonStyle="btn btn-primary bg-yellow w-fit" label="Add Nebu"></Button>
+          </div> 
+        </form>
       </div>
     </div>
   );
