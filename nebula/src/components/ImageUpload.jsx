@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+
 const ImageUpload = ({ onImagesUpload }) => {
   
   const resizeImage = (file) => {
@@ -55,8 +56,8 @@ const ImageUpload = ({ onImagesUpload }) => {
         id="imageInput"
         multiple
       />
-      <label htmlFor="imageInput" className='cursor-pointer bg-blue hover:bg-white hover:text-red p-2'>
-        Add image
+      <label htmlFor="imageInput" className='cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2'>
+        +
       </label>
     </div>
   );
