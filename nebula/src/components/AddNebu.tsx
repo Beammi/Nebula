@@ -1,6 +1,8 @@
 import Button from "./Button";
 import React, { useState } from "react";
 import ImageUpload from "./ImageUpload";
+import Image from "next/image";
+import close from "../../public/images/close.png"
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
@@ -10,8 +12,8 @@ export default function AddNebu(props) {
 
   const handleImagesUpload = (uploadedImage) => {
     // Handle the uploaded image(s) as needed
-    console.log('Uploaded Image:', uploadedImage);
-  setUploadedImages((prevImages) => [...prevImages, uploadedImage]);
+    console.log("Uploaded Image:", uploadedImage);
+    setUploadedImages((prevImages) => [...prevImages, uploadedImage]);
   };
 
   return (
@@ -23,6 +25,9 @@ export default function AddNebu(props) {
       } `}
     >
       <div className="modal-box bg-white w-screen">
+        <div className="flex justify-end mb-2">
+          <button onClick={action}> <Image src={close} alt="adventure pic" className="pt-2" width={20}/></button>
+        </div>
         <form action="" className="text-black">
           <div className="flex flex-col">
             <h3 className="text-lg">Title</h3>
@@ -49,17 +54,22 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg mb-4">Image</h3>
-            <ImageUpload onImagesUpload={handleImagesUpload} />
-            {uploadedImages.length > 0 && (
-              <div>
-                <h4 className="text-sm mt-2">Uploaded Image</h4>
-                {uploadedImages.map((image, index) => (
-                  <div key={index}>
-                    <img src={image.dataURL} alt={`Uploaded ${index + 1}`} className="rounded-xl" />
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="flex flex-row-reverse justify-end items-center">
+              <ImageUpload onImagesUpload={handleImagesUpload} />
+              {uploadedImages.length > 0 && (
+                <div className="flex gap-2">
+                  {uploadedImages.map((image, index) => (
+                    <div key={index}>
+                      <img
+                        src={image.dataURL}
+                        alt={`Uploaded ${index + 1}`}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex mt-4">
             <h3 className="text-lg">Time Limit</h3>

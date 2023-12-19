@@ -46,7 +46,7 @@ const ImageUpload = ({ onImagesUpload }) => {
   }, [onImagesUpload]);
 
   return (
-    <div style={containerStyles}>
+    <div className='text-center'>
       <input
         type="file"
         accept="image/*"
@@ -55,19 +55,11 @@ const ImageUpload = ({ onImagesUpload }) => {
         id="imageInput"
         multiple
       />
-      <label htmlFor="imageInput" style={buttonStyles}>
-        Choose Images
+      <label htmlFor="imageInput" className='cursor-pointer bg-blue hover:bg-white hover:text-red p-2'>
+        Add image
       </label>
     </div>
   );
-};
-
-const containerStyles = {
-  textAlign: 'center',
-};
-
-const buttonStyles = {
-  cursor: 'pointer',
 };
 
 export default ImageUpload;
