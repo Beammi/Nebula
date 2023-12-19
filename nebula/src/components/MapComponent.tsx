@@ -9,7 +9,8 @@ import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 
 // Sample data for places
 const placesData = [
-  { name: 'Tower Bridge', description: 'A must destination', image: {towerBridgePic}, pinSize: "big", lat: 51.505, lon: -0.09 },
+  { name: 'Tower Bridge', description: 'A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!'
+    , image: {towerBridgePic}, pinSize: "big", lat: 51.505, lon: -0.09 },
   { name: 'London Stadium', description: 'Home of West Ham United', lat: 51.51, lon: -0.1 },
   { name: 'The Sherlock Holmes Museum', description: 'Sherlock Holmes Museum located in London', lat: 51.515, lon: -0.12 },
   // Add more places as needed
@@ -27,11 +28,11 @@ const MyMap: React.FC = () => {
 
   const handleMarkerClick = (place: { name: string; description: string }) => {
     setSelectedPlace(place);
-    setPlaceInfoPanel(!placeInfoPanel) // for open
+    setPlaceInfoPanel(true) // click pin -> open only
   };
 
   function closePlaceInfoPanel(){ // for close
-    setPlaceInfoPanel(!placeInfoPanel)
+    setPlaceInfoPanel(false)
   }
 
   return (
