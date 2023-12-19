@@ -4,10 +4,14 @@ import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } fro
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from '@/components/PlaceInfoPanel';
 
+import towerBridgePic from "../../public/images/tower-bridge-pic.png"
+
+
 // Sample data for places
 const placesData = [
-  { name: 'Tower Bridge', description: 'A must destination', lat: 51.505, lon: -0.09 },
-  { name: 'London Stadium', description: 'Home of West ham united', lat: 51.51, lon: -0.1 },
+  { name: 'Tower Bridge', description: 'A must destination', image: {towerBridgePic}, pinSize: "big", lat: 51.505, lon: -0.09 },
+  { name: 'London Stadium', description: 'Home of West Ham United', lat: 51.51, lon: -0.1 },
+  { name: 'The Sherlock Holmes Museum', description: 'Sherlock Holmes Museum located in London', lat: 51.515, lon: -0.12 },
   // Add more places as needed
 ];
 
@@ -33,7 +37,9 @@ const MyMap: React.FC = () => {
   return (
     <div className='h-screen relative'>
 
-      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "100vh", width: "100%", position: "absolute" }} >
+      <PlaceInfoPanel placeData={selectedPlace} toggle={placeInfoPanel} action={closePlaceInfoPanel}/>
+
+      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "100vh", width: "100%", position: "absolute", zIndex: "0" }} >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -55,11 +61,7 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />  
       </MapContainer>
       
-      <h3 className='fixed z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red text-center font-bold text-lg'>
-        Natthapong's leaflet map
-      </h3>
-
-      <PlaceInfoPanel placeData={selectedPlace} toggle={placeInfoPanel} action={closePlaceInfoPanel}/>
+      
     </div>
   );
 };
