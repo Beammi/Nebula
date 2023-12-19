@@ -1,8 +1,9 @@
 import Button from "./Button";
 import React, { useState } from "react";
 import ImageUpload from "./ImageUpload";
+import TimeLimitBox from "./TimeLimitBox";
 import Image from "next/image";
-import close from "../../public/images/close.png"
+import close from "../../public/images/close.png";
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
@@ -24,9 +25,16 @@ export default function AddNebu(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="modal-box bg-white w-screen">
+      <div className="modal-box bg-white w-screen font-bold">
         <div className="flex justify-end mb-2">
-          <button onClick={action}> <Image src={close} alt="adventure pic" className="pt-2" width={20}/></button>
+          <button onClick={action}>
+            <Image
+              src={close}
+              alt="adventure pic"
+              className="pt-2"
+              width={20}
+            />
+          </button>
         </div>
         <form action="" className="text-black">
           <div className="flex flex-col">
@@ -49,7 +57,7 @@ export default function AddNebu(props) {
             <h3 className="text-lg">Tags</h3>
             <Button
               buttonStyle="btn btn-primary bg-yellow w-fit border-none"
-              label="#office"
+              label="#official"
             ></Button>
           </div>
           <div className="flex flex-col mt-4">
@@ -72,8 +80,10 @@ export default function AddNebu(props) {
             </div>
           </div>
           <div className="flex mt-4">
-            <h3 className="text-lg">Time Limit</h3>
-            <input type="button" className="bg-black text-black"></input>
+            <TimeLimitBox />
+          </div>
+          <div className="w-full text-center mt-4">
+            <Button buttonStyle="btn btn-primary bg-blue w-fit border-none" label="NEXT" />
           </div>
         </form>
       </div>
