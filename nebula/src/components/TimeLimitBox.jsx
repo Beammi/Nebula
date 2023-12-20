@@ -44,7 +44,7 @@ function TimeLimitBox() {
         </select>
       </div>
       {timeLimitType === "temporary" && (
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-around">
           <label htmlFor="startDate">Start Date:</label>
           <input
             type="date"

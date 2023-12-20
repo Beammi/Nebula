@@ -30,7 +30,7 @@ export default function AddNebu(props) {
           <button onClick={action}>
             <Image
               src={close}
-              alt="adventure pic"
+              alt="clsbtn"
               className="pt-2"
               width={20}
             />
