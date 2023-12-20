@@ -55,10 +55,12 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Tags</h3>
+            {/*แก้*/}
             <Button
               buttonStyle="btn btn-primary bg-yellow w-fit border-none"
               label="#official"
             ></Button>
+            {/*แก้*/}
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg mb-4">Image</h3>
