@@ -13,7 +13,7 @@ interface IButton {
 const Button: React.FunctionComponent<IButton> = ({ buttonStyle, label, onClick, imageSrc }) => {
     return(
         <div className="pt-4">
-            <button className={`${buttonStyle}`} onClick={onClick}>{label}</button>
+            <button className={`${buttonStyle}`} onClick={onClick}>{label}sfdad</button>
             
         </div>
     )
