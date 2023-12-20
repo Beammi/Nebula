@@ -14,6 +14,8 @@ import smallWorld from "../../public/images/small-world.png"
 import smallPhone from "../../public/images/small-phone.png"
 import Link from 'next/link'
 
+import Button from "./Button"
+
 interface PlaceInfoPanelProps { 
   placeData: { // not necessary to know lat, lon
     name: string;
@@ -23,21 +25,21 @@ interface PlaceInfoPanelProps {
     // Add other properties as needed
   } | null;
   toggle: boolean;
-  action: any;
+  action?: any;
 }
   
 const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeData }) => {
 
   return (
-    <div className={`absolute overflow-y-scroll z-10 w-[400px] h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
+    <div className={`absolute overflow-y-scroll z-10 w-[407px] h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}>
       
       <div className=' text-black '>
       
         {placeData ? (
           <div>
-            <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1" width={400}/></figure>
-            <div className='flex flex-col pl-5 pt-2 gap-y-1'>
+            <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1" width={407}/></figure>
+            <div className='flex flex-col pl-4 pt-2 gap-y-1'>
               <div className='flex flex-row'>
                 <h3 className='font-bold text-xl text-black  bg-white w-fit'>{placeData.name}</h3>
                 <figure className='ml-auto'><Image src={shareIcon} alt="pic" className="mr-4" width={31}/></figure>                
@@ -55,7 +57,7 @@ const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeDat
                 <label className='text-sm text-black-grey ml-3 leading-4'>Added by nat2100</label>
               </div>
 
-              <div className='flex flex-row mt-1 gap-x-2 overflow-x-auto'>
+              <div className='flex flex-row mt-1 gap-x-1 overflow-x-auto'>
                 <button className="btn btn-outline btn-sm text-red rounded-2xl normal-case hover:bg-light-grey ">
                   <figure ><Image src={directionsIcon} alt="pic" className="" width={23}/></figure>
                   Directions
@@ -67,7 +69,7 @@ const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeDat
                 </button>
 
                 <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey">
-                  <figure ><Image src={bookmarkIcon} alt="pic" className="" width={26.5} height={26}/></figure>
+                  <figure ><Image src={bookmarkIcon} alt="pic" className="" width={26} height={26}/></figure>
                   Save
                 </button>
               </div>

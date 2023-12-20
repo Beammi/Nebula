@@ -54,6 +54,7 @@ const MyMap: React.FC = () => {
             position={[place.lat, place.lon]}
             icon={customIcon}
             eventHandlers={{ click: () => handleMarkerClick(place) }}
+            
           >
             <Popup>{place.name}</Popup>
           </Marker>
