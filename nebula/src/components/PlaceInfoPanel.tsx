@@ -28,31 +28,11 @@ interface PlaceInfoPanelProps {
   
 const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeData }) => {
 
-  const myAction = action;
-  const myToggle = toggle;
-
-
-  // const panelStyle: React.CSSProperties = {
-  //   width: '300px',
-  //   height: '100vh',
-  //   padding: '10px',
-  //   backgroundColor: '#fff',
-  //   position: 'absolute',
-  //   top: 0,
-  //   zIndex: -10,
-  //   left: placeData ? '0' : '-300px', // Show/hide the panel based on placeData presence
-  //   transition: 'left 0.3s ease-in-out', // Add a smooth transition
-  // };
-
-  console.log("O: ", placeData);
-  
-
   return (
-    <div className={`absolute overflow-y-scroll z-10 w-[400px] h-screen rounded-md bg-white text-black transition-all duration-300 ease-in-out 
-      ${myToggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}>
+    <div className={`absolute overflow-y-scroll z-10 w-[400px] h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
+      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}>
       
-      {/* <h2 className='mt-10 text-black bg-blue'>hello</h2> */}
-      <div className=' text-black border-2 border-black-grey'>
+      <div className=' text-black '>
       
         {placeData ? (
           <div>
@@ -60,7 +40,7 @@ const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeDat
             <div className='flex flex-col pl-5 pt-2 gap-y-1'>
               <div className='flex flex-row'>
                 <h3 className='font-bold text-xl text-black  bg-white w-fit'>{placeData.name}</h3>
-                <figure className='ml-auto'><Image src={shareIcon} alt="pic" className="mr-4" width={31}/></figure>
+                <figure className='ml-auto'><Image src={shareIcon} alt="pic" className="mr-4" width={31}/></figure>                
               </div>
 
               <div className='flex flex-row'>
@@ -163,14 +143,7 @@ const PlaceInfoPanel: React.FC<PlaceInfoPanelProps> = ({toggle, action, placeDat
           <p>No place selected</p>
         )}
 
-        <div className="modal-action">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn" onClick={myAction}>
-              Close
-            </button>
-          </form>
-        </div>
+        
       </div>
 
     </div>

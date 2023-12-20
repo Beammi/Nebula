@@ -59,12 +59,28 @@ const MyMap: React.FC = () => {
           </Marker>
         ))}
 
-        <ZoomControl position="bottomright" />  
+        <ZoomControl position="bottomright" />
+        <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
       
       
     </div>
   );
+};
+
+interface MapClickHandlerProps {
+  handleMapClick: () => void;
+}
+
+const MapClickHandler: React.FC<MapClickHandlerProps> = ({ handleMapClick }) => {
+  useMapEvents({
+    click: () => {
+      // Trigger the handleMapClick function passed from the parent component
+      handleMapClick();
+    },
+  });
+
+  return null;
 };
 
 export default MyMap;
