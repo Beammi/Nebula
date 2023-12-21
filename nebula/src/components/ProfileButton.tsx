@@ -9,7 +9,7 @@ interface IProfileButton {
     const randomColor = colors[Math.floor(Math.random() * colors.length)]
     const [IsOpen, setIsOpen] = useState(false)
     return (
-        <div className="p-4">
+        <div className="p-4 hidden md:block">
           <button className={`btn btn-circle text-white ${randomColor} p-4`} onClick={() => setIsOpen(!IsOpen)}>
             {text}
           </button>
