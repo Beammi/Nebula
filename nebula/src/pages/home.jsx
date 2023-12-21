@@ -23,23 +23,23 @@ export default function Home() {
         <div className="flex w-full justify-center md:justify-normal">
           <SearchBar text="Search" />
           <Button
-            buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden mx-2 border-none"
+            buttonStyle="btn bg-yellow md:block hidden mx-2 border-none text-white"
             label="Cafewithwifi"
           ></Button>
           <Button
-            buttonStyle="btn btn-primary bg-yellow w-fit md:block hidden border-none"
+            buttonStyle="btn bg-yellow md:block hidden border-none text-white"
             label="Restaurant"
           ></Button>
         </div>
         <div className="flex">
           <div className="flex">
             <Button
-              buttonStyle="btn btn-primary bg-blue w-fit md:block hidden mx-2"
-              label="CreateTour"
+              buttonStyle="btn bg-blue md:block hidden mx-2 text-white border-none"
+              label="Create Tour"
             ></Button>
             <Button
-              buttonStyle="btn btn-primary bg-blue w-fit md:block hidden"
-              label="AddNebu"
+              buttonStyle="btn text-white bg-blue md:block hidden border-none"
+              label="Add Nebu"
               onClick={openAddNebuDropDown}
             ></Button>
           </div>
