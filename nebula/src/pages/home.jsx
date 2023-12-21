@@ -33,7 +33,7 @@ export default function Home() {
         <DynamicMap />
       </div>
       <AddNebu toggle={addNebuState} action={openAddNebu} />
-      <div className="absolute right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden hidden">
+      <div className="absolute right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden">
       <Button buttonStyle="btn btn-primary bg-blue w-fit md:block hidden border-none" label="Current Location"></Button>
       <Button buttonStyle="btn btn-primary bg-blue w-fit md:block hidden mb-4 border-none px-5" label="Search Location"></Button>
       </div>   
