@@ -6,8 +6,8 @@ import React from "react"
 interface IButton {
     buttonStyle?: string
     label?: string
-    onClick?: () => void;
     imageSrc?: string | StaticImport;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button: React.FunctionComponent<IButton> = ({ buttonStyle, label, onClick, imageSrc }) => {
