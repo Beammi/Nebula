@@ -4,12 +4,18 @@ import ImageUpload from "./ImageUpload";
 import TimeLimitBox from "./TimeLimitBox";
 import Image from "next/image";
 import close from "../../public/images/close.png";
+import NebuTag from "./NebuTag";
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
   const action = props.action;
 
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [OpenTag, setOpenTag] = useState(false);
+
+  function openTagModal(){
+    setOpenTag(!OpenTag);
+  }
 
   const handleImagesUpload = (uploadedImage) => {
     // Handle the uploaded image(s) as needed
@@ -57,9 +63,14 @@ export default function AddNebu(props) {
             <h3 className="text-lg">Tags</h3>
             {/*แก้*/}
             <Button
-              buttonStyle="btn btn-primary bg-yellow w-fit border-none"
-              label="#official"
-            ></Button>
+              buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
+              label="+"
+              onClick={(event) => {
+                event.preventDefault();
+                openTagModal();
+                console.log("Hello")
+              }}
+             ></Button>
             {/*แก้*/}
           </div>
           <div className="flex flex-col mt-4">
@@ -87,6 +98,7 @@ export default function AddNebu(props) {
           <div className="w-full text-center mt-4">
             <Button buttonStyle="btn btn-primary bg-blue w-fit border-none" label="NEXT" />
           </div>
+          <NebuTag toggle={OpenTag} />
         </form>
       </div>
     </div>
