@@ -7,10 +7,10 @@ interface ISearchBar {
 const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   return (
     
-      <div className="relative w-full p-4 max-w-md sm:w-3/4">
+      <div className="relative w-full p-4 max-w-md sm:w-3/4 ">
         <input
           type="text"
-          className="pl-10 pr-4 py-2 w-full input input-bordered bg-white text-black"
+          className="pl-10 pr-4 py-2 w-full input input-bordered bg-[#fefefe] text-black shadow-neutral-500 shadow-sm"
           placeholder={text}
         />
         <img
