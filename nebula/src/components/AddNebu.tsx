@@ -12,8 +12,10 @@ export default function AddNebu(props) {
 
   const [uploadedImages, setUploadedImages] = useState([]);
   const [OpenTag, setOpenTag] = useState(false);
+  const [confirmedOfficialTags, setConfirmedOfficialTags] = useState([]);
+  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
 
-  function openTagModal(){
+  function openTagModal() {
     setOpenTag(!OpenTag);
   }
 
@@ -21,6 +23,26 @@ export default function AddNebu(props) {
     // Handle the uploaded image(s) as needed
     console.log("Uploaded Image:", uploadedImage);
     setUploadedImages((prevImages) => [...prevImages, uploadedImage]);
+  };
+
+  const handleTagConfirm = (officialTag, additionalTag) => {
+    {
+      /* 
+    setConfirmedOfficialTags((prevTags) => [...prevTags, ...officialTag]);
+    setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
+
+    setOpenTag(false);
+    */
+    }
+    if (officialTag.length > 0) {
+      setConfirmedOfficialTags((prevTags) => [...prevTags, ...officialTag]);
+    }
+
+    if (additionalTag.length > 0) {
+      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
+    }
+
+    setOpenTag(false);
   };
 
   return (
@@ -34,12 +56,7 @@ export default function AddNebu(props) {
       <div className="modal-box bg-white w-screen font-bold">
         <div className="flex justify-end mb-2">
           <button onClick={action}>
-            <Image
-              src={close}
-              alt="clsbtn"
-              className="pt-2"
-              width={20}
-            />
+            <Image src={close} alt="clsbtn" className="pt-2" width={20} />
           </button>
         </div>
         <form action="" className="text-black">
@@ -61,17 +78,39 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Tags</h3>
-            {/*แก้*/}
-            <Button
-              buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
-              label="+"
-              onClick={(event) => {
-                event.preventDefault();
-                openTagModal();
-                console.log("Hello")
-              }}
-             ></Button>
-            {/*แก้*/}
+            <div className="flex items-center overflow-x-auto">
+              <div className="pt-4 flex">
+                {confirmedOfficialTags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className="bg-yellow p-2 rounded-lg text-white mr-2 w-max h-fit"
+                  >
+                    {tag}
+                  </div>
+                ))}
+                {confirmedAdditionalTags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+              <NebuTag
+                toggle={OpenTag}
+                action={() => setOpenTag(false)}
+                onConfirm={handleTagConfirm}
+              />
+              <Button
+                buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
+                label="+"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openTagModal();
+                }}
+              ></Button>
+            </div>
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg mb-4">Image</h3>
@@ -96,9 +135,11 @@ export default function AddNebu(props) {
             <TimeLimitBox />
           </div>
           <div className="w-full text-center mt-4">
-            <Button buttonStyle="btn btn-primary bg-blue w-fit border-none" label="NEXT" />
+            <Button
+              buttonStyle="btn btn-primary bg-blue w-fit border-none"
+              label="NEXT"
+            />
           </div>
-          <NebuTag toggle={OpenTag} />
         </form>
       </div>
     </div>
