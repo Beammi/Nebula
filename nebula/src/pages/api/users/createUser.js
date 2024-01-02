@@ -10,14 +10,15 @@ export default async function handler(req, res) {
       email,
       hashed_password,
       salt,
-      azure_ad_id,
+      provider,
+      provider_id,
       profile_picture_url,
       bg_picture_url,
     } = req.body
 
     try {
       const result = await db.query(
-        "INSERT INTO users (firstname, lastname, bio, display_name, email, hashed_password, salt, azure_ad_id, profile_picture_url, bg_picture_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+        "INSERT INTO users (firstname, lastname, bio, display_name, email, hashed_password, salt, provider,provider_id, profile_picture_url, bg_picture_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11) RETURNING *",
         [
           firstname,
           lastname,
@@ -26,7 +27,8 @@ export default async function handler(req, res) {
           email,
           hashed_password,
           salt,
-          azure_ad_id,
+          provider,
+          provider_id,
           profile_picture_url,
           bg_picture_url,
         ]
