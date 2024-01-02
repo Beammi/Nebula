@@ -227,9 +227,10 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
 
                 <div className="ml-auto dropdown dropdown-end dropdown-hover">
                   <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey">Filter <figure className=''><Image src={filterIcon} alt="pic" className="" width={22} height={20}/></figure> </div>
-                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey rounded-box w-52">
-                    <li><a href='https://www.google.com/' className='hover:text-black'>Item 1</a></li>
-                    <li><a href='https://www.google.com/' className='hover:text-black'>Item 2</a></li>
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey rounded-box w-max">                    
+                    <li><a href='https://www.google.com/' className='hover:text-black'>High Rated</a></li>
+                    <li><a href='https://www.google.com/' className='hover:text-black'>Newest</a></li>
+                    <li><a href='https://www.google.com/' className='hover:text-black'>Oldest</a></li>
                   </ul>
                 </div>
 
