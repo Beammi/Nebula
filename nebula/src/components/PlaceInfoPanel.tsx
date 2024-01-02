@@ -6,6 +6,7 @@ import shareIcon from "../../public/images/share-pic.png"
 import directionsIcon from "../../public/images/directions-pic.png"
 import recommendIcon from "../../public/images/recommend-tour-pic.png"
 import bookmarkIcon from "../../public/images/bookmark-pic.png"
+import filterIcon from "../../public/images/filter-icon.png"
 
 import smallPin from "../../public/images/small-pin.png"
 import smallShop from "../../public/images/small-shop.png"
@@ -221,48 +222,58 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
               </div>
             }
 
-            {othersNebuSection && 
-              <div className='flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out'>                                
+            {othersNebuSection &&
+              <div className='flex flex-col my-4 mx-7 transition-all delay-300 ease-in-out'>          
 
-                <div
-                  className="px-3 flex items-top bg-white cursor-pointer">
-                  <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-                      className="h-12 w-12 border-2 border-white rounded-full mt-1" alt="" />                  
-                  <div className="ml-4 pr-7">
-                    <p className="text-sm font-medium text-black -mb-0.5">Beammi_2000</p>
-                    <div className="rating flex my-1">
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" checked/>
-                      <input type="radio" name="rating-1" className="mask mask-star bg-black-grey h-3 w-5" />
-                      <label className='text-sm leading-4 text-yellow'>4.0</label>
-                    </div>
-                    <p className="text-sm -mt-0.5 font-normal text-black " >When the night comes, the view is fantastic. This is unbelievable.</p>
-                    <figure><Image src={otherNebuPic1} alt="pic" className="pt-0 my-2 rounded-md"/></figure>
-                  </div>
+                <div className="ml-auto dropdown dropdown-end dropdown-hover">
+                  <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey">Filter <figure className=''><Image src={filterIcon} alt="pic" className="" width={22} height={20}/></figure> </div>
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey rounded-box w-52">
+                    <li><a href='https://www.google.com/' className='hover:text-black'>Item 1</a></li>
+                    <li><a href='https://www.google.com/' className='hover:text-black'>Item 2</a></li>
+                  </ul>
                 </div>
 
-                <div
-                  className="px-3 flex items-top bg-white cursor-pointer">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-                      className="h-12 w-12 border-2 border-white rounded-full mt-1" alt="" />                  
-                  <div className="ml-4 pr-7">
-                    <p className="text-sm font-medium text-black -mb-0.5">BirdieInwZaa</p>
-                    <div className="rating flex my-1">
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
-                      <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" checked/>
-                      <input type="radio" name="rating-1" className="mask mask-star bg-black-grey h-3 w-5" />
-                      <label className='text-sm leading-4 text-yellow'>4.0</label>
+                <div className='flex flex-col gap-y-7 mt-2'>
+                  <div
+                    className="px-3 flex items-top bg-white cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
+                        className="h-12 w-12 border-2 border-white rounded-full mt-1" alt="" />                  
+                    <div className="ml-4 pr-7">
+                      <p className="text-sm font-medium text-black -mb-0.5">Beammi_2000</p>
+                      <div className="rating flex my-1">
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" checked/>
+                        <input type="radio" name="rating-1" className="mask mask-star bg-black-grey h-3 w-5" />
+                        <label className='text-sm leading-4 text-yellow'>4.0</label>
+                      </div>
+                      <p className="text-sm -mt-0.5 font-normal text-black " >When the night comes, the view is fantastic. This is unbelievable.</p>
+                      <figure><Image src={otherNebuPic1} alt="pic" className="pt-0 my-2 rounded-md"/></figure>
                     </div>
-                    <p className="text-sm -mt-0.5 font-normal text-black" >Closed-up view with a clear sky is mind blowing.</p>
-                    <figure><Image src={otherNebuPic2} alt="pic" className="pt-0 my-2 rounded-md"/></figure>
                   </div>
-                </div>              
 
-              </div>
+                  <div
+                    className="px-3 flex items-top bg-white cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
+                        className="h-12 w-12 border-2 border-white rounded-full mt-1" alt="" />                  
+                    <div className="ml-4 pr-7">
+                      <p className="text-sm font-medium text-black -mb-0.5">BirdieInwZaa</p>
+                      <div className="rating flex my-1">
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" />
+                        <input type="radio" name="rating-1" className="mask mask-star bg-yellow h-3 w-5" checked/>
+                        <input type="radio" name="rating-1" className="mask mask-star bg-black-grey h-3 w-5" />
+                        <label className='text-sm leading-4 text-yellow'>4.0</label>
+                      </div>
+                      <p className="text-sm -mt-0.5 font-normal text-black" >Closed-up view with a clear sky is mind blowing.</p>
+                      <figure><Image src={otherNebuPic2} alt="pic" className="pt-0 my-2 rounded-md"/></figure>
+                    </div>
+                  </div> 
+                </div>             
+
+              </div>              
             }
             
             {/* Add other information as needed */}
