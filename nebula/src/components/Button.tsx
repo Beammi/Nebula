@@ -7,13 +7,14 @@ interface IButton {
     buttonStyle?: string
     label?: string
     imageSrc?: string | StaticImport;
+    type: "button" | "submit" | "reset";
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Button: React.FunctionComponent<IButton> = ({ buttonStyle, label, onClick, imageSrc }) => {
+const Button: React.FunctionComponent<IButton> = ({ buttonStyle, label, onClick, imageSrc, type }) => {
     return(
         <div className="pt-4">
-            <button className={`${buttonStyle}`} onClick={onClick}>{label}</button>
+            <button className={`${buttonStyle}`} onClick={onClick} type={type} >{label}</button>
             
         </div>
     )
