@@ -57,15 +57,16 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
   
 
   return (
-    <div className={`absolute overflow-y-scroll 2xl:w-1/4 lg:w-1/3 z-10 h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
+    <div className={`absolute overflow-y-scroll top-1/2 lg:top-0 2xl:w-1/4 lg:w-1/3 z-10 h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}>
       
       <div className=' text-black '>
       
         {placeData ? (
-          <div>
+          <div className='rounded-t-full'>
             
-            <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1 w-full"/></figure>
+            <div className="w-[60px] h-[3px] bg-dark-grey my-3 mx-auto"></div>
+            <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1 w-full "/></figure>
             <div className='flex flex-col pl-4 pt-2 gap-y-1'>
               <div className='flex flex-row'>
                 <h3 className='font-bold text-xl text-black  bg-white w-fit'>{placeData.name}</h3>
@@ -116,20 +117,20 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
                 <div className='flex flex-row mt-4 ml-7 gap-x-7'>
                   
                   <div className='flex flex-col items-center justify-end'>
-                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 border-white hover:border-b-4 hover:border-grey  font-medium rounded-none
-                      ${overviewSection ? 'text-blue border-b-4 border-blue' : ''}`}
+                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 hover:border-b-4 hover:border-grey  font-medium rounded-none
+                      ${overviewSection ? 'text-blue border-b-4 border-blue' : 'text-black border-white'}`}
                       onClick={openOverviewSection}>Overview</button>
                   </div>
 
                   <div className='flex flex-col items-center justify-end'>                                      
-                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 border-white hover:border-b-4 hover:border-grey  font-medium rounded-none
-                      ${rateCommentSection ? 'text-blue border-b-4 border-blue' : ''}`}
+                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 hover:border-b-4 hover:border-grey  font-medium rounded-none
+                      ${rateCommentSection ? 'text-blue border-b-4 border-blue' : 'text-black border-white'}`}
                       onClick={openRateCommentSection}>Rate & Comment</button>
                   </div>
 
                   <div className='flex flex-col items-center justify-end'>
-                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 border-white hover:border-b-4 hover:border-grey  font-medium rounded-none
-                        ${othersNebuSection ? 'text-blue border-b-4 border-blue' : ''}`}
+                    <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 hover:border-b-4 hover:border-grey  font-medium rounded-none
+                        ${othersNebuSection ? 'text-blue border-b-4 border-blue' : 'text-black border-white'}`}
                         onClick={opneOthersNebuSection}>Others Nebu</button>
                   </div>
                 </div>
@@ -226,8 +227,8 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
               <div className='flex flex-col my-4 mx-7 transition-all delay-300 ease-in-out'>          
 
                 <div className="ml-auto dropdown dropdown-end dropdown-hover">
-                  <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey">Filter <figure className=''><Image src={filterIcon} alt="pic" className="" width={22} height={20}/></figure> </div>
-                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-dark-grey text-black border-none hover:border-none hover:bg-light-grey rounded-box w-max">                    
+                  <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-grey text-black border-none hover:border-none hover:bg-grey">Filter <figure className=''><Image src={filterIcon} alt="pic" className="" width={22} height={20}/></figure> </div>
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-grey text-black border-none hover:border-none hover:bg-grey rounded-box w-max">                    
                     <li><a href='https://www.google.com/' className='hover:text-black'>High Rated</a></li>
                     <li><a href='https://www.google.com/' className='hover:text-black'>Newest</a></li>
                     <li><a href='https://www.google.com/' className='hover:text-black'>Oldest</a></li>
