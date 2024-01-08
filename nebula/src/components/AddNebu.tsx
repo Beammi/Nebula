@@ -5,6 +5,7 @@ import TimeLimitBox from "./TimeLimitBox";
 import Image from "next/image";
 import close from "../../public/images/close.png";
 import NebuTag from "./NebuTag";
+import Officialdropdown from "./Officialdropdown";
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle;
@@ -12,8 +13,8 @@ export default function AddNebu(props) {
 
   const [uploadedImages, setUploadedImages] = useState([]);
   const [OpenTag, setOpenTag] = useState(false);
-  const [confirmedOfficialTags, setConfirmedOfficialTags] = useState([]);
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
+  const [selected, setSelected] = useState("Official's Tag");
 
   function openTagModal() {
     setOpenTag(!OpenTag);
@@ -26,17 +27,6 @@ export default function AddNebu(props) {
   };
 
   const handleTagConfirm = (officialTag, additionalTag) => {
-    {
-      /* 
-    setConfirmedOfficialTags((prevTags) => [...prevTags, ...officialTag]);
-    setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
-
-    setOpenTag(false);
-    */
-    }
-    if (officialTag.length > 0) {
-      setConfirmedOfficialTags((prevTags) => [...prevTags, ...officialTag]);
-    }
 
     if (additionalTag.length > 0) {
       setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
@@ -78,16 +68,11 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Tags</h3>
-            <div className="flex items-center overflow-x-auto">
-              <div className="pt-4 flex">
-                {confirmedOfficialTags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-yellow p-2 rounded-lg text-white mr-2 w-max h-fit"
-                  >
-                    {tag}
-                  </div>
-                ))}
+            <div className="flex items-center">
+              <div>
+                <Officialdropdown selected={selected} setSelected={setSelected} />
+              </div>
+              <div className="pt-4 flex ml-2 overflow-x-auto">
                 {confirmedAdditionalTags.map((tag, index) => (
                   <div
                     key={index}
@@ -105,6 +90,7 @@ export default function AddNebu(props) {
               <Button
                 buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
                 label="+"
+                type="button"
                 onClick={(event) => {
                   event.preventDefault();
                   openTagModal();
@@ -138,6 +124,7 @@ export default function AddNebu(props) {
             <Button
               buttonStyle="btn btn-primary bg-blue w-fit border-none"
               label="NEXT"
+              type="button"
             />
           </div>
         </form>
