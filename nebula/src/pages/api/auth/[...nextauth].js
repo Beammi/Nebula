@@ -1,7 +1,9 @@
+// pages/api/auth/[...nextauth].js
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
 import { verifyPassword } from '../../../lib/auth'; // Function to verify password
 import { connectToDatabase } from '../../../lib/db'; // Function to connect to database
+import FacebookProvider from "next-auth/providers/facebook";
 
 export default NextAuth({
   session: {
@@ -32,6 +34,10 @@ export default NextAuth({
         client.release();
         return { email: rows[0].email };
       },
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET
     }),
     // ... other providers
   ],
