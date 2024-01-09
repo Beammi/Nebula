@@ -7,6 +7,7 @@ import Button from "../components/Button"
 import Navbar from "@/components/Navbar"
 import TextInput from "@/components/TextInputWithLabel"
 import { useState, useEffect } from "react"
+import { useRouter } from 'next/router'
 
 export default function Register() {
   const [email, setEmail] = useState("")
@@ -14,10 +15,14 @@ export default function Register() {
   const [confirmedPassword, setConfirmedPassword] = useState("")
   const [message, setMessage] = useState(null)
   const [areEqual, setAreEqual] = useState(false)
-
+  const router = useRouter();
   useEffect(() => {
     // Check if the two inputs are equal
-    setAreEqual(password === confirmedPassword && password!="" && confirmedPassword!="")
+    setAreEqual(
+      password === confirmedPassword &&
+        password != "" &&
+        confirmedPassword != ""
+    )
   }, [password, confirmedPassword])
 
   async function handleSubmit(e) {
@@ -37,6 +42,18 @@ export default function Register() {
       } else {
         setMessage("User created successfully!")
         // Redirect or further actions
+        router.push('/home')
+      }
+    }
+  }
+  function validatePasswordMessage() {
+    if (password == "" || confirmedPassword == "") {
+      return
+    } else {
+      if (areEqual) {
+        return <p>Passwords are equal</p>
+      } else {
+        return <p className="text-red text-sm">Passwords are not match</p>
       }
     }
   }
@@ -79,11 +96,12 @@ export default function Register() {
                   placeholder="Confirm Password"
                   onChange={(e) => setConfirmedPassword(e.target.value)}
                 />
-                {areEqual ? (
+                {/* {areEqual ? (
                   <div className="text-black">The passwords are equal.</div>
                 ) : (
                   <div className="text-red">The passwords are not equal.</div>
-                )}
+                )} */}
+                {validatePasswordMessage()}
                 <div className="flex justify-center">
                   <Button
                     buttonStyle="btn btn-primary bg-blue w-fit"
