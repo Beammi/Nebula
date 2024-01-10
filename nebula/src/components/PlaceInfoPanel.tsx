@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import Image, { StaticImageData } from 'next/image'
+import React, { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 
 import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 import shareIcon from "../../public/images/share-pic.png"
@@ -36,6 +36,29 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
+  const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
+
+  const panelRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    console.log("O: ", panelRef);
+    
+    const handleScroll = () => {
+      setScrollPosition(panelRef.current.scrollTop);
+    };
+
+    if (panelRef.current) {
+      panelRef.current.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (panelRef.current) {
+        panelRef.current.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+  }, [panelRef]);
 
   function openOverviewSection(){
     setOverviewSection(true)
@@ -49,28 +72,40 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
     setOthersNebuSection(false)
   }
 
-  function opneOthersNebuSection(){
+  function openOthersNebuSection(){
     setOverviewSection(false)
     setRateCommentSection(false)
     setOthersNebuSection(true)
   }
+
+  function expandPlaceInfoPanel(){
+    setMobileInfoPanel(!mobileInfoPanel)
+  }
+
+  function minimizePlaceInfoPanel() {
+    setMobileInfoPanel(false);
+  }
+
   
 
   return (
-    <div className={`absolute overflow-y-scroll top-1/2 lg:top-0 2xl:w-1/4 lg:w-1/3 z-10 h-screen rounded-sm bg-white text-black transition-all duration-300 ease-in-out 
-      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}>
+    <div className={`absolute overflow-y-scroll  ${mobileInfoPanel ? "top-0" : "top-1/2"} w-full rounded-t-xl lg:top-0 2xl:w-1/4 lg:w-1/3 z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out 
+      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`} ref={panelRef}>
       
       <div className=' text-black '>
       
         {placeData ? (
-          <div className='rounded-t-full'>
+          <div className='rounded-t-full' onScroll={() => {
+            if (panelRef.current) {
+              scrollPosition > 0 ? minimizePlaceInfoPanel() : expandPlaceInfoPanel();
+            }
+          }}>
             
-            <div className="w-[60px] h-[3px] bg-dark-grey my-3 mx-auto"></div>
+            <div className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer`} ></div>
             <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1 w-full "/></figure>
             <div className='flex flex-col pl-4 pt-2 gap-y-1'>
               <div className='flex flex-row'>
                 <h3 className='font-bold text-xl text-black  bg-white w-fit'>{placeData.name}</h3>
-                {/* <figure className='ml-auto'><Image src={shareIcon} alt="pic" className="mr-4" width={31}/></figure> */}
               </div>
 
               <div className='flex flex-row'>
@@ -131,7 +166,7 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
                   <div className='flex flex-col items-center justify-end'>
                     <button className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 hover:border-b-4 hover:border-grey  font-medium rounded-none
                         ${othersNebuSection ? 'text-blue border-b-4 border-blue' : 'text-black border-white'}`}
-                        onClick={opneOthersNebuSection}>Others Nebu</button>
+                        onClick={openOthersNebuSection}>Others Nebu</button>
                   </div>
                 </div>
 
