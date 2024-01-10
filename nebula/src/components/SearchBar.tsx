@@ -7,7 +7,7 @@ interface ISearchBar {
 const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   return (
     
-      <div className="relative w-full 2xl:w-2/5 lg:w-2/5 md:w-1/4 sm:w-3/4 p-4 max-w-md">
+      <div className="relative w-full 2xl:w-[30%] lg:w-2/5 md:w-1/4 sm:w-3/4 p-4 max-w-md">
         <input
           type="text"
           className="pl-10 pr-4 py-2 w-full input input-bordered bg-[#fefefe] text-black shadow-neutral-500 shadow-sm"

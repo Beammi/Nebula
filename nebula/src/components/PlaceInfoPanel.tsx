@@ -101,7 +101,7 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
             }
           }}>
             
-            <div className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer`} ></div>
+            <div className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer lg:hidden`} ></div>
             <figure><Image src={towerBridgePic} alt="pic" className="pt-0 mb-1 w-full "/></figure>
             <div className='flex flex-col pl-4 pt-2 gap-y-1'>
               <div className='flex flex-row'>
