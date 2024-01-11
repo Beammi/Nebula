@@ -1,18 +1,12 @@
+//pages/login.jsx
 import React from "react"
 import Image from "next/image"
-import SearchBar from "../components/SearchBar"
 import timeAdventurePic from "../../public/images/time_adventure.png"
-import Footer from "../components/Footer"
-import Button from "../components/Button"
+import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
-import TextInput from "@/components/TextInputWithLabel"
-import googleIcon from "../../public/images/google-icon.png"
-import facebookIcon from "../../public/images/fb-icon.png"
-import twitterIcon from "../../public/images/twitter-icon.png"
-import Link from "next/link"
 import { SignIn, useUser } from "@clerk/nextjs"
 import { useRouter } from "next/router"
-import colors from "tailwindcss/colors"
+// import colors from "tailwindcss/colors"
 
 export default function Login() {
   const { isLoaded, isSignedIn } = useUser()
@@ -26,20 +20,23 @@ export default function Login() {
       <div className="h-screen">
         <Navbar />
         <div className="flex md:flex-row flex-col">
-        <div className="hero bg-white h-fit min-h-screen">
-          <div className="hero-content flex flex-col justify-center md:flex-row md:gap-32">
-
-          <figure className="max-w-md">
-            <Image
-              src={timeAdventurePic}
-              alt="adventure pic"
-              className="pt-2"
-              width={520}
-            />
-          </figure>
-          <SignIn path="/login" routing="path" signUpUrl="/register" afterSignInUrl="/home"/>
-
-          </div>
+          <div className="hero bg-white h-fit min-h-screen">
+            <div className="hero-content flex flex-col justify-center md:flex-row md:gap-32">
+              <figure className="max-w-md">
+                <Image
+                  src={timeAdventurePic}
+                  alt="adventure pic"
+                  className="pt-2"
+                  width={520}
+                />
+              </figure>
+              <SignIn
+                path="/login"
+                routing="path"
+                signUpUrl="/register"
+                afterSignInUrl="/home"
+              />
+            </div>
           </div>
         </div>
 
