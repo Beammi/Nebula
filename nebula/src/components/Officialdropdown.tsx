@@ -14,7 +14,7 @@ const Dropdown = ({ selected, setSelected }) => {
         {selected}
       </div>
       {isActive && (
-        <div className="absolute top-full w-32">
+        <div className="absolute top-full w-32 h-24 overflow-y-auto">
           {options.map((option) => (
             <div
               key={option}
@@ -22,7 +22,7 @@ const Dropdown = ({ selected, setSelected }) => {
                 setSelected(option);
                 setIsActive(false);
               }}
-              className="p-1 bg-blue hover:bg-dark-grey cursor-pointer rounded-md"
+              className="p-1 bg-blue hover:bg-dark-grey cursor-pointer"
             >
               {option}
             </div>
