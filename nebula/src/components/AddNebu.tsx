@@ -65,6 +65,7 @@ export default function AddNebu(props) {
             <Button
               buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
               label="+"
+              type="button"
               onClick={(event) => {
                 event.preventDefault();
                 openTagModal();
@@ -96,7 +97,7 @@ export default function AddNebu(props) {
             <TimeLimitBox />
           </div>
           <div className="w-full text-center mt-4">
-            <Button buttonStyle="btn btn-primary bg-blue w-fit border-none" label="NEXT" />
+            <Button type="button" buttonStyle="btn btn-primary bg-blue w-fit border-none" label="NEXT" />
           </div>
           <NebuTag toggle={OpenTag} />
         </form>
