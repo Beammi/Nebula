@@ -11,53 +11,9 @@ import { useRouter } from 'next/router'
 import { SignUp } from "@clerk/nextjs";
 
 export default function Register() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmedPassword, setConfirmedPassword] = useState("")
-  const [message, setMessage] = useState(null)
-  const [areEqual, setAreEqual] = useState(false)
+
   const router = useRouter();
-  useEffect(() => {
-    // Check if the two inputs are equal
-    setAreEqual(
-      password === confirmedPassword &&
-        password != "" &&
-        confirmedPassword != ""
-    )
-  }, [password, confirmedPassword])
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (password != confirmedPassword) {
-      return alert("Your passwords are not match!!!")
-    } else {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-
-      const data = await response.json()
-      if (!response.ok) {
-        setMessage(data.message || "Something went wrong!")
-      } else {
-        setMessage("User created successfully!")
-        // Redirect or further actions
-        router.push('/home')
-      }
-    }
-  }
-  function validatePasswordMessage() {
-    if (password == "" || confirmedPassword == "") {
-      return
-    } else {
-      if (areEqual) {
-        return <p>Passwords are equal</p>
-      } else {
-        return <p className="text-red text-sm">Passwords are not match</p>
-      }
-    }
-  }
+  
 
   return (
     <>
