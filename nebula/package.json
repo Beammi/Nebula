@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^4.30.3",
+    "@clerk/nextjs": "^4.29.2",
     "@prisma/client": "^5.7.0",
     "@types/leaflet": "^1.9.6",
     "autoprefixer": "10.4.16",

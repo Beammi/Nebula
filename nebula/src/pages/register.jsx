@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar"
 import TextInput from "@/components/TextInputWithLabel"
 import { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
+import { SignUp } from "@clerk/nextjs";
 
 export default function Register() {
   const [email, setEmail] = useState("")
@@ -63,70 +64,25 @@ export default function Register() {
       <div className="h-screen">
         <Navbar />
         {/* {message && <p>{message}</p>} */}
-        <div className="hero p-10 bg-white h-fit min-h-screen">
-          <div className="hero-content flex-col md:flex-row gap-32">
-            <figure>
-              <Image
-                src={readyAdventurePic}
-                alt="adventure pic"
-                className="pt-2"
-                width={520}
-              />
-            </figure>
+        <div className="flex md:flex-row flex-col">
+        <div className="hero bg-white h-fit min-h-screen">
+          <div className="hero-content flex flex-col justify-center md:flex-row md:gap-32">
 
-            <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-white border-2 border-black text-black">
-              <form className="card-body" onSubmit={handleSubmit}>
-                <h2 className="font-bold text-2xl text-center">Register</h2>
-                <div className="divider before:bg-grey after:bg-grey"></div>
-                <TextInput
-                  textLabel="Email Address"
-                  inputType="email"
-                  placeholder="Enter email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextInput
-                  textLabel="Password"
-                  inputType="password"
-                  placeholder="Enter Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <TextInput
-                  textLabel="Confirm Password"
-                  inputType="password"
-                  placeholder="Confirm Password"
-                  onChange={(e) => setConfirmedPassword(e.target.value)}
-                />
-                {/* {areEqual ? (
-                  <div className="text-black">The passwords are equal.</div>
-                ) : (
-                  <div className="text-red">The passwords are not equal.</div>
-                )} */}
-                {validatePasswordMessage()}
-                <div className="flex justify-center">
-                  <Button
-                    buttonStyle="btn btn-primary bg-blue w-fit"
-                    label="Register"
-                    type="submit"
-                  />
-                </div>
-              </form>
+          <figure className="max-w-md">
+            <Image
+              src={readyAdventurePic}
+              alt="adventure pic"
+              className="pt-2"
+              width={520}
+            />
+          </figure>
+          <SignUp path="/register" routing="path" signInUrl="/login" redirectUrl="/home"/>
 
-              <div className="flex justify-center">
-                <label className="label">
-                  <label className="font-normal text-sm">
-                    Have an account?
-                  </label>
-                  <a
-                    href="/login"
-                    className="label-text-alt link link-hover indent-1 text-blue text-sm"
-                  >
-                    Log In
-                  </a>
-                </label>
-              </div>
-            </div>
+          </div>
           </div>
         </div>
+
+        
 
         <Footer />
       </div>
