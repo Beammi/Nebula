@@ -68,7 +68,7 @@ export default function AddNebu(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Tags</h3>
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <div>
                 <Officialdropdown selected={selected} setSelected={setSelected} />
               </div>

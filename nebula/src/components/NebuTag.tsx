@@ -26,23 +26,23 @@ const NebuTag = (props) => {
 
   return (
     <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${isOpen ? "visible opacity-100 drop-shadow-2xl" : "invisible opacity-0"}`}>
-      <div className="flex flex-col p-6 bg-red">
+      <div className="flex flex-col p-6 bg-white">
         <div className="flex justify-end mb-2">
           <button onClick={(event) => { event.preventDefault(); action(); }}>
             <Image src={closeIcon} alt="Close button" className="pt-2" width={20} />
           </button>
         </div>
         <div className="my-2">
-          <p>Additional Tag</p>
+          <p className="py-2">Additional Tag</p>
           <input
-            className="bg-white text-black p-1 focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue rounded-md"
+            className="bg-grey text-black p-1 focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue rounded-md"
             type="text"
             value={additionalTag}
             onChange={(e) => setAdditionalTag(e.target.value)}
           />
         </div>
         <div className="flex justify-center mt-4">
-          <button className="bg-white p-2 rounded-md" onClick={(event) => { event.preventDefault(); handleConfirm(); }}>
+          <button className="bg-blue text-white p-2 rounded-md" onClick={(event) => { event.preventDefault(); handleConfirm(); }}>
             Confirm
           </button>
         </div>
