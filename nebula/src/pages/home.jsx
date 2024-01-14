@@ -4,11 +4,25 @@ import DynamicMap from "@/components/DynamicMap";
 import Button from "@/components/Button";
 import AddNebu from "@/components/AddNebu";
 import { useState } from "react";
+import { useRouter } from "next/router"
+import { supabase } from "../lib/supabaseClient"
+import { useEffect } from "react";
 
 export default function Home() {
   const [addNebuState, setAddnebu] = useState(false);
   const [addNebuDropDown, setaddNebuDropdown] = useState(false);
+  const router = useRouter()
+  async function checkSession(){
+    const { data, error } = await supabase.auth.getSession()
 
+    if(error||data===null){
+      router.push("/home_unregistered")
+    }
+  }
+
+  useEffect(()=>{
+    checkSession()
+  },[])
   function openAddNebu() {
     setAddnebu(!addNebuState);
   }
