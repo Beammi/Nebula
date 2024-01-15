@@ -8,14 +8,15 @@ import Navbar from "@/components/Navbar"
 import { useRouter } from "next/router"
 // import colors from "tailwindcss/colors"
 import { useState, useEffect } from "react"
-import TextInput from "@/components/TextInputWithLabel"
+import TextInputWithLabel from "@/components/TextInputWithLabel"
 import Button from "../components/Button"
 import googleIcon from "../../public/images/google-icon.png"
 import facebookIcon from "../../public/images/fb-icon.png"
 import twitterIcon from "../../public/images/twitter-icon.png"
 import Link from "next/link"
 import { supabase } from "../lib/supabaseClient"
-
+//**************************************************แก้ TextInputWithLabel ให้มี option required
+//**************************************************แก้ให้ check text input ของ email&password
 export default function Login() {
   // const { isLoaded, isSignedIn } = useUser()
   const router = useRouter()
@@ -32,7 +33,7 @@ export default function Login() {
   async function handleSignInWithGoogle(response) {
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: "google",
-      token: response.credential,
+      // token: response.credential,
       // nonce: 'NONCE', // must be the same one as provided in data-nonce (if any)
     })
   }
@@ -78,13 +79,13 @@ export default function Login() {
                   <h2 className="font-bold text-2xl text-center">Login</h2>
                   <div className="divider before:bg-grey after:bg-grey"></div>
 
-                  <TextInput
+                  <TextInputWithLabel
                     textLabel="Email Address"
                     inputType="email"
                     placeholder="Enter email"
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <TextInput
+                  <TextInputWithLabel
                     textLabel="Password"
                     inputType="password"
                     placeholder="Enter Password"
@@ -122,7 +123,7 @@ export default function Login() {
                     <div className="flex justify-center md:flex-row gap-x-2">
                       <button
                         onClick={() =>
-                          handleSignInWithGoogle
+                          handleSignInWithGoogle()
                         }
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
