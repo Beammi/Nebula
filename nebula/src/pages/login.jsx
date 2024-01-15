@@ -20,9 +20,9 @@ export default function Login() {
   // const { isLoaded, isSignedIn } = useUser()
   const router = useRouter()
   async function checkSession(){
-    const { data, error } = await supabase.auth.getSession()
+    const { data: { user } ,error} = await supabase.auth.getUser()
 
-    if(!error||data!=null){
+    if(!error||user!=null){
       router.push("/home")
     }
   }
@@ -43,7 +43,7 @@ export default function Login() {
       if(error){
         console.log("Error when log-in")
       }else{
-        console.log(data.json())
+        alert(JSON.stringify(data))
         router.push("/home")
       }
     
