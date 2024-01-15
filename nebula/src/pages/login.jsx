@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar"
 // import { SignIn, useUser } from "@clerk/nextjs"
 import { useRouter } from "next/router"
 // import colors from "tailwindcss/colors"
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import TextInput from "@/components/TextInputWithLabel"
 import Button from "../components/Button"
 import googleIcon from "../../public/images/google-icon.png"
@@ -19,36 +19,45 @@ import { supabase } from "../lib/supabaseClient"
 export default function Login() {
   // const { isLoaded, isSignedIn } = useUser()
   const router = useRouter()
-  async function checkSession(){
-    const { data: { user } ,error} = await supabase.auth.getUser()
+  async function checkSession() {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-    if(!error||user!=null){
+    if (!error || user != null) {
       router.push("/home")
     }
   }
-  useEffect(()=>{
+  async function handleSignInWithGoogle(response) {
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: response.credential,
+      // nonce: 'NONCE', // must be the same one as provided in data-nonce (if any)
+    })
+  }
+
+  useEffect(() => {
     checkSession()
-  },[])
+  }, [])
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      })
-      if(error){
-        console.log("Error when log-in")
-      }else{
-        alert(JSON.stringify(data))
-        router.push("/home")
-      }
-    
-    
-}
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    if (error) {
+      console.log("Error when log-in")
+    } else {
+      alert(JSON.stringify(data))
+      router.push("/home")
+    }
+  }
   return (
     <>
       <div className="h-screen">
@@ -111,50 +120,56 @@ export default function Login() {
                       Or Login with
                     </label>
                     <div className="flex justify-center md:flex-row gap-x-2">
-                      <Link
-                        href="https://www.google.com/"
+                      <button
+                        onClick={() =>
+                          handleSignInWithGoogle
+                        }
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
                         <figure>
                           <Image
                             src={googleIcon}
-                            alt="adventure pic"
+                            alt="Google"
                             className="py-2 md:mx-1 mx-3 cursor-pointer"
                             width={20}
                           />
                         </figure>
                         <label className="cursor-pointer">Google</label>
-                      </Link>
+                      </button>
 
-                      <Link
-                        href="https://www.facebook.com/"
+                      <button
+                        onClick={() =>
+                          window.open("https://www.facebook.com/", "_blank")
+                        }
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
                         <figure>
                           <Image
                             src={facebookIcon}
-                            alt="adventure pic"
+                            alt="Facebook"
                             className="py-2 md:mx-1 mx-3 cursor-pointer"
                             width={20}
                           />
                         </figure>
                         <label className="cursor-pointer">Facebook</label>
-                      </Link>
+                      </button>
 
-                      <Link
-                        href="https://www.twitter.com/"
+                      <button
+                        onClick={() =>
+                          window.open("https://www.twitter.com/", "_blank")
+                        }
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
                         <figure>
                           <Image
                             src={twitterIcon}
-                            alt="adventure pic"
+                            alt="Twitter"
                             className="py-2 md:mx-1 mx-3 cursor-pointer"
                             width={20}
                           />
                         </figure>
                         <label className="cursor-pointer">Twitter</label>
-                      </Link>
+                      </button>
                     </div>
                     {/* </label> */}
                   </div>
