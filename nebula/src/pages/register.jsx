@@ -68,12 +68,6 @@ export default function Register() {
       }
     }
   }
-  async function signUpNewUser() {
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
-  }
 
   return (
     <>
