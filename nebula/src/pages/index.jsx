@@ -2,8 +2,27 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import IntroCard from "../components/IntroCard";
+import { useEffect } from "react";
+import { supabase } from "../lib/supabaseClient"
+import { useRouter } from "next/router"
 
 export default function Intro() {
+  const router = useRouter()
+  async function checkSession() {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+
+    if (!error || user != null) {
+      router.push("/home")
+    }else{
+      console.log("Error: "+error)
+    }
+  }
+  useEffect(() => {
+    checkSession()
+  }, [])
   return (
     <>
       <Navbar />
