@@ -18,8 +18,10 @@ import { supabase } from "../lib/supabaseClient"
 //**************************************************แก้ TextInputWithLabel ให้มี option required
 //**************************************************แก้ให้ check text input ของ email&password
 export default function Login() {
-  // const { isLoaded, isSignedIn } = useUser()
   const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
   async function checkSession() {
     const {
       data: { user },
@@ -28,37 +30,42 @@ export default function Login() {
 
     if (!error || user != null) {
       router.push("/home")
+    } else {
+      console.log("Error: " + error)
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (email === "" || password === "") {
+      alert("Please fill email and password")
+    } else {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
+      if (error) {
+        console.log("Error when log-in")
+      } else {
+        alert(JSON.stringify(data))
+        router.push("/home")
+      }
     }
   }
   async function handleSignInWithGoogle(response) {
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       // token: response.credential,
       // nonce: 'NONCE', // must be the same one as provided in data-nonce (if any)
     })
+    console.log(data)
+    if (error) {
+      console.log(error)
+    }
   }
-
   useEffect(() => {
     checkSession()
   }, [])
-
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
-    if (error) {
-      console.log("Error when log-in")
-    } else {
-      alert(JSON.stringify(data))
-      router.push("/home")
-    }
-  }
   return (
     <>
       <div className="h-screen">
@@ -122,9 +129,7 @@ export default function Login() {
                     </label>
                     <div className="flex justify-center md:flex-row gap-x-2">
                       <button
-                        onClick={() =>
-                          handleSignInWithGoogle()
-                        }
+                        onClick={() => handleSignInWithGoogle()}
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
                         <figure>
