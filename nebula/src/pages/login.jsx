@@ -44,7 +44,12 @@ export default function Login() {
         email: email,
         password: password,
       })
-      if (error) {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      if (error || !response.ok) {
         console.log("Error when log-in")
       } else {
         alert(JSON.stringify(data))
@@ -55,6 +60,17 @@ export default function Login() {
   async function handleSignInWithGoogle(response) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      // token: response.credential,
+      // nonce: 'NONCE', // must be the same one as provided in data-nonce (if any)
+    })
+    console.log(data)
+    if (error) {
+      console.log(error)
+    }
+  }
+  async function handleSignInWithFacebook(response) {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "facebook",
       // token: response.credential,
       // nonce: 'NONCE', // must be the same one as provided in data-nonce (if any)
     })
@@ -144,9 +160,7 @@ export default function Login() {
                       </button>
 
                       <button
-                        onClick={() =>
-                          window.open("https://www.facebook.com/", "_blank")
-                        }
+                        onClick={() => handleSignInWithFacebook()}
                         className="flex flex-row items-center rounded-md px-2 shadow-neutral-500 shadow-md cursor-pointer"
                       >
                         <figure>
