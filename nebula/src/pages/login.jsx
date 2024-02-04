@@ -50,7 +50,8 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       })
       if (error || !response.ok) {
-        console.log("Error when log-in")
+        //เพิ่ม catch ตอน wrong password
+        console.log("Error: "+error+"Error from local: "+response.toString())
       } else {
         alert(JSON.stringify(data))
         router.push("/home")
