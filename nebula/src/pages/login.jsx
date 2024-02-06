@@ -50,8 +50,10 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       })
       if (error || !response.ok) {
-        //เพิ่ม catch ตอน wrong password
-        console.log("Error: "+error+"Error from local: "+response.toString())
+        if(error=="AuthApiError: Invalid login credentials"){
+          alert("Wrong Password or Wrong Email")
+        }
+        // console.log("Error: "+error+"Error from local: "+JSON.stringify(response))
       } else {
         alert(JSON.stringify(data))
         router.push("/home")
