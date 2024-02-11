@@ -6,6 +6,7 @@ import Image from "next/image";
 import closeIcon from "../../public/images/close.png";
 import smallHashtag from "../../public/images/smallHashtag_blue.png";
 import filterIcon from "../../public/images/filter-icon.png"
+// import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag";
 
 export default function TagSuggestion(props) {
