@@ -6,6 +6,7 @@ import smallPin from "../../public/images/smallPin.png"
 import smallFlag from "../../public/images/smallFlag.png"
 import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
+import TagSuggestion  from "@/components/TagSuggestion"
 
 interface ISearchBar {
   text?: string
@@ -15,7 +16,26 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showTagSuggestion, setShowTagSuggestion] = useState(false);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+
+  function closeTagSuggestion() {
+    setShowTagSuggestion(false);
+    console.log("closeee");
+  }
+
+  // Function to handle suggestion click
+  const handleSuggestionClick = (suggestion: { value: string; type: string }) => {
+
+    if(suggestion.type === "tag") {
+      setShowTagSuggestion(true);
+    }
+    else{
+      setInputValue(suggestion.value);
+    }
+
+    setShowSuggestions(false);
+  };
 
   // Function to handle input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,12 +103,13 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         </div>
 
         {showSuggestions && (
-          <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg text-black">
+          // <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg text-black">
+          <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg text-black transition-opacity delay-300 duration-500 ease-in-out opacity-100">
             {suggestions.map((suggestion, index) => (
               <div className="flex flex-row" key={index}>
                 <div
                   className="py-2 pl-4 cursor-pointer hover:bg-gray-400 flex items-center gap-x-3"
-                  // onClick={() => handleSuggestionClick(suggestion)}
+                  onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {(suggestion.type === "place") && 
                     <figure><Image src={smallPin} alt="pic" className="" width={20}/></figure>
@@ -108,6 +129,12 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
             ))}
           </div>
         )}
+
+        {/* { showTagSuggestion &&
+          <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion}/>
+        } */}
+
+        <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion}/>
 
       </div>
     
