@@ -38,6 +38,7 @@ export default function Register() {
       if (error) {
         setMessage(data.json() || "Something went wrong!")
       } else {
+        alert("We have sent verfication to your email. Please Verify")
         setMessage("User created successfully!")
         // Redirect or further actions
         const response = await fetch("/api/auth/register", {
