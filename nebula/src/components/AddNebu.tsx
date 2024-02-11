@@ -15,6 +15,11 @@ export default function AddNebu(props) {
   const [OpenTag, setOpenTag] = useState(false);
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
   const [selected, setSelected] = useState("Official's Tag");
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 2;
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("");
+  const [period, setPeriod] = useState("AM");
 
   function openTagModal() {
     setOpenTag(!OpenTag);
@@ -27,12 +32,23 @@ export default function AddNebu(props) {
   };
 
   const handleTagConfirm = (officialTag, additionalTag) => {
-
     if (additionalTag.length > 0) {
       setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
     }
 
     setOpenTag(false);
+  };
+
+  const handleNext = () => {
+    setCurrentStep(currentStep + 1);
+  };
+
+  const handlePrevious = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const handleSummit = () => {
+    console.log("Form submitted");
   };
 
   return (
@@ -50,82 +66,163 @@ export default function AddNebu(props) {
           </button>
         </div>
         <form action="" className="text-black">
-          <div className="flex flex-col">
-            <h3 className="text-lg">Title</h3>
-            <input
-              type="text"
-              className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
-            />
-          </div>
-          <div className="flex flex-col mt-4">
-            <h3 className="text-lg">Description</h3>
-            <textarea
-              name="postContent"
-              rows={5}
-              cols={40}
-              className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
-            />
-          </div>
-          <div className="flex flex-col mt-4">
-            <h3 className="text-lg">Tags</h3>
-            <div className="flex items-center ">
-              <div>
-                <Officialdropdown selected={selected} setSelected={setSelected} />
+          {currentStep === 1 && (
+            <>
+              <div className="flex flex-col">
+                <h3 className="text-lg">Title</h3>
+                <input
+                  type="text"
+                  className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                />
               </div>
-              <div className="pt-4 flex ml-2 overflow-x-auto">
-                {confirmedAdditionalTags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
-                  >
-                    {tag}
+              <div className="flex flex-col mt-4">
+                <h3 className="text-lg">Description</h3>
+                <textarea
+                  name="postContent"
+                  rows={5}
+                  cols={40}
+                  className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                />
+              </div>
+              <div className="flex flex-col mt-4">
+                <h3 className="text-lg">Tags</h3>
+                <div className="flex items-center ">
+                  <div>
+                    <Officialdropdown
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
                   </div>
-                ))}
-              </div>
-              <NebuTag
-                toggle={OpenTag}
-                action={() => setOpenTag(false)}
-                onConfirm={handleTagConfirm}
-              />
-              <Button
-                buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
-                label="+"
-                type="button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  openTagModal();
-                }}
-              ></Button>
-            </div>
-          </div>
-          <div className="flex flex-col mt-4">
-            <h3 className="text-lg mb-4">Image</h3>
-            <div className="flex flex-row-reverse justify-end items-center">
-              <ImageUpload onImagesUpload={handleImagesUpload} />
-              {uploadedImages.length > 0 && (
-                <div className="flex gap-2">
-                  {uploadedImages.map((image, index) => (
-                    <div key={index}>
-                      <img
-                        src={image.dataURL}
-                        alt={`Uploaded ${index + 1}`}
-                        className="w-full h-full"
-                      />
-                    </div>
-                  ))}
+                  <div className="pt-4 flex ml-2 overflow-x-auto">
+                    {confirmedAdditionalTags.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
+                      >
+                        {tag}
+                      </div>
+                    ))}
+                  </div>
+                  <NebuTag
+                    toggle={OpenTag}
+                    action={() => setOpenTag(false)}
+                    onConfirm={handleTagConfirm}
+                  />
+                  <Button
+                    buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
+                    label="+"
+                    type="button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openTagModal();
+                    }}
+                  ></Button>
                 </div>
-              )}
-            </div>
-          </div>
-          <div className="flex mt-4">
-            <TimeLimitBox />
-          </div>
-          <div className="w-full text-center mt-4">
-            <Button
-              buttonStyle="btn btn-primary bg-blue w-fit border-none"
-              label="NEXT"
-              type="button"
-            />
+              </div>
+              <div className="flex flex-col mt-4">
+                <h3 className="text-lg mb-4">Image</h3>
+                <div className="flex flex-row-reverse justify-end items-center">
+                  <ImageUpload onImagesUpload={handleImagesUpload} />
+                  {uploadedImages.length > 0 && (
+                    <div className="flex gap-2">
+                      {uploadedImages.map((image, index) => (
+                        <div key={index}>
+                          <img
+                            src={image.dataURL}
+                            alt={`Uploaded ${index + 1}`}
+                            className="w-full h-full"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex mt-4">
+                <TimeLimitBox />
+              </div>
+            </>
+          )}
+          {currentStep === 2 && (
+            <>
+              <div className="flex flex-col">
+                <span className="mb-2">Open Time:</span>
+                <div className="flex items-center justify-center">
+                  <input
+                    type="time"
+                    id="openTime"
+                    name="openTime"
+                    className="mb-2 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue bg-black-grey"
+                  />
+                </div>
+                <span className="mt-4 mb-2">Close Time:</span>
+                <div className="flex items-center justify-center">
+                  <input
+                    type="time"
+                    id="closeTime"
+                    name="closeTime"
+                    className="mb-2 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue bg-black-grey"
+                  />
+                </div>
+                <div className="flex flex-col mt-4 justify-center md:flex-row md:justify-start">
+                  <div className="flex flex-col">
+                    <span className="mb-2">Open Date:</span>
+                    <input
+                      type="text"
+                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="mb-2">Close Date:</span>
+                    <input
+                      type="text"
+                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col mt-4">
+                  <h3 className="text-lg">Additional Information</h3>
+                  <textarea
+                    name="postContent"
+                    rows={5}
+                    cols={40}
+                    className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                  />
+                </div>
+                <div className="mt-4">
+                  <input type="checkbox" className=" mr-2" />
+                  <span>Not include working hours</span>
+                </div>
+              </div>
+            </>
+          )}
+          <div className="w-full text-center mt-4 flex justify-between items-center">
+            {currentStep < totalSteps && (
+              <div className="flex justify-center items-center w-full">
+                <Button
+                  buttonStyle="btn btn-primary bg-blue w-fit border-none"
+                  label="NEXT"
+                  type="button"
+                  onClick={handleNext}
+                />
+              </div>
+            )}
+            {currentStep > 1 && (
+              <Button
+                buttonStyle="btn btn-primary bg-blue w-fit border-none"
+                label="Back"
+                type="button"
+                onClick={handlePrevious}
+              />
+            )}
+            {currentStep === totalSteps && (
+              <Button
+                buttonStyle="btn btn-primary bg-blue w-fit border-none"
+                label="Complete"
+                type="button"
+                onClick={handleSummit}
+              />
+            )}
           </div>
         </form>
       </div>
