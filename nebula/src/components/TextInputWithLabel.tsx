@@ -23,7 +23,7 @@ const TextInputWithLabel: React.FunctionComponent<ITextInputWithLabel> = ({
         placeholder={placeholder}
         className="input input-bordered bg-light-grey border-black"
         onChange={onChange} // Apply the onChange event handler
-        required
+        // required
       />
     </div>
   )
