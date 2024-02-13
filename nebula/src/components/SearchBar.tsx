@@ -17,11 +17,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showTagSuggestion, setShowTagSuggestion] = useState(false);
+  const [tagSuggestionValue, setTagSuggestionValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
 
   function closeTagSuggestion() {
     setShowTagSuggestion(false);
-    console.log("closeee");
   }
 
   // Function to handle suggestion click
@@ -29,6 +29,8 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
     if(suggestion.type === "tag") {
       setShowTagSuggestion(true);
+      setTagSuggestionValue(suggestion.value)
+      setInputValue("");
     }
     else{
       setInputValue(suggestion.value);
@@ -134,7 +136,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion}/>
         } */}
 
-        <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion}/>
+        <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestionValue}/>
 
       </div>
     
