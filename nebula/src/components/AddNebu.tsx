@@ -1,5 +1,5 @@
 import Button from "./Button";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ImageUpload from "./ImageUpload";
 import TimeLimitBox from "./TimeLimitBox";
 import Image from "next/image";
@@ -17,9 +17,15 @@ export default function AddNebu(props) {
   const [selected, setSelected] = useState("Official's Tag");
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
-  const [period, setPeriod] = useState("AM");
+  const [isChecked, setIsChecked] = useState({
+    Mon: false,
+    Tue: false,
+    Wed: false,
+    Thu: false,
+    Fri: false,
+    Sat: false,
+    Sun: false,
+  }); // State to track checkbox status
 
   function openTagModal() {
     setOpenTag(!OpenTag);
@@ -50,6 +56,54 @@ export default function AddNebu(props) {
   const handleSummit = () => {
     console.log("Form submitted");
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = event.target; // Update state when checkbox status changes
+
+    setIsChecked((prevState) => ({
+      ...prevState,
+      [id]: checked,
+    }));
+
+    // Send isChecked value to the server
+    // You can use isChecked to send the correct boolean value to the server
+    console.log("Checkbox is checked:", id, checked);
+    // Here you can make an API call to send the isChecked value to the server
+  };
+
+  // Append the style element to the document head
+  useEffect(() => {
+    const additionalStyles = `
+    .content input[type="checkbox"] {
+      display: none;
+    }
+    .content input[type="checkbox"] + label {
+      display: inline-block;
+      background-color: #ccc;
+      cursor: pointer;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 10px;
+    }
+    .content input[type="checkbox"]:checked + label {
+      background-color: #544CE6;
+      color: #ffffff;
+    }
+  `;
+
+    // Create a style element
+    const styleElement = document.createElement("style");
+
+    // Set the inner HTML of the style element to your CSS styles
+    styleElement.innerHTML = additionalStyles;
+
+    document.head.appendChild(styleElement);
+
+    // Clean up function to remove the style element when component unmounts
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []); // Empty dependency array ensures the effect runs only once
 
   return (
     <div
@@ -165,19 +219,22 @@ export default function AddNebu(props) {
                   />
                 </div>
                 <div className="flex flex-col mt-4 justify-center md:flex-row md:justify-start">
-                  <div className="flex flex-col">
-                    <span className="mb-2">Open Date:</span>
-                    <input
-                      type="text"
-                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="mb-2">Close Date:</span>
-                    <input
-                      type="text"
-                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
-                    />
+                  <div className="content">
+                    <span>Open days</span>
+                    <div className="mt-4">
+                      {/* Render checkboxes for each day */}
+                      {Object.keys(isChecked).map((day) => (
+                        <React.Fragment key={day}>
+                          <input
+                            type="checkbox"
+                            id={day}
+                            checked={isChecked[day]}
+                            onChange={handleChange}
+                          />
+                          <label htmlFor={day}>{day}</label>
+                        </React.Fragment>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col mt-4">
