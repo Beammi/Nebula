@@ -6,6 +6,9 @@ import Image from "next/image";
 import closeIcon from "../../public/images/close.png";
 import smallHashtag from "../../public/images/smallHashtag_blue.png";
 import filterIcon from "../../public/images/filter-icon.png"
+import marketPic from "../../public/images/marketPic.png"
+import bigBenPic from "../../public/images/bigBenPic.png"
+import Link from 'next/link'
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag";
 
@@ -35,7 +38,7 @@ export default function TagSuggestion(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="modal-box bg-dim-grey w-screen font-bold text-black p-7">
+      <div className="modal-box bg-dim-grey w-max font-bold text-black p-7">
         <div className="flex justify-start my-2">
           <h3 className="text-2xl text-black flex gap-x-3"><figure> <Image src={smallHashtag} alt="pic" width={30}/> </figure> {tagName}</h3>
           <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
@@ -58,29 +61,45 @@ export default function TagSuggestion(props) {
 
         <div className="w-full h-[3px] bg-grey "></div>
 
-        <form action="" className="text-black mt-5">
-          <div className="flex flex-col mb-3">
-            {/* <h3 className="text-lg">Title</h3> */}
-            <input
-              type="text"
-              className="p-2 bg-white rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue drop-shadow-md"
-            />
+        <div className="text-black mt-5 w-fit">
+          
+
+          <div className="card lg:card-side bg-white shadow-md w-fit">
+            <figure><Image src={marketPic} alt="pic" className="w-full"/></figure>
+            <div className="card-body">
+              <h2 className="card-title">Markets in London</h2>
+              <p>Places: Borough Market, Southbank Market, Blackfriars Road Food Market</p>
+              <div className='flex flex-row mt-1 gap-x-2'>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#tourist_attraction</Link>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#bridge</Link>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#natLikes</Link>
+              </div>
+              {/* <div className="card-actions justify-end">
+                <button className="btn btn-primary">Listen</button>
+              </div> */}
+            </div>
           </div>
 
-          <div className="card lg:card-side bg-white shadow-md">
-            <figure><img src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg" alt="Album"/></figure>
+          <div className="card lg:card-side bg-white shadow-md mt-4 w-fit">
+            <figure><Image src={bigBenPic} alt="pic" className="w-full"/></figure>
             <div className="card-body">
-              <h2 className="card-title">New album is released!</h2>
-              <p>Click the button to listen on Spotiwhy app.</p>
-              <div className="card-actions justify-end">
-                <button className="btn btn-primary">Listen</button>
+              <h2 className="card-title">Big Ben</h2>
+              <p>Address: London, SW1A 0AA, United Kingdom</p>
+              <p>A nice view of Big Ben during the sunset. You can get this view from the Queen’s Walk near Sea Life Lond...</p>
+              <div className='flex flex-row mt-1 gap-x-2'>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#tourist_attraction</Link>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#bridge</Link>
+                <Link href="https://www.google.com/" className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#natLikes</Link>
               </div>
+              {/* <div className="card-actions justify-end">
+                <button className="btn btn-primary">Listen</button>
+              </div> */}
             </div>
           </div>
 
 
           
-        </form>
+        </div>
       </div>
     </div>
   );
