@@ -86,7 +86,7 @@ export default function TagSuggestion(props) {
           
           {mockHashtagData.map((data, index) => (
             <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row">
-              <figure className="w-full lg:w-[20%] flex-shrink-0"><Image src={bigBenPic} alt="pic" className=" lg:h-auto"/></figure>
+              <figure className="w-full lg:w-[20%] flex-shrink-0"><Image src={marketPic} alt="pic" className=" lg:h-auto"/></figure>
               <div className="card-body flex flex-col justify-between">
                 {
                   (data.type === "nebu") &&
