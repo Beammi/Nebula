@@ -165,19 +165,12 @@ export default function AddNebu(props) {
                   />
                 </div>
                 <div className="flex flex-col mt-4 justify-center md:flex-row md:justify-start">
-                  <div className="flex flex-col">
-                    <span className="mb-2">Open Date:</span>
-                    <input
-                      type="text"
-                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="mb-2">Close Date:</span>
-                    <input
-                      type="text"
-                      className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue w-3/4"
-                    />
+                  <div className="">
+                    <span>Open days</span>
+                    <div className="mt-4">
+                      <input type="checkbox" />
+                      <label htmlFor="Mon">Mon</label>
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col mt-4">
