@@ -16,6 +16,7 @@ interface ISearchBar {
 
 const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
+
   
   
   const [IsOpen, setIsOpen] = useState(false)
@@ -151,7 +152,6 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   <li>Setting</li>
               </ul>
         </div>
-        
       </div>
     
   )
