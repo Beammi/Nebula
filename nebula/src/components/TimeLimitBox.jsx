@@ -53,7 +53,7 @@ function TimeLimitBox() {
             onChange={(event) =>
               handleStartDateChange(new Date(event.target.value))
             }
-            className="bg-white"
+            className="bg-blue text-white rounded-sm"
           />
           <label htmlFor="endDate">End Date:</label>
           <input
@@ -63,7 +63,7 @@ function TimeLimitBox() {
             onChange={(event) =>
               handleEndDateChange(new Date(event.target.value))
             }
-            className="bg-white"
+            className="bg-blue text-white rounded-sm"
           />
         </div>
       )}
