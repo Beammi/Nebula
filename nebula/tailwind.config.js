@@ -27,6 +27,7 @@ module.exports = {
       'white': '#ffffff',
       'black': '#000000',
       'black-grey': '#8D9194',
+      'dim-grey': '#F0F2F5',
     }
   },
   plugins: [require("daisyui")],
