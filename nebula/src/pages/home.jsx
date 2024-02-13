@@ -33,6 +33,8 @@ export default function Home() {
     const { data: { user } ,error} = await supabase.auth.getUser()
     if (error || user === null){
       console.log("Error when call checkProviderAccount function")
+    }else if (user.app_metadata.provider==="email"){
+      console.log("Login via Email")
     }else{
       let provider = user.app_metadata.provider
       let email = user.user_metadata.email
