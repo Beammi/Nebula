@@ -14,8 +14,12 @@ export default function AddNebu(props) {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [OpenTag, setOpenTag] = useState(false);
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
-  const [selected, setSelected] = useState("Official's Tag");
+  const [officialTag, setofficialTag] = useState("Official's Tag");
   const [currentStep, setCurrentStep] = useState(1);
+  const [title, setTitle] = useState("");
+  const [desc,setDesc] = useState("");
+  const [imageNebu, setImageNebu] = useState("");
+
   const totalSteps = 2;
   const [isChecked, setIsChecked] = useState({
     Mon: false,
@@ -53,7 +57,11 @@ export default function AddNebu(props) {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSummit = () => {
+  const handleSummit = async(e) => {
+    e.preventDefault()
+    if(title==""){
+      alert("Please name the nebu title before submitting")
+    }
     console.log("Form submitted");
   };
 
@@ -143,8 +151,8 @@ export default function AddNebu(props) {
                 <div className="flex items-center ">
                   <div>
                     <Officialdropdown
-                      selected={selected}
-                      setSelected={setSelected}
+                      selected={officialTag}
+                      setSelected={setofficialTag}
                     />
                   </div>
                   <div className="pt-4 flex ml-2 overflow-x-auto">
