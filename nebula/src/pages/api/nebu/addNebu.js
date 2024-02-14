@@ -14,7 +14,7 @@ async function nebuCreationHandler(req, res) {
     start_time,
     end_time,
     official_tag,
-    user_id,
+    // user_id,
     place_id,
     open_sunday,
     open_monday,
@@ -37,10 +37,12 @@ async function nebuCreationHandler(req, res) {
     [display_name]
   )
 
-  if (rows.length > 0) {
-    res.status(422).json({ message: "User exists already!" })
-    return
+  if (rows.length == 0) {
+    res.status(422).json({ message: "User does not exist!" })
+    return;
   }
+  const user = rows[0];
+  const user_id = user.user_id
 
   try {
     // Start a transaction
