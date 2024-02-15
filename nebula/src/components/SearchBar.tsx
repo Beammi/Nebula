@@ -119,7 +119,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6"
         />
         <div className="absolute right-8 top-8 transform -translate-y-1/2">
-          <Button buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" onClick={() => setIsOpen(!IsOpen)}></Button>
+          <Button type="button" buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
         {showSuggestions && (
