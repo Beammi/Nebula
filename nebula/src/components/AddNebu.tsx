@@ -23,6 +23,10 @@ export default function AddNebu(props) {
   const [workHour, setWorkHour] = useState(false)
   const [openTime, setOpenTime] = useState("")
   const [closeTime, setCloseTime] = useState("")
+  const [currentPlace, setCurrentPlace] = useState("");
+  const [currentPosition, setCurrentPosition] = useState<[number, number]>([
+    13.7563, 100.5018,
+  ]) // Default to Bangkok
   const totalSteps = 2
   const [isChecked, setIsChecked] = useState({
     Mon: false,
@@ -112,8 +116,51 @@ export default function AddNebu(props) {
     // Here you can make an API call to send the isChecked value to the server
   }
 
+  function getCurrentPosition(){
+    if ("geolocation" in navigator) {
+      console.log("Geolocation is supported")
+    } else {
+      console.log("Geolocation is not supported by your browser")
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentPosition([
+          position.coords.latitude,
+          position.coords.longitude,
+        ])
+      },
+      (error) => {
+        console.error("Error Code = " + error.code + " - " + error.message)
+        // Handle different error cases here
+      },
+      {
+        enableHighAccuracy: true, // Request the high accuracy position if available
+        timeout: 5000, // Set a timeout for the request
+        maximumAge: 0, // Prevent the use of cached positions
+      }
+    )
+    
+    console.log("Current Position in AddNebu:", currentPosition)
+
+  }
+  const fetchPlaceName = async (latitude, longitude) => {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+  
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("Place name: ", data.display_name);
+      setCurrentPlace(data.display_name)
+    } catch (error) {
+      console.error("Error fetching place name: ", error);
+    }
+  };
+  
   // Append the style element to the document head
   useEffect(() => {
+    getCurrentPosition()
+    fetchPlaceName(currentPosition[0],currentPosition[1])
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -144,6 +191,7 @@ export default function AddNebu(props) {
     return () => {
       document.head.removeChild(styleElement)
     }
+
   }, []) // Empty dependency array ensures the effect runs only once
 
   return (
