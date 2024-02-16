@@ -6,8 +6,7 @@ import Image from "next/image"
 import close from "../../public/images/close.png"
 import NebuTag from "./NebuTag"
 import Officialdropdown from "./Officialdropdown"
-import { off } from "process"
-
+import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 export default function AddNebu(props) {
   const addNebuState = props.toggle
   const action = props.action
@@ -23,7 +22,7 @@ export default function AddNebu(props) {
   const [workHour, setWorkHour] = useState(false)
   const [openTime, setOpenTime] = useState("")
   const [closeTime, setCloseTime] = useState("")
-  const [currentPlace, setCurrentPlace] = useState("");
+  const [currentPlace, setCurrentPlace] = useState("")
   const [currentPosition, setCurrentPosition] = useState<[number, number]>([
     13.7563, 100.5018,
   ]) // Default to Bangkok
@@ -37,9 +36,9 @@ export default function AddNebu(props) {
     Sat: false,
     Sun: false,
   }) // State to track checkbox status
-  const [timeLimitType, setTimeLimitType] = useState('permanent');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
+  const [timeLimitType, setTimeLimitType] = useState("permanent")
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(null)
   function openTagModal() {
     setOpenTag(!OpenTag)
   }
@@ -84,10 +83,9 @@ export default function AddNebu(props) {
       messege += " name the nebu title before submitting."
       // alert("Please name the nebu title before submitting")
       alert(messege)
-
     }
-    if(officialTag=="Official's Tag"){
-      messege+="Also, please select the official tag."
+    if (officialTag == "Official's Tag") {
+      messege += "Also, please select the official tag."
       alert(messege)
     }
     const openDays = getOpenDays() // This will be an array of days
@@ -95,10 +93,10 @@ export default function AddNebu(props) {
     console.log("Close Time:", closeTime)
     console.log("Open Days:", openDays)
     console.log("Time Limit Type:", timeLimitType)
-    console.log("Start Date: ",startDate)
+    console.log("Start Date: ", startDate)
     console.log("End Date: ", endDate)
-    console.log("Official Tag: ",officialTag)
-    console.log("Tags: ",confirmedAdditionalTags)
+    console.log("Official Tag: ", officialTag)
+    console.log("Tags: ", confirmedAdditionalTags)
     console.log("Form submitted")
   }
 
@@ -116,51 +114,29 @@ export default function AddNebu(props) {
     // Here you can make an API call to send the isChecked value to the server
   }
 
-  function getCurrentPosition(){
-    if ("geolocation" in navigator) {
-      console.log("Geolocation is supported")
-    } else {
-      console.log("Geolocation is not supported by your browser")
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentPosition([
-          position.coords.latitude,
-          position.coords.longitude,
-        ])
-      },
-      (error) => {
-        console.error("Error Code = " + error.code + " - " + error.message)
-        // Handle different error cases here
-      },
-      {
-        enableHighAccuracy: true, // Request the high accuracy position if available
-        timeout: 5000, // Set a timeout for the request
-        maximumAge: 0, // Prevent the use of cached positions
-      }
-    )
-    
-    console.log("Current Position in AddNebu:", currentPosition)
-
-  }
-  const fetchPlaceName = async (latitude, longitude) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-  
+  async function fetchCurrentLocationAndPlace() {
     try {
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log("Place name: ", data.display_name);
-      setCurrentPlace(data.display_name)
+      const position = await getCurrentLocation()
+      console.log("Current Lat: ", position[0], " Current Long: ", position[1])
+      setCurrentPosition(position) // Update the state, but don't wait for it here
+
+      // Now use `position` directly to get the place name
+      if (position != null) {
+        const place = await getPlaceName(position[0], position[1])
+        console.log("Current Place", place)
+        setCurrentPlace(place) // Correctly sets the place now
+      }
     } catch (error) {
-      console.error("Error fetching place name: ", error);
+      console.error("Error getting location:", error)
+      // Handle errors, such as user denying geolocation permission
     }
-  };
+  }
+  
+  
   
   // Append the style element to the document head
   useEffect(() => {
-    getCurrentPosition()
-    fetchPlaceName(currentPosition[0],currentPosition[1])
+    fetchCurrentLocationAndPlace()
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -191,7 +167,6 @@ export default function AddNebu(props) {
     return () => {
       document.head.removeChild(styleElement)
     }
-
   }, []) // Empty dependency array ensures the effect runs only once
 
   return (
@@ -282,13 +257,14 @@ export default function AddNebu(props) {
                 </div>
               </div>
               <div className="flex mt-4">
-                <TimeLimitBox 
-                timeLimitType={timeLimitType}
-                setTimeLimitType={setTimeLimitType}
-                startDate={startDate}
-                setStartDate={setStartDate}
-                endDate={endDate}
-                setEndDate={setEndDate}/>
+                <TimeLimitBox
+                  timeLimitType={timeLimitType}
+                  setTimeLimitType={setTimeLimitType}
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                />
               </div>
             </>
           )}
