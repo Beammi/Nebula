@@ -11,10 +11,12 @@ import {
 } from "react-leaflet"
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/PlaceInfoPanel"
-
+import UpdateMapView from "@/components/UpdateMapView"
 import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../public/images/pin_current_location.png"
+import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
+
 // Sample data for places
 export const placesData = [
   {
@@ -50,7 +52,7 @@ const MyMap: React.FC = () => {
   } | null>(null)
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false)
   const [currentPosition, setCurrentPosition] = useState<[number, number]>([
-    13.7563, 100.5018,
+    14.7563, 100.5018,
   ]) // Default to Bangkok
 
   const customIcon = new Icon({
@@ -72,40 +74,50 @@ const MyMap: React.FC = () => {
     // for close
     setPlaceInfoPanel(false)
   }
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      console.log("Geolocation is supported")
-    } else {
-      console.log("Geolocation is not supported by your browser")
+  async function fetchCurrentLocation() {
+    try {
+      setCurrentPosition(await getCurrentLocation());
+      console.log("Current Lat: ",currentPosition[0]," Current Long: ",currentPosition[1]);
+    } catch (error) {
+      console.error("Error getting location:", error);
+      // Handle errors, such as user denying geolocation permission
     }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentPosition([
-          position.coords.latitude,
-          position.coords.longitude,
-        ])
-      },
-      (error) => {
-        console.error("Error Code = " + error.code + " - " + error.message)
-        // Handle different error cases here
-      },
-      {
-        enableHighAccuracy: true, // Request the high accuracy position if available
-        timeout: 5000, // Set a timeout for the request
-        maximumAge: 0, // Prevent the use of cached positions
-      }
-    )
-  }, [])
-  const UpdateMapView = ({ position }) => {
-    const map = useMap()
-    useEffect(() => {
-      map.flyTo(position, map.getZoom())
-    }, [position, map])
-    console.log("Current Position:", currentPosition)
-
-    return null
   }
+  function continuouslyUpdateLocation() {
+    const options = {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000,
+    };
+  
+    async function update() { // Make the function async
+      navigator.geolocation.getCurrentPosition(async (position) => { // Mark this callback as async
+        // Process position
+        const { latitude, longitude } = position.coords;
+        console.log("Update: ",latitude, longitude);
+  
+        try {
+          // Use the latitude and longitude to get the place name
+          const placeName = await getPlaceName(latitude, longitude);
+          console.log("Place Name update:", placeName);
+        } catch (error) {
+          console.error("Failed to fetch place name:", error);
+        }
+  
+        // Schedule the next update
+        setTimeout(update, 60000); // Update every 60 seconds, adjust as needed
+      }, (error) => {
+        console.error(error);
+        setTimeout(update, 120000); // Attempt to update again after a delay
+      }, options);
+    }
+  
+    update(); // Start the update process
+  }
+  useEffect(() => {
+    fetchCurrentLocation()
+    continuouslyUpdateLocation()
+  }, [])
 
   return (
     <div className="h-screen relative">
