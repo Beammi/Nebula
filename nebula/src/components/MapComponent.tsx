@@ -1,3 +1,4 @@
+//MapComponent.tsx
 import { Icon } from "leaflet"
 import React, { useState, useEffect } from "react"
 import {
@@ -17,6 +18,8 @@ import sherlockPic from "../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../public/images/pin_current_location.png"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import LocationShow from "./LocationShow"
+import { useLocation } from "@/contexts/LocationContext"
+
 // Sample data for places
 export const placesData = [
   {
@@ -51,10 +54,17 @@ const MyMap: React.FC = () => {
     description: string
   } | null>(null)
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false)
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([
-    14.7563, 100.5018,
-  ]) // Default to Bangkok
-  const [currentPlace, setCurrentPlace] = useState("")
+  // const [currentPosition, setCurrentPosition] = useState<[number, number]>([
+  //   14.7563, 100.5018,
+  // ]) // Default to Bangkok
+  // const [currentPlace, setCurrentPlace] = useState("")
+  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
+    useLocation()
+
+  if (currentPosition === null) {
+    const defaultLocation = [13.7563, 100.5018]
+    setCurrentPosition(defaultLocation)
+  }
 
   const customIcon = new Icon({
     iconUrl: pinIcon.src,
@@ -75,51 +85,63 @@ const MyMap: React.FC = () => {
     // for close
     setPlaceInfoPanel(false)
   }
-  async function fetchCurrentLocation() {
-    try {
-      setCurrentPosition(await getCurrentLocation());
-      console.log("Current Lat: ",currentPosition[0]," Current Long: ",currentPosition[1]);
-    } catch (error) {
-      console.error("Error getting location:", error);
-      // Handle errors, such as user denying geolocation permission
-    }
-  }
-  function continuouslyUpdateLocation() {
-    const options = {
-      enableHighAccuracy: true,
-      maximumAge: 0,
-      timeout: 10000,
-    };
-  
-    async function update() { // Make the function async
-      navigator.geolocation.getCurrentPosition(async (position) => { // Mark this callback as async
-        // Process position
-        const { latitude, longitude } = position.coords;
-        console.log("Update: ",latitude, longitude);
-  
-        try {
-          // Use the latitude and longitude to get the place name
-          const placeName = await getPlaceName(latitude, longitude);
-          console.log("Place Name update:", placeName);
-          setCurrentPlace(placeName)
-        } catch (error) {
-          console.error("Failed to fetch place name:", error);
-        }
-  
-        // Schedule the next update
-        setTimeout(update, 60000); // Update every 60 seconds, adjust as needed
-      }, (error) => {
-        console.error(error);
-        setTimeout(update, 120000); // Attempt to update again after a delay
-      }, options);
-    }
-  
-    update(); // Start the update process
-  }
-  useEffect(() => {
-    fetchCurrentLocation()
-    continuouslyUpdateLocation()
-  }, [])
+  // async function fetchCurrentLocation() {
+  //   try {
+  //     setCurrentPosition(await getCurrentLocation())
+  //     console.log(
+  //       "Current Lat: ",
+  //       currentPosition[0],
+  //       " Current Long: ",
+  //       currentPosition[1]
+  //     )
+  //   } catch (error) {
+  //     console.error("Error getting location:", error)
+  //     // Handle errors, such as user denying geolocation permission
+  //   }
+  // }
+  // function continuouslyUpdateLocation() {
+  //   const options = {
+  //     enableHighAccuracy: true,
+  //     maximumAge: 0,
+  //     timeout: 10000,
+  //   }
+
+  //   async function update() {
+  //     // Make the function async
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (position) => {
+  //         // Mark this callback as async
+  //         // Process position
+  //         const { latitude, longitude } = position.coords
+  //         setCurrentPosition([latitude,longitude])
+  //         console.log("Update: ", latitude, longitude)
+
+  //         try {
+  //           // Use the latitude and longitude to get the place name
+  //           const placeName = await getPlaceName(latitude, longitude)
+  //           console.log("Place Name update:", placeName)
+  //           setCurrentPlace(placeName)
+  //         } catch (error) {
+  //           console.error("Failed to fetch place name:", error)
+  //         }
+
+  //         // Schedule the next update
+  //         setTimeout(update, 120000) // Update every 60 seconds, adjust as needed
+  //       },
+  //       (error) => {
+  //         console.error(error)
+  //         setTimeout(update, 120000) // Attempt to update again after a delay
+  //       },
+  //       options
+  //     )
+  //   }
+
+  //   update() // Start the update process
+  // }
+  // useEffect(() => {
+  //   fetchCurrentLocation()
+  //   continuouslyUpdateLocation()
+  // }, [])
 
   return (
     <div className="h-screen relative">
@@ -140,11 +162,15 @@ const MyMap: React.FC = () => {
         }}
       >
         <UpdateMapView position={currentPosition} />
-        <Marker position={currentPosition} icon={currentLocationIcon}>
-          <Popup>
-            Current Location.
-          </Popup>
+        {/* Use currentPosition.toString() as a key for the Marker */}
+        <Marker
+          key={`position-${currentPosition[0]}-${currentPosition[1]}`}
+          position={currentPosition}
+          icon={currentLocationIcon}
+        >
+          <Popup>Current Location.</Popup>
         </Marker>
+
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -167,7 +193,7 @@ const MyMap: React.FC = () => {
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-4 w-auto text-center z-10">
-        <LocationShow text={currentPlace} />
+        <LocationShow text={currentPlace} location={currentPosition} />
       </div>
     </div>
   )
