@@ -7,6 +7,8 @@ import close from "../../public/images/close.png"
 import NebuTag from "./NebuTag"
 import Officialdropdown from "./Officialdropdown"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
+import { useLocation } from "@/contexts/LocationContext"
+
 export default function AddNebu(props) {
   const addNebuState = props.toggle
   const action = props.action
@@ -22,10 +24,17 @@ export default function AddNebu(props) {
   const [workHour, setWorkHour] = useState(false)
   const [openTime, setOpenTime] = useState("")
   const [closeTime, setCloseTime] = useState("")
-  const [currentPlace, setCurrentPlace] = useState("")
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([
-    13.7563, 100.5018,
-  ]) // Default to Bangkok
+  // const [currentPlace, setCurrentPlace] = useState("")
+  // const [currentPosition, setCurrentPosition] = useState<[number, number]>([
+  //   13.7563, 100.5018,
+  // ]) // Default to Bangkok
+  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
+    useLocation()
+
+  if (currentPosition === null) {
+    const defaultLocation = [13.7563, 100.5018]
+    setCurrentPosition(defaultLocation)
+  }
   const totalSteps = 2
   const [isChecked, setIsChecked] = useState({
     Mon: false,
@@ -114,29 +123,29 @@ export default function AddNebu(props) {
     // Here you can make an API call to send the isChecked value to the server
   }
 
-  async function fetchCurrentLocationAndPlace() {
-    try {
-      const position = await getCurrentLocation()
-      console.log("Current Lat: ", position[0], " Current Long: ", position[1])
-      setCurrentPosition(position) // Update the state, but don't wait for it here
+  // async function fetchCurrentLocationAndPlace() {
+  //   try {
+  //     const position = await getCurrentLocation()
+  //     console.log("Current Lat: ", position[0], " Current Long: ", position[1])
+  //     setCurrentPosition(position) // Update the state, but don't wait for it here
 
-      // Now use `position` directly to get the place name
-      if (position != null) {
-        const place = await getPlaceName(position[0], position[1])
-        console.log("Current Place", place)
-        setCurrentPlace(place) // Correctly sets the place now
-      }
-    } catch (error) {
-      console.error("Error getting location:", error)
-      // Handle errors, such as user denying geolocation permission
-    }
-  }
+  //     // Now use `position` directly to get the place name
+  //     if (position != null) {
+  //       const place = await getPlaceName(position[0], position[1])
+  //       console.log("Current Place", place)
+  //       setCurrentPlace(place) // Correctly sets the place now
+  //     }
+  //   } catch (error) {
+  //     console.error("Error getting location:", error)
+  //     // Handle errors, such as user denying geolocation permission
+  //   }
+  // }
   
   
   
   // Append the style element to the document head
   useEffect(() => {
-    fetchCurrentLocationAndPlace()
+    // fetchCurrentLocationAndPlace()
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
