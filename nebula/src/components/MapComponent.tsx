@@ -17,7 +17,7 @@ import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../public/images/pin_current_location.png"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
-import LocationShow from "./LocationShow"
+import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 
 // Sample data for places
@@ -192,8 +192,8 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-4 w-auto text-center z-10">
-        <LocationShow text={currentPlace} location={currentPosition} />
+      <div className="fixed left-8 x-1/2 bottom-4 w-auto text-center z-10">
+        <LocationShowAndSearch text={currentPlace} location={currentPosition} />
       </div>
     </div>
   )
