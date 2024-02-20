@@ -1,5 +1,5 @@
+//api/nebu/addNebu.js
 import db from "../../../lib/db"
-import { supabase } from "../../../lib/supabaseClient"
 
 async function nebuCreationHandler(req, res) {
   if (req.method !== "POST") {
@@ -11,11 +11,12 @@ async function nebuCreationHandler(req, res) {
     description,
     images, // Assuming this to be a JSON-encoded array of image URLs
     duration,
-    start_time,
-    end_time,
     official_tag,
+    tags,
     // user_id,
-    place_id,
+    latitude,
+    longitude,
+    place_name,
     open_sunday,
     open_monday,
     open_tuesday,
@@ -23,11 +24,14 @@ async function nebuCreationHandler(req, res) {
     open_thursday,
     open_friday,
     open_saturday,
-    tags,
+    start_time,
+    end_time,
+    open_time,
+    close_time,
     provider,
-    email, // Assuming this is an array of tag names
+    email,
   } = req.body
-
+  
   // Optionally, validate the input data here
   let display_name = email.split("@")[0]
   display_name += provider
@@ -39,10 +43,30 @@ async function nebuCreationHandler(req, res) {
 
   if (rows.length == 0) {
     res.status(422).json({ message: "User does not exist!" })
-    return;
+    return
   }
-  const user = rows[0];
+  const user = rows[0]
   const user_id = user.user_id
+  // console.log("user id: ",user_id)
+  // Attempt to find an existing place
+  const placeResult = await db.query(
+    "SELECT place_id FROM place WHERE latitude = $1 AND longitude = $2",
+    [latitude, longitude]
+  );
+
+  let place_id;
+
+  if (placeResult.rows.length === 0) {
+    // No place found; insert a new one
+    const insertResult = await db.query(
+      "INSERT INTO place (place_name, latitude, longitude) VALUES ($1, $2, $3) RETURNING place_id",
+      [place_name, latitude, longitude]
+    );
+    place_id = insertResult.rows[0].place_id;
+  } else {
+    // Place exists, use its ID
+    place_id = placeResult.rows[0].place_id;
+  }
 
   try {
     // Start a transaction
@@ -67,13 +91,15 @@ async function nebuCreationHandler(req, res) {
         open_thursday,
         open_friday,
         open_saturday,
+        open_time,
+        close_time
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
       RETURNING nebu_id;`
-
+        // console.log("place id ",place_id)
     const { rows: nebuInsertRows } = await db.query(nebuInsertQuery, [
       title,
       description,
-      JSON.stringify(images), // Ensure images is properly encoded as JSON
+      [images], // Ensure images is properly encoded as JSON
       duration,
       start_time,
       end_time,
@@ -87,6 +113,8 @@ async function nebuCreationHandler(req, res) {
       open_thursday,
       open_friday,
       open_saturday,
+      open_time,
+      close_time,
     ])
 
     const nebuId = nebuInsertRows[0].nebu_id
