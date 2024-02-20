@@ -8,6 +8,7 @@ import NebuTag from "./NebuTag"
 import Officialdropdown from "./Officialdropdown"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "@/lib/supabaseClient"
 
 export default function AddNebu(props) {
   const addNebuState = props.toggle
@@ -19,15 +20,16 @@ export default function AddNebu(props) {
   const [officialTag, setofficialTag] = useState("Official's Tag")
   const [currentStep, setCurrentStep] = useState(1)
   const [title, setTitle] = useState("")
-  const [desc, setDesc] = useState("")
+  const [description, setDescription] = useState("")
   const [imageNebu, setImageNebu] = useState("")
   const [workHour, setWorkHour] = useState(false)
   const [openTime, setOpenTime] = useState("")
   const [closeTime, setCloseTime] = useState("")
-  // const [currentPlace, setCurrentPlace] = useState("")
-  // const [currentPosition, setCurrentPosition] = useState<[number, number]>([
-  //   13.7563, 100.5018,
-  // ]) // Default to Bangkok
+  const [timeLimitType, setTimeLimitType] = useState("permanent")
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(null)
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
   const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
     useLocation()
 
@@ -45,9 +47,7 @@ export default function AddNebu(props) {
     Sat: false,
     Sun: false,
   }) // State to track checkbox status
-  const [timeLimitType, setTimeLimitType] = useState("permanent")
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(null)
+
   function openTagModal() {
     setOpenTag(!OpenTag)
   }
@@ -85,18 +85,79 @@ export default function AddNebu(props) {
       .filter(([day, checked]) => checked)
       .map(([day]) => day)
   }
+
+  async function getEmail() {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    if (error || user === null) {
+      console.log("Error when call checkProviderAccount function")
+    } else if (user.app_metadata.provider === "email") {
+      setEmail(user.user_metadata.email)
+      setProvider("")
+    } else {
+      setEmail(user.user_metadata.email)
+      setProvider(user.app_metadata.provider)
+      console.log(provider + email)
+    }
+  }
+
   const handleSummit = async (e) => {
     e.preventDefault()
     let messege = "Please"
-    if (title == "") {
-      messege += " name the nebu title before submitting."
+    if (title == "" || officialTag == "Official's Tag") {
+      messege +=
+        " name the nebu title before submitting. or select official's tag"
       // alert("Please name the nebu title before submitting")
       alert(messege)
+    } else {
+      const {
+        Mon: open_monday,
+        Tue: open_tuesday,
+        Wed: open_wednesday,
+        Thu: open_thursday,
+        Fri: open_friday,
+        Sat: open_saturday,
+        Sun: open_sunday,
+      } = isChecked
+      //mock
+      // setImageNebu(["test","test2"])
+      const response = await fetch("/api/nebu/addNebu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          images: imageNebu, // Make sure the key matches the server's expected key
+          duration: timeLimitType,
+          official_tag: officialTag,
+          tags: confirmedAdditionalTags,
+          latitude: currentPosition[0],
+          longitude: currentPosition[1],
+          place_name: currentPlace,
+          open_sunday,
+          open_monday,
+          open_tuesday,
+          open_wednesday,
+          open_thursday,
+          open_friday,
+          open_saturday,
+          start_time: startDate,
+          end_time: endDate,
+          open_time: openTime,
+          close_time: closeTime,
+          provider:provider,
+          email:email,
+        }),
+      })
+      if (!response.ok) {
+        console.log("Error when create Nebu!!!", JSON.stringify(response))
+      } else {
+        console.log("Create Nebu successfully Yayyyyyy!!!~")
+      }
     }
-    if (officialTag == "Official's Tag") {
-      messege += "Also, please select the official tag."
-      alert(messege)
-    }
+
     const openDays = getOpenDays() // This will be an array of days
     console.log("Open Time:", openTime)
     console.log("Close Time:", closeTime)
@@ -123,29 +184,10 @@ export default function AddNebu(props) {
     // Here you can make an API call to send the isChecked value to the server
   }
 
-  // async function fetchCurrentLocationAndPlace() {
-  //   try {
-  //     const position = await getCurrentLocation()
-  //     console.log("Current Lat: ", position[0], " Current Long: ", position[1])
-  //     setCurrentPosition(position) // Update the state, but don't wait for it here
-
-  //     // Now use `position` directly to get the place name
-  //     if (position != null) {
-  //       const place = await getPlaceName(position[0], position[1])
-  //       console.log("Current Place", place)
-  //       setCurrentPlace(place) // Correctly sets the place now
-  //     }
-  //   } catch (error) {
-  //     console.error("Error getting location:", error)
-  //     // Handle errors, such as user denying geolocation permission
-  //   }
-  // }
-  
-  
-  
   // Append the style element to the document head
   useEffect(() => {
-    // fetchCurrentLocationAndPlace()
+    getEmail()
+
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -200,6 +242,10 @@ export default function AddNebu(props) {
                 <input
                   type="text"
                   className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="flex flex-col mt-4">
@@ -209,6 +255,9 @@ export default function AddNebu(props) {
                   rows={5}
                   cols={40}
                   className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
               <div className="flex flex-col mt-4">
