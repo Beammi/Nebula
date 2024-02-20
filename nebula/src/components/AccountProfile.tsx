@@ -30,9 +30,9 @@ export default function AccountProfile(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey lg:w-[35rem] font-bold text-black lg:h-[40rem] overflow-y-scroll">
+      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[20rem] lg:w-[35rem] font-bold text-black h-[32rem] lg:h-[40rem] overflow-y-scroll">
         <div className="flex flex-col justify-start">
-          <figure className="w-full"> <Image src={skyPic} alt="pic" className="w-full"/> </figure>
+          <figure className="w-full"> <Image src={skyPic} alt="pic" className="w-full h-[9.5rem] lg:h-auto"/> </figure>
           <button onClick={action} className="absolute top-0 right-0 mt-4 mr-4 z-10">
             <Image
               src={whiteCloseIcon}
@@ -42,23 +42,23 @@ export default function AccountProfile(props) {
             />
           </button>
           <div className="px-8 flex">
-            <figure className="w-1/6 z-10 -mt-10"> <Image src={profilePic} alt="pic" className="w-full"/> </figure>
+            <figure className="w-1/4 lg:w-1/6 z-10 -mt-8 lg:-mt-10"> <Image src={profilePic} alt="pic" className="w-full"/> </figure>
             <h3 className="text-2xl text-black ml-3 mt-1">{accountName}</h3>
           </div>          
         </div>        
 
         <div className="px-8 mt-6 flex flex-col gap-y-5">
-          <p className="text-base font-medium">Bio: A software develop who Love Travel, Enjoy new food</p>
+          <p className="text-base font-medium">Bio: A software developer who Love Travel, Enjoy new food</p>
           <div className="text-base font-medium">
             Nebu
-            <figure className="w-1/3 mt-2"> <Image src={ferryWheelPic} alt="pic" className="w-full"/> 
-              <div className="text-white -mt-10 w-full text-right -ml-3">Lancaster Hotel</div>
+            <figure className="w-2/5 lg:w-1/3 mt-2"> <Image src={ferryWheelPic} alt="pic" className="w-full"/> 
+              <div className="text-white -mt-10 w-full text-right -ml-3 text-sm lg:text-base">Lancaster Hotel</div>
             </figure>
           </div>
           <div className="text-base font-medium">
             Tour
-            <figure className="w-1/3 mt-2 "> <Image src={holmesPic} alt="pic" className="w-full"/> 
-              <div className="text-white -mt-10 w-full text-right -ml-3">Holmes Museum</div>
+            <figure className="w-2/5 lg:w-1/3 mt-2 "> <Image src={holmesPic} alt="pic" className="w-full"/> 
+              <div className="text-white -mt-10 w-full text-right -ml-3 text-sm lg:text-base">Holmes Museum</div>
             </figure>
             
           </div>
