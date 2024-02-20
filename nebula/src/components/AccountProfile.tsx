@@ -49,19 +49,19 @@ export default function AccountProfile(props) {
 
         <div className="px-8 mt-6 flex flex-col gap-y-5">
           <p className="text-base font-medium">Bio: A software develop who Love Travel, Enjoy new food</p>
-          <p className="text-base font-medium">
+          <div className="text-base font-medium">
             Nebu
             <figure className="w-1/3 mt-2"> <Image src={ferryWheelPic} alt="pic" className="w-full"/> 
-              <p className="text-white -mt-10 w-full text-right -ml-3">Lancaster Hotel</p>
+              <div className="text-white -mt-10 w-full text-right -ml-3">Lancaster Hotel</div>
             </figure>
-          </p>
-          <p className="text-base font-medium">
+          </div>
+          <div className="text-base font-medium">
             Tour
             <figure className="w-1/3 mt-2 "> <Image src={holmesPic} alt="pic" className="w-full"/> 
-              <p className="text-white -mt-10 w-full text-right -ml-3">Holmes Museum</p>
+              <div className="text-white -mt-10 w-full text-right -ml-3">Holmes Museum</div>
             </figure>
             
-          </p>
+          </div>
         </div>
 
         
