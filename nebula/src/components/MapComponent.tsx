@@ -1,7 +1,9 @@
 import { Icon } from 'leaflet';
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMapEvents } from 'react-leaflet';
-import pinIcon from "../../public/images/pin-icon.png"
+import largePinIcon from "../../public/images/large-pin-icon.png"
+import mediumPinIcon from "../../public/images/medium-pin-icon.png"
+import smallPinIcon from "../../public/images/small-pin-icon.png"
 import PlaceInfoPanel from '@/components/PlaceInfoPanel';
 
 import towerBridgePic from "../../public/images/tower-bridge-pic.png"
@@ -24,7 +26,7 @@ const MyMap: React.FC = () => {
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false);
 
   const customIcon = new Icon({
-    iconUrl: pinIcon.src,
+    iconUrl: largePinIcon.src,
     iconSize: [80, 80]
   })
 
