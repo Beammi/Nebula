@@ -8,6 +8,7 @@ import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
+import YourNebu from "@/components/YourNebu"
 import { useRouter } from "next/router"
 import React from "react"
 
@@ -24,6 +25,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showTagSuggestion, setShowTagSuggestion] = useState(false);
   const [showAccountProfile, setShowAccountProfile] = useState(false);
+  const [showYourNebu, setShowYourNebu] = useState(false);
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
@@ -34,6 +36,15 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
   function closeAccountProfile() {
     setShowAccountProfile(false);
+  }
+
+  function closeYourNebu() {
+    setShowYourNebu(false);
+  }
+
+  function handleYourNebuClick(){
+    setAccountNameValue("nat2100")
+    setShowYourNebu(true)
   }
 
   // Function to handle suggestion click
@@ -152,11 +163,12 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
+        <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
                   <li>Profile</li>
-                  <li>Your Nebu</li>
+                  <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>Your Nebu</li>
                   <li>Your Tour</li>
                   <li>Setting</li>
               </ul>
