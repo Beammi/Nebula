@@ -201,8 +201,8 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <div className="fixed left-8 x-1/2 bottom-4 w-auto text-center z-10">
         <LocationShowAndSearch text={currentPlace} location={currentPosition} />
+      <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2">
       </div>
     </div>
   )
