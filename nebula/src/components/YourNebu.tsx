@@ -22,7 +22,7 @@ export default function YourNebu(props) {
   const action = props.action;
   const accountName = props.accountName;
   const [showInfo, setShowInfo] = useState([false])
-  const [showSelectBox, setShowSelectBox] = useState(false)
+  const [showAllSelectBox, setShowAllSelectBox] = useState(false)
 
   const data = [{
     "title": "Big Ben",
@@ -74,7 +74,8 @@ export default function YourNebu(props) {
                             setShowInfo(updatedShowInfo); // Update the state with the modified array
                         }}>
                             {data.title}
-                            <input type="checkbox" className="checkbox ml-auto mr-5 checkbox-accent border-2 border-white" />
+                            {/* <input type="checkbox" className="checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-white" /> */}
+                            <input type="checkbox" className={`${showAllSelectBox ? "visible opacity-100" : "invisible opacity-0"} checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-dashed border-white`} />
                     </div>
                     <div className={`transition-all ease-in duration-00 ${showInfo[index] ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}>
                         { showInfo[index] && (
@@ -96,7 +97,8 @@ export default function YourNebu(props) {
                     </div>
                 </>
             ))}
-            <button className="rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue" onClick={() => setShowSelectBox(true)}>Select</button>
+            
+            <button className="rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue" onClick={() => setShowAllSelectBox(!showAllSelectBox)}>Select</button>
             
             
         </div>
