@@ -3,6 +3,7 @@ import ProfileButton from "@/components/ProfileButton"
 import DynamicMap from "@/components/DynamicMap"
 import Button from "@/components/Button"
 import AddNebu from "@/components/AddNebu"
+import AddTour from "@/components/AddTour"
 import { useState } from "react"
 import { useRouter } from "next/router"
 import { supabase } from "../lib/supabaseClient"
@@ -12,6 +13,7 @@ export default function Home() {
   const [addNebuState, setAddnebu] = useState(false)
   const [addNebuDropDown, setaddNebuDropdown] = useState(false)
   const [profileName,setProfileName] = useState("")
+  const [addTourState, setAddTourState] = useState(false)
   const router = useRouter()
   async function checkSession() {
 
@@ -65,6 +67,10 @@ export default function Home() {
     setaddNebuDropdown(!addNebuDropDown)
   }
 
+  function openAddTour() {
+    setAddTourState(!addTourState)
+  }
+
   return (
     <div className="relative h-screen">
       <div className="absolute z-10 top-0 left-0 right-0 flex items-center justify-center md:justify-between px-4 pt-2">
@@ -84,6 +90,7 @@ export default function Home() {
             <Button
               buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
               label="Create Tour"
+              onClick={openAddTour}
             ></Button>
             <Button
               buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
@@ -98,6 +105,7 @@ export default function Home() {
         <DynamicMap />
       </div>
       <AddNebu toggle={addNebuState} action={openAddNebu} />
+      <AddTour toggle={addTourState} action={openAddTour} />
       <div
         className={`fixed right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden ${
           addNebuDropDown ? "opacity-100" : "hidden"

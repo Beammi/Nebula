@@ -51,8 +51,9 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
         <ul className="flex flex-col gap-4 text-[black]">
           <li>Profile</li>
-          <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>Your Nebu</li>
-          <li>Your Tour</li>
+          <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>          
+          <li>My Tour</li>
+          <li>Bookmark</li>
           <li>Setting</li>
           <li>
             <Link

@@ -130,7 +130,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6"
         />
         <div className="absolute right-8 top-8 transform -translate-y-1/2">
-          <Button type="button" buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" onClick={() => setIsOpen(!IsOpen)}></Button>
+          <Button buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
         {showSuggestions && (
@@ -168,9 +168,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
                   <li>Profile</li>
-                  <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>Your Nebu</li>
-                  <li>Your Tour</li>
+                  <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>
+                  <li>My Tour</li>
+                  <li>Bookmark</li>
                   <li>Setting</li>
+                  <li>Log Out</li>
               </ul>
         </div>
       </div>
