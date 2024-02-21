@@ -16,7 +16,7 @@ export default function Home() {
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
-    console.log(JSON.stringify(user))
+    // console.log(JSON.stringify(user))
 
     if (error || user === null) {
       router.push("/home_unregistered")
