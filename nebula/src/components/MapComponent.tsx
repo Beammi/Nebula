@@ -13,6 +13,15 @@ import {
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/PlaceInfoPanel"
 import UpdateMapView from "@/components/UpdateMapView"
+
+
+
+
+import largePinIcon from "../../public/images/large-pin-icon.png"
+import mediumPinIcon from "../../public/images/medium-pin-icon.png"
+import smallPinIcon from "../../public/images/small-pin-icon.png"
+
+
 import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../public/images/pin_current_location.png"
@@ -67,7 +76,7 @@ const MyMap: React.FC = () => {
   }
 
   const customIcon = new Icon({
-    iconUrl: pinIcon.src,
+    iconUrl: largePinIcon.src,
     iconSize: [80, 80],
   })
 

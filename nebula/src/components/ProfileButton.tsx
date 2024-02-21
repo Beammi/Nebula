@@ -2,6 +2,7 @@ import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import YourNebu from "@/components/YourNebu"
 
 
 interface IProfileButton {
@@ -12,7 +13,19 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   const colors = ["bg-blue", "bg-red", "bg-yellow", "bg-dark-grey"]
   const randomColor = colors[Math.floor(Math.random() * colors.length)]
   const [IsOpen, setIsOpen] = useState(false)
+  const [showYourNebu, setShowYourNebu] = useState(false);
+  const [accountNameValue, setAccountNameValue] = useState("");
   const router = useRouter()
+
+  function closeYourNebu() {
+    setShowYourNebu(false);
+  }
+
+  function handleYourNebuClick(){
+    setAccountNameValue("nat2100")
+    setShowYourNebu(true)
+  }
+
   async function handleLogOut() {
     let { error } = await supabase.auth.signOut()
     if(error){
@@ -35,9 +48,10 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
           IsOpen ? "opacity-100" : "right-[-200px]"
         }`}
       >
+
         <ul className="flex flex-col gap-4 text-[black]">
           <li>Profile</li>
-          <li>Your Nebu</li>
+          <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>Your Nebu</li>
           <li>Your Tour</li>
           <li>Setting</li>
           <li>
@@ -52,7 +66,10 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
             </Link>
           </li>
         </ul>
+
       </div>
+
+      <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
     </div>
   )
 }
