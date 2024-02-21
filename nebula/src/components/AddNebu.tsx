@@ -105,6 +105,14 @@ export default function AddNebu(props) {
     };
   }, []); // Empty dependency array ensures the effect runs only once
 
+  function getImageSize(numImages){
+    const maxImagesPerRow=8;
+    const maxImageSize=100;
+
+    const imageSize = Math.min(maxImageSize, 100 / Math.min(numImages, maxImagesPerRow));
+    return `w-${imageSize}px h-${imageSize}px`;
+  }
+
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
@@ -178,9 +186,9 @@ export default function AddNebu(props) {
                 <div className="flex flex-row-reverse justify-end items-center">
                   <ImageUpload onImagesUpload={handleImagesUpload} />
                   {uploadedImages.length > 0 && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 overflow-auto">
                       {uploadedImages.map((image, index) => (
-                        <div key={index}>
+                        <div key={index} className={`image-container ${getImageSize(uploadedImages.length)}`}>
                           <img
                             src={image.dataURL}
                             alt={`Uploaded ${index + 1}`}
