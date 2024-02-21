@@ -23,8 +23,8 @@ export default function AddNebu(props) {
   const [description, setDescription] = useState("")
   const [imageNebu, setImageNebu] = useState("")
   const [workHour, setWorkHour] = useState(false)
-  const [openTime, setOpenTime] = useState("")
-  const [closeTime, setCloseTime] = useState("")
+  const [openTime, setOpenTime] = useState(null)
+  const [closeTime, setCloseTime] = useState(null)
   const [timeLimitType, setTimeLimitType] = useState("permanent")
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(null)
@@ -155,6 +155,7 @@ export default function AddNebu(props) {
         console.log("Error when create Nebu!!!", JSON.stringify(response))
       } else {
         console.log("Create Nebu successfully Yayyyyyy!!!~")
+        //close form here
       }
     }
 
@@ -415,7 +416,10 @@ export default function AddNebu(props) {
                 buttonStyle="btn btn-primary bg-blue w-fit border-none"
                 label="Complete"
                 type="button"
-                onClick={handleSummit}
+                onClick={() => {
+                  handleSummit;
+                  action();
+                }}
               />
             )}
           </div>
