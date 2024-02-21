@@ -7,6 +7,9 @@ import smallFlag from "../../public/images/smallFlag.png"
 import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
+import AccountProfile from "@/components/AccountProfile"
+import YourNebu from "@/components/YourNebu"
+import { useRouter } from "next/router"
 import React from "react"
 
 
@@ -16,19 +19,32 @@ interface ISearchBar {
 
 const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
-
-  
-  
+  const router = useRouter()
   const [IsOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showTagSuggestion, setShowTagSuggestion] = useState(false);
+  const [showAccountProfile, setShowAccountProfile] = useState(false);
+  const [showYourNebu, setShowYourNebu] = useState(false);
   const [tagSuggestValue, setTagSuggestValue] = useState("");
+  const [accountNameValue, setAccountNameValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
 
   function closeTagSuggestion() {
     setShowTagSuggestion(false);
-    console.log("closeee");
+  }
+
+  function closeAccountProfile() {
+    setShowAccountProfile(false);
+  }
+
+  function closeYourNebu() {
+    setShowYourNebu(false);
+  }
+
+  function handleYourNebuClick(){
+    setAccountNameValue("nat2100")
+    setShowYourNebu(true)
   }
 
   // Function to handle suggestion click
@@ -37,6 +53,13 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     if(suggestion.type === "tag") {
       setShowTagSuggestion(true);
       setTagSuggestValue(suggestion.value)
+    }
+    else if(suggestion.type === "user"){
+      // const fullPath = `/${suggestion.value}`
+      // router.push(fullPath)
+      setShowAccountProfile(true)
+      setAccountNameValue(suggestion.value)
+
     }
     else{
       setInputValue(suggestion.value);
@@ -138,19 +161,18 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           </div>
         )}
 
-        {/* { showTagSuggestion &&
-          <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion}/>
-        } */}
-
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
+        <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
+        <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
                   <li>Profile</li>
-                  <li>My Nebu</li>
+                  <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>
                   <li>My Tour</li>
                   <li>Bookmark</li>
                   <li>Setting</li>
+                  <li>Log Out</li>
               </ul>
         </div>
       </div>

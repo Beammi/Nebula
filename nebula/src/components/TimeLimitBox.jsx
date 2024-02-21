@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-function TimeLimitBox() {
-  const [timeLimitType, setTimeLimitType] = useState("permanent");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
+function TimeLimitBox({ timeLimitType, setTimeLimitType, startDate, setStartDate, endDate, setEndDate }) {
+  // const [timeLimitType, setTimeLimitType] = useState("permanent");
+  // const [startDate, setStartDate] = useState(new Date());
+  // const [endDate, setEndDate] = useState(null);
 
   const handleTimeLimitChange = (event) => {
     setTimeLimitType(event.target.value);

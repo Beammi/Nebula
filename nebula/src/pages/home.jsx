@@ -18,7 +18,7 @@ export default function Home() {
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
-    console.log(JSON.stringify(user))
+    // console.log(JSON.stringify(user))
 
     if (error || user === null) {
       router.push("/home_unregistered")
@@ -35,6 +35,8 @@ export default function Home() {
     const { data: { user } ,error} = await supabase.auth.getUser()
     if (error || user === null){
       console.log("Error when call checkProviderAccount function")
+    }else if (user.app_metadata.provider==="email"){
+      console.log("Login via Email")
     }else{
       let provider = user.app_metadata.provider
       let email = user.user_metadata.email

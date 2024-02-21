@@ -1,22 +1,43 @@
-import Button from "./Button";
-import React, { useState, useEffect } from "react";
-import ImageUpload from "./ImageUpload";
-import TimeLimitBox from "./TimeLimitBox";
-import Image from "next/image";
-import close from "../../public/images/close.png";
-import NebuTag from "./NebuTag";
-import Officialdropdown from "./Officialdropdown";
+import Button from "./Button"
+import React, { useState, useEffect } from "react"
+import ImageUpload from "./ImageUpload"
+import TimeLimitBox from "./TimeLimitBox"
+import Image from "next/image"
+import close from "../../public/images/close.png"
+import NebuTag from "./NebuTag"
+import Officialdropdown from "./Officialdropdown"
+import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
+import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "@/lib/supabaseClient"
 
 export default function AddNebu(props) {
-  const addNebuState = props.toggle;
-  const action = props.action;
+  const addNebuState = props.toggle
+  const action = props.action
 
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [OpenTag, setOpenTag] = useState(false);
-  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
-  const [selected, setSelected] = useState("Official's Tag");
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 2;
+  const [uploadedImages, setUploadedImages] = useState([])
+  const [OpenTag, setOpenTag] = useState(false)
+  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([])
+  const [officialTag, setofficialTag] = useState("Official's Tag")
+  const [currentStep, setCurrentStep] = useState(1)
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [imageNebu, setImageNebu] = useState("")
+  const [workHour, setWorkHour] = useState(false)
+  const [openTime, setOpenTime] = useState(null)
+  const [closeTime, setCloseTime] = useState(null)
+  const [timeLimitType, setTimeLimitType] = useState("permanent")
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(null)
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
+    useLocation()
+
+  if (currentPosition === null) {
+    const defaultLocation = [13.7563, 100.5018]
+    setCurrentPosition(defaultLocation)
+  }
+  const totalSteps = 2
   const [isChecked, setIsChecked] = useState({
     Mon: false,
     Tue: false,
@@ -25,54 +46,149 @@ export default function AddNebu(props) {
     Fri: false,
     Sat: false,
     Sun: false,
-  }); // State to track checkbox status
+  }) // State to track checkbox status
 
   function openTagModal() {
-    setOpenTag(!OpenTag);
+    setOpenTag(!OpenTag)
   }
 
   const handleImagesUpload = (uploadedImage) => {
     // Handle the uploaded image(s) as needed
-    console.log("Uploaded Image:", uploadedImage);
-    setUploadedImages((prevImages) => [...prevImages, uploadedImage]);
-  };
+    console.log("Uploaded Image:", uploadedImage)
+    setUploadedImages((prevImages) => [...prevImages, uploadedImage])
+  }
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
-      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
+      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag])
     }
 
-    setOpenTag(false);
-  };
+    setOpenTag(false)
+  }
 
   const handleNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
+    setCurrentStep(currentStep + 1)
+  }
 
   const handlePrevious = () => {
-    setCurrentStep(currentStep - 1);
-  };
+    setCurrentStep(currentStep - 1)
+  }
 
-  const handleSummit = () => {
-    console.log("Form submitted");
-  };
+  function handleWorkHourCheckBox() {
+    let checkbox = document.getElementById("workHourCB") as HTMLInputElement
+    if (checkbox && checkbox.checked) {
+      setWorkHour(true)
+    }
+  }
+  const getOpenDays = () => {
+    return Object.entries(isChecked)
+      .filter(([day, checked]) => checked)
+      .map(([day]) => day)
+  }
+
+  async function getEmail() {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    if (error || user === null) {
+      console.log("Error when call checkProviderAccount function")
+    } else if (user.app_metadata.provider === "email") {
+      setEmail(user.user_metadata.email)
+      setProvider("")
+    } else {
+      setEmail(user.user_metadata.email)
+      setProvider(user.app_metadata.provider)
+      console.log(provider + email)
+    }
+  }
+
+  const handleSummit = async (e) => {
+    e.preventDefault()
+    let messege = "Please"
+    if (title == "" || officialTag == "Official's Tag") {
+      messege +=
+        " name the nebu title before submitting. or select official's tag"
+      // alert("Please name the nebu title before submitting")
+      alert(messege)
+    } else {
+      const {
+        Mon: open_monday,
+        Tue: open_tuesday,
+        Wed: open_wednesday,
+        Thu: open_thursday,
+        Fri: open_friday,
+        Sat: open_saturday,
+        Sun: open_sunday,
+      } = isChecked
+      //mock
+      // setImageNebu(["test","test2"])
+      const response = await fetch("/api/nebu/addNebu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          images: imageNebu, // Make sure the key matches the server's expected key
+          duration: timeLimitType,
+          official_tag: officialTag,
+          tags: confirmedAdditionalTags,
+          latitude: currentPosition[0],
+          longitude: currentPosition[1],
+          place_name: currentPlace,
+          open_sunday,
+          open_monday,
+          open_tuesday,
+          open_wednesday,
+          open_thursday,
+          open_friday,
+          open_saturday,
+          start_time: startDate,
+          end_time: endDate,
+          open_time: openTime,
+          close_time: closeTime,
+          provider:provider,
+          email:email,
+        }),
+      })
+      if (!response.ok) {
+        console.log("Error when create Nebu!!!", JSON.stringify(response))
+      } else {
+        console.log("Create Nebu successfully Yayyyyyy!!!~")
+        //close form here
+      }
+    }
+
+    const openDays = getOpenDays() // This will be an array of days
+    console.log("Open Time:", openTime)
+    console.log("Close Time:", closeTime)
+    console.log("Open Days:", openDays)
+    console.log("Time Limit Type:", timeLimitType)
+    console.log("Start Date: ", startDate)
+    console.log("End Date: ", endDate)
+    console.log("Official Tag: ", officialTag)
+    console.log("Tags: ", confirmedAdditionalTags)
+    console.log("Form submitted")
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = event.target; // Update state when checkbox status changes
+    const { id, checked } = event.target // Update state when checkbox status changes
 
     setIsChecked((prevState) => ({
       ...prevState,
       [id]: checked,
-    }));
+    }))
 
     // Send isChecked value to the server
     // You can use isChecked to send the correct boolean value to the server
-    console.log("Checkbox is checked:", id, checked);
+    console.log("Checkbox is checked:", id, checked)
     // Here you can make an API call to send the isChecked value to the server
-  };
+  }
 
   // Append the style element to the document head
   useEffect(() => {
+    getEmail()
+
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -89,21 +205,21 @@ export default function AddNebu(props) {
       background-color: #544CE6;
       color: #ffffff;
     }
-  `;
+  `
 
     // Create a style element
-    const styleElement = document.createElement("style");
+    const styleElement = document.createElement("style")
 
     // Set the inner HTML of the style element to your CSS styles
-    styleElement.innerHTML = additionalStyles;
+    styleElement.innerHTML = additionalStyles
 
-    document.head.appendChild(styleElement);
+    document.head.appendChild(styleElement)
 
     // Clean up function to remove the style element when component unmounts
     return () => {
-      document.head.removeChild(styleElement);
-    };
-  }, []); // Empty dependency array ensures the effect runs only once
+      document.head.removeChild(styleElement)
+    }
+  }, []) // Empty dependency array ensures the effect runs only once
 
   function getImageSize(numImages){
     const maxImagesPerRow=8;
@@ -135,6 +251,10 @@ export default function AddNebu(props) {
                 <input
                   type="text"
                   className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="flex flex-col mt-4">
@@ -144,6 +264,9 @@ export default function AddNebu(props) {
                   rows={5}
                   cols={40}
                   className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
               <div className="flex flex-col mt-4">
@@ -151,8 +274,8 @@ export default function AddNebu(props) {
                 <div className="flex items-center ">
                   <div>
                     <Officialdropdown
-                      selected={selected}
-                      setSelected={setSelected}
+                      selected={officialTag}
+                      setSelected={setofficialTag}
                     />
                   </div>
                   <div className="pt-4 flex ml-2 overflow-x-auto">
@@ -175,8 +298,8 @@ export default function AddNebu(props) {
                     label="+"
                     type="button"
                     onClick={(event) => {
-                      event.preventDefault();
-                      openTagModal();
+                      event.preventDefault()
+                      openTagModal()
                     }}
                   ></Button>
                 </div>
@@ -201,7 +324,14 @@ export default function AddNebu(props) {
                 </div>
               </div>
               <div className="flex mt-4">
-                <TimeLimitBox />
+                <TimeLimitBox
+                  timeLimitType={timeLimitType}
+                  setTimeLimitType={setTimeLimitType}
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                />
               </div>
             </>
           )}
@@ -214,6 +344,8 @@ export default function AddNebu(props) {
                     type="time"
                     id="openTime"
                     name="openTime"
+                    value={openTime}
+                    onChange={(e) => setOpenTime(e.target.value)}
                     className="mb-2 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue bg-black-grey"
                   />
                 </div>
@@ -223,6 +355,8 @@ export default function AddNebu(props) {
                     type="time"
                     id="closeTime"
                     name="closeTime"
+                    value={closeTime}
+                    onChange={(e) => setCloseTime(e.target.value)}
                     className="mb-2 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue bg-black-grey"
                   />
                 </div>
@@ -255,7 +389,12 @@ export default function AddNebu(props) {
                   />
                 </div>
                 <div className="mt-4">
-                  <input type="checkbox" className=" mr-2" />
+                  <input
+                    type="checkbox"
+                    id="workHourCB"
+                    className=" mr-2"
+                    onClick={handleWorkHourCheckBox}
+                  />
                   <span>Not include working hours</span>
                 </div>
               </div>
@@ -286,7 +425,8 @@ export default function AddNebu(props) {
                 label="Complete"
                 type="button"
                 onClick={() => {
-                  handleSummit();
+                  handleSummit;
+
                   action();
                 }}
               />
@@ -295,5 +435,5 @@ export default function AddNebu(props) {
         </form>
       </div>
     </div>
-  );
+  )
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const Dropdown = ({ selected, setSelected }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const options = ["React", "Vue", "HTML", "Vite", "Angular"];
+  const options = ["Restaurant", "Cafe with Wifi", "Public Toliet", "Bar", "Attraction","Landmark"];
 
   return (
     <div className="pt-4 relative">
@@ -22,7 +22,7 @@ const Dropdown = ({ selected, setSelected }) => {
                 setSelected(option);
                 setIsActive(false);
               }}
-              className="p-1 bg-blue hover:bg-dark-grey cursor-pointer"
+              className="p-1 bg-white hover:bg-dark-grey cursor-pointer"
             >
               {option}
             </div>

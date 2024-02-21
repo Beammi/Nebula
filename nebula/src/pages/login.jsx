@@ -55,7 +55,7 @@ export default function Login() {
         }
         // console.log("Error: "+error+"Error from local: "+JSON.stringify(response))
       } else {
-        alert(JSON.stringify(data))
+        // alert(JSON.stringify(data))
         router.push("/home")
       }
     }
