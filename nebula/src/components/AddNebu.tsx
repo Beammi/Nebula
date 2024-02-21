@@ -285,7 +285,10 @@ export default function AddNebu(props) {
                 buttonStyle="btn btn-primary bg-blue w-fit border-none"
                 label="Complete"
                 type="button"
-                onClick={handleSummit}
+                onClick={() => {
+                  handleSummit();
+                  action();
+                }}
               />
             )}
           </div>
