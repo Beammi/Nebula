@@ -8,7 +8,7 @@ import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
-import YourNebu from "@/components/YourNebu"
+import MyNebu from "@/components/MyNebu"
 import { useRouter } from "next/router"
 import React from "react"
 
@@ -163,7 +163,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
-        <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+        <MyNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">

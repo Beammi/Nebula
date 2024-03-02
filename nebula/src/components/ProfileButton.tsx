@@ -2,7 +2,7 @@ import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import YourNebu from "@/components/YourNebu"
+import MyNebu from "@/components/MyNebu"
 
 
 interface IProfileButton {
@@ -70,7 +70,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
       </div>
 
-      <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+      <MyNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
     </div>
   )
 }
