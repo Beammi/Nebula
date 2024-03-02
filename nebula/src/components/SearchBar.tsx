@@ -9,12 +9,16 @@ import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
 <<<<<<< HEAD
+<<<<<<< HEAD
 import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 =======
 import MyNebu from "@/components/MyNebu"
 >>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
+=======
+import MyNebu from "@/components/MyNebu"
+>>>>>>> 1d23e70 (change 'Your Nebu' to 'My Nebu')
 import { useRouter } from "next/router"
 import React from "react"
 
@@ -189,13 +193,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
-<<<<<<< HEAD
+        
         <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
         <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
         <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
-=======
-        <MyNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
->>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
