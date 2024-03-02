@@ -3,8 +3,11 @@ import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import MyNebu from "@/components/MyNebu"
+<<<<<<< HEAD
 import MyTour from "@/components/MyTour"
 import Bookmark from "@/components/Bookmark"
+=======
+>>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
 
 
 interface IProfileButton {
@@ -92,9 +95,13 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
       </div>
 
+<<<<<<< HEAD
       <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
       <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
       <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
+=======
+      <MyNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+>>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
     </div>
   )
 }
