@@ -5,12 +5,15 @@ import { useRouter } from "next/router"
 import MyNebu from "@/components/MyNebu"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import MyTour from "@/components/MyTour"
 import Bookmark from "@/components/Bookmark"
 =======
 >>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
 =======
 >>>>>>> 1d23e70 (change 'Your Nebu' to 'My Nebu')
+=======
+>>>>>>> 4d8d319 (change 'Your Nebu' to 'My Nebu')
 
 
 interface IProfileButton {
