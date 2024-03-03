@@ -8,6 +8,7 @@ import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
+import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 import { useRouter } from "next/router"
@@ -28,6 +29,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [showAccountProfile, setShowAccountProfile] = useState(false);
   const [showMyNebu, setShowMyNebu] = useState(false);
   const [showMyTour, setShowMyTour] = useState(false);
+  const [showBookmark, setShowBookmark] = useState(false);
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
@@ -56,6 +58,15 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   function handleMyTourClick(){
     setAccountNameValue("nat2100")
     setShowMyTour(true)
+  }
+
+  function closeBookmark() {
+    setShowBookmark(false);
+  }
+
+  function handleBookmarkClick(){
+    setAccountNameValue("nat2100")
+    setShowBookmark(true)
   }
 
   // Function to handle suggestion click
@@ -176,13 +187,14 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
         <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
         <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
+        <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
                   <li>Profile</li>
                   <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>
                   <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
-                  <li>Bookmark</li>
+                  <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
                   <li>Setting</li>
                   <li>Log Out</li>
               </ul>

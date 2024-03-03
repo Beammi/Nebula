@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
+import Bookmark from "@/components/Bookmark"
 
 
 interface IProfileButton {
@@ -16,6 +17,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   const [IsOpen, setIsOpen] = useState(false)
   const [showMyNebu, setShowMyNebu] = useState(false);
   const [showMyTour, setShowMyTour] = useState(false);
+  const [showBookmark, setShowBookmark] = useState(false);
   const [accountNameValue, setAccountNameValue] = useState("");
   const router = useRouter()
 
@@ -35,6 +37,15 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   function handleMyTourClick(){
     setAccountNameValue("nat2100")
     setShowMyTour(true)
+  }
+
+  function closeBookmark() {
+    setShowBookmark(false);
+  }
+
+  function handleBookmarkClick(){
+    setAccountNameValue("nat2100")
+    setShowBookmark(true)
   }
 
   async function handleLogOut() {
@@ -64,7 +75,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
           <li>Profile</li>
           <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>          
           <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
-          <li>Bookmark</li>
+          <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
           <li>Setting</li>
           <li>
             <Link
@@ -83,6 +94,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
       <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
       <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
+      <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
     </div>
   )
 }
