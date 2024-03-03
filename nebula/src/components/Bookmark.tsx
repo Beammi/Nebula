@@ -16,7 +16,7 @@ import filledoutBlueBookmark from "../../public/images/filledoutBlueBookmark.png
 import Link from 'next/link'
 
 export default function Bookmark(props) {
-  const tagSuggestionState = props.toggle;
+  const state = props.toggle;
   const action = props.action;
   const tagName = props.tagName;
 
@@ -54,7 +54,7 @@ export default function Bookmark(props) {
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-        tagSuggestionState
+        state
           ? "visible opacity-100 drop-shadow-2xl"
           : "rounded-sm invisible opacity-0"
       } `}

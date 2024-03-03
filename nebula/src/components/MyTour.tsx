@@ -30,7 +30,7 @@ export default function MyTour(props) {
     "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
     "place": ["Big Ben", "Tower Bridge", "London Eye", "Wembley Stadium"]
   }]
-  const accountProfileState = props.toggle;
+  const state = props.toggle;
   const action = props.action;
   const accountName = props.accountName;
   const [showInfo, setShowInfo] = useState([false])
@@ -59,7 +59,7 @@ export default function MyTour(props) {
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-        accountProfileState
+        state
           ? "visible opacity-100 drop-shadow-2xl"
           : "rounded-sm invisible opacity-0"
       } `}
