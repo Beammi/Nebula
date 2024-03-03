@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
-
+// ImageUpload.jsx
+import React, { useCallback } from "react"
 
 const ImageUpload = ({ onImagesUpload }) => {
-  
   const resizeImage = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -30,37 +29,46 @@ const ImageUpload = ({ onImagesUpload }) => {
       };
     });
   };
-
   const handleInputChange = useCallback(async (e) => {
-    try {
-      const files = e.target.files;
-
-      // Process each file individually
-      for (const file of files) {
-        // Call onImagesUpload with the file
-        const resizedFile = await resizeImage(file);
-        onImagesUpload({ file: resizedFile, dataURL: resizedFile.dataURL }); // ส่ง dataURL ไปด้วย
+    const files = e.target.files;
+    if (!files.length) return;
+  
+    for (const file of files) {
+      // Validate each file
+      if (!/\.(jpg|jpeg|png|gif)$/i.test(file.name)) {
+        alert("Please select a valid image file (jpg, jpeg, png, gif).");
+        continue; // Skip this file and continue with the next
       }
-    } catch (error) {
-      console.error('Error during image upload:', error);
+  
+      try {
+        const resizedFile = await resizeImage(file);
+        // Assuming resizedFile contains { file, dataURL }
+        onImagesUpload(resizedFile); // Correctly pass the resized file object
+      } catch (error) {
+        console.error("Error processing file:", error);
+      }
     }
   }, [onImagesUpload]);
+  
 
   return (
-    <div className='text-center'>
+    <div className="text-center">
       <input
         type="file"
         accept="image/*"
         onChange={handleInputChange}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         id="imageInput"
         multiple
       />
-      <label htmlFor="imageInput" className='cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2'>
+      <label
+        htmlFor="imageInput"
+        className="cursor-pointer bg-grey hover:bg-black hover:text-white px-3 py-1 md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
+      >
         +
       </label>
     </div>
-  );
-};
+  )
+}
 
-export default ImageUpload;
+export default ImageUpload
