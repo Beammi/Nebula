@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import MyNebu from "@/components/MyNebu"
+import MyTour from "@/components/MyTour"
 
 
 interface IProfileButton {
@@ -13,17 +14,27 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   const colors = ["bg-blue", "bg-red", "bg-yellow", "bg-dark-grey"]
   const randomColor = colors[Math.floor(Math.random() * colors.length)]
   const [IsOpen, setIsOpen] = useState(false)
-  const [showYourNebu, setShowYourNebu] = useState(false);
+  const [showMyNebu, setShowMyNebu] = useState(false);
+  const [showMyTour, setShowMyTour] = useState(false);
   const [accountNameValue, setAccountNameValue] = useState("");
   const router = useRouter()
 
-  function closeYourNebu() {
-    setShowYourNebu(false);
+  function closeMyNebu() {
+    setShowMyNebu(false);
   }
 
-  function handleYourNebuClick(){
+  function handleMyNebuClick(){
     setAccountNameValue("nat2100")
-    setShowYourNebu(true)
+    setShowMyNebu(true)
+  }
+
+  function closeMyTour() {
+    setShowMyTour(false);
+  }
+
+  function handleMyTourClick(){
+    setAccountNameValue("nat2100")
+    setShowMyTour(true)
   }
 
   async function handleLogOut() {
@@ -51,8 +62,8 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
         <ul className="flex flex-col gap-4 text-[black]">
           <li>Profile</li>
-          <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>          
-          <li>My Tour</li>
+          <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>          
+          <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
           <li>Bookmark</li>
           <li>Setting</li>
           <li>
@@ -70,7 +81,8 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
       </div>
 
-      <MyNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+      <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
+      <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
     </div>
   )
 }
