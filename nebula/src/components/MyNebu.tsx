@@ -83,19 +83,19 @@ export default function MyNebu(props) {
             <h2 className="text-2xl text-center">My Nebu</h2>
             {data.map((data, index) => (
                 <>
-                    <div className="flex flex-row text-white font-normal pl-5 py-1 mt-3 bg-blue rounded-lg w-full drop-shadow-md cursor-pointer"
-                        onClick={() => {
+                    <div className="flex flex-row text-white font-normal py-1 mt-3 bg-blue rounded-lg w-full drop-shadow-md">
+                      <p className="w-full pl-5 cursor-pointer"
+                          onClick={() => {
                             const updatedShowInfo = [...showInfo]; // Make a copy of the showInfo array
                             updatedShowInfo[index] = !updatedShowInfo[index]; // Toggle the value at the specific index
                             setShowInfo(updatedShowInfo); // Update the state with the modified array
-                        }}>
-                            {data.title}
-                            {/* <input type="checkbox" className="checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-white" /> */}
-                            <input type="checkbox" 
-                              className={`${showAllSelectBox ? "visible opacity-100" : "invisible opacity-0"} checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-dashed border-white`} 
-                              checked={checkedStatus[index]} // Set checked status based on the state
-                              onChange={() => handleCheckboxClick(index)}/>
+                        }}>{data.title}</p>            
+                      <input type="checkbox" 
+                        className={`${showAllSelectBox ? "visible opacity-100" : "invisible opacity-0"} checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-dashed border-white`} 
+                        checked={checkedStatus[index]} // Set checked status based on the state
+                        onChange={() => handleCheckboxClick(index)}/>
                     </div>
+
                     <div className={`transition-all ease-in duration-00 ${showInfo[index] ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}>
                         { showInfo[index] && (
                             <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md">
