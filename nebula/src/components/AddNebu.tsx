@@ -426,7 +426,6 @@ export default function AddNebu(props) {
                 type="button"
                 onClick={() => {
                   handleSummit;
-
                   action();
                 }}
               />
