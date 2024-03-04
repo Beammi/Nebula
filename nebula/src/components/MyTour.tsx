@@ -40,6 +40,7 @@ export default function MyTour(props) {
   const [showDeletePopUp, setShowDeletePopUp] = useState(false)
   
 
+<<<<<<< HEAD:nebula/src/components/MyTour.tsx
   function handleCheckboxClick(index) {
     const newCheckedStatus = [...checkedStatus]; // Make a copy of the checkedStatus array
     newCheckedStatus[index] = !newCheckedStatus[index]; // Toggle the checked status at the specific index
@@ -47,6 +48,24 @@ export default function MyTour(props) {
     // console.log("Checkbox change at: ", index);
     
   }
+=======
+  const data = [{
+    "title": "Big Ben",
+    "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
+  },
+  {
+    "title": "London Stadium",
+    "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
+  },
+  {
+    "title": "Sherlock homes museum",
+    "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
+  }]
+
+  // console.log("This is account name: ", accountName);
+
+  function handleSelect(){
+>>>>>>> 91e17c4 (comment console.log(This is account name:)):nebula/src/components/YourNebu.tsx
 
   function handleDeleteData(){
     const updatedData = data.filter((_, i) => !checkedStatus[i]); // if checked(= true), we will not count so false
