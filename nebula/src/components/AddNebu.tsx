@@ -53,22 +53,18 @@ export default function AddNebu(props) {
   }
 
   const isValidImageExtension = (fileName) => {
-    return /\.(jpg|jpeg|png|gif)$/i.test(fileName);
-  };
-  
+    return /\.(jpg|jpeg|png|gif)$/i.test(fileName)
+  }
+
   const handleImagesUpload = ({ file, dataURL }) => {
     // Now, file should correctly be a File object, and dataURL should be its data URL
     if (!isValidImageExtension(file.name)) {
-      alert("Unsupported file type.");
-      return;
+      alert("Unsupported file type.")
+      return
     }
-    setUploadedImages(prevImages => [...prevImages, { dataURL, file }]);
+    setUploadedImages((prevImages) => [...prevImages, { dataURL, file }])
     console.log(uploadedImages)
-
-  };
-  
-  
-  
+  }
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
@@ -99,71 +95,82 @@ export default function AddNebu(props) {
   }
 
   async function getEmail() {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser()
-    if (error || user === null) {
-      console.log("Error when call checkProviderAccount function")
-    } else if (user.app_metadata.provider === "email") {
-      setEmail(user.user_metadata.email)
-      setProvider("")
-    } else {
-      setEmail(user.user_metadata.email)
-      setProvider(user.app_metadata.provider)
-      console.log(provider + email)
-    }
+    console.log("Pass getEmail()")
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        console.log("User signed in:", session.user);
+        if(session.user.app_metadata.provider=="email"){
+          setEmail(session.user.email);
+          setProvider("");
+          console.log("Email : ",email)
+          console.log("Provider : ",session.user.app_metadata.provider)
+        }else{
+          setEmail(session.user.user_metadata.email);
+          setProvider(session.user.app_metadata.provider || "");
+          console.log("Email Provider: ",email)
+          console.log("Provider : ",provider)
+        }
+        
+        
+      }else{
+        console.log("User not sign in")
+      }
+    });
   }
 
-  const handleSummit = async (e?: React.MouseEvent<HTMLButtonElement>| React.FormEvent<HTMLFormElement>) => {
-    console.log("handleSummit is called"); // Debugging line
+  const handleSummit = async (
+    e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
+  ) => {
+    console.log("handleSummit is called") // Debugging line
 
-    e?.preventDefault();
-  
+    e?.preventDefault()
+
     // Initialize an array to hold the URLs of the uploaded images
-    let imageUrls = [];
-  
+    let imageUrls = []
+
     // Check for required fields or any other validation you have
     if (title === "" || officialTag === "Official's Tag") {
-      alert("Please name the nebu title before submitting or select an official's tag.");
-      return; // Stop execution if validation fails
+      alert(
+        "Please name the nebu title before submitting or select an official's tag."
+      )
+      return // Stop execution if validation fails
     }
-  
+
     // Upload images first if there are any
     if (uploadedImages.length > 0) {
       const uploadPromises = uploadedImages.map(async (image) => {
-        const formData = new FormData();
-        formData.append('image', image.file); //'image' is the expected field on the server
-  
+        const formData = new FormData()
+        formData.append("image", image.file) //'image' is the expected field on the server
+
         try {
-          const response = await fetch('/api/azure/uploadImages', {
-            method: 'POST',
+          const response = await fetch("/api/azure/uploadImages", {
+            method: "POST",
             body: formData,
             // Include headers for authentication if necessary
-          });
-  
+          })
+
           if (!response.ok) {
-            throw new Error(`Failed to upload image: ${response.statusText}`);
+            throw new Error(`Failed to upload image: ${response.statusText}`)
           }
-  
-          const result = await response.json();
-          return result.imageUrl; // Adjust based on your actual API response
+
+          const result = await response.json()
+          return result.imageUrl // Adjust based on your actual API response
         } catch (error) {
-          console.error("Error uploading image:", error);
-          throw error; // Rethrow to handle outside
+          console.error("Error uploading image:", error)
+          throw error // Rethrow to handle outside
         }
-      });
-  
+      })
+
       try {
-        imageUrls = await Promise.all(uploadPromises);
+        imageUrls = await Promise.all(uploadPromises)
       } catch (error) {
-        alert("Failed to upload one or more images. Please try again.");
-        return; // Stop the submission if image uploads fail
+        alert("Failed to upload one or more images. Please try again.")
+        return // Stop the submission if image uploads fail
       }
     }
-    
+
     // Proceed to submit form data along with image URLs
-    try {  
+    try {
       const {
         Mon: open_monday,
         Tue: open_tuesday,
@@ -197,25 +204,24 @@ export default function AddNebu(props) {
           end_time: endDate,
           open_time: openTime,
           close_time: closeTime,
-          provider:provider,
-          email:email,
+          provider: provider,
+          email: email,
         }),
-      });
-  
+      })
+
       if (!response.ok) {
-        throw new Error(`Failed to submit form: ${response.statusText}`);
+        throw new Error(`Failed to submit form: ${response.statusText}`)
       }
-  
+
       // Handle successful form submission
-      alert("Form submitted successfully!");
+      alert("Form submitted successfully!")
       // Perform any additional actions like redirecting or clearing the form
-  
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("There was an error submitting the form. Please try again.");
+      console.error("Error submitting form:", error)
+      alert("There was an error submitting the form. Please try again.")
     }
-  };
-  
+  }
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = event.target // Update state when checkbox status changes
 
@@ -233,7 +239,7 @@ export default function AddNebu(props) {
   // Append the style element to the document head
   useEffect(() => {
     getEmail()
-
+    console.log("Check email" + email)
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -266,12 +272,15 @@ export default function AddNebu(props) {
     }
   }, []) // Empty dependency array ensures the effect runs only once
 
-  function getImageSize(numImages){
-    const maxImagesPerRow=8;
-    const maxImageSize=100;
+  function getImageSize(numImages) {
+    const maxImagesPerRow = 8
+    const maxImageSize = 100
 
-    const imageSize = Math.min(maxImageSize, 100 / Math.min(numImages, maxImagesPerRow));
-    return `w-${imageSize}px h-${imageSize}px`;
+    const imageSize = Math.min(
+      maxImageSize,
+      100 / Math.min(numImages, maxImagesPerRow)
+    )
+    return `w-${imageSize}px h-${imageSize}px`
   }
 
   return (
@@ -356,7 +365,12 @@ export default function AddNebu(props) {
                   {uploadedImages.length > 0 && (
                     <div className="flex gap-2 overflow-auto">
                       {uploadedImages.map((image, index) => (
-                        <div key={index} className={`image-container ${getImageSize(uploadedImages.length)}`}>
+                        <div
+                          key={index}
+                          className={`image-container ${getImageSize(
+                            uploadedImages.length
+                          )}`}
+                        >
                           <img
                             src={image.dataURL}
                             alt={`Uploaded ${index + 1}`}
@@ -470,9 +484,9 @@ export default function AddNebu(props) {
                 label="Complete"
                 type="button"
                 onClick={() => {
-                  handleSummit(); // Correctly invoke the function
-              
-                  action(); // Assuming this is correctly invoking another function
+                  handleSummit() // Correctly invoke the function
+
+                  action() // Assuming this is correctly invoking another function
                 }}
               />
             )}
