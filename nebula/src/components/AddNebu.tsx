@@ -146,8 +146,8 @@ export default function AddNebu(props) {
             throw new Error(`Failed to upload image: ${response.statusText}`);
           }
   
-          // const result = await response.json();
-          // return result.imageUrl; // Adjust based on your actual API response
+          const result = await response.json();
+          return result.imageUrl; // Adjust based on your actual API response
         } catch (error) {
           console.error("Error uploading image:", error);
           throw error; // Rethrow to handle outside
