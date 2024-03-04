@@ -17,14 +17,8 @@ import Link from 'next/link'
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag";
 
-export default function YourNebu(props) {
-  const accountProfileState = props.toggle;
-  const action = props.action;
-  const accountName = props.accountName;
-  const [showInfo, setShowInfo] = useState([false])
-  const [showAllSelectBox, setShowAllSelectBox] = useState(false)
-
-  const data = [{
+export default function MyNebu(props) {
+  const mockData = [{
     "title": "Big Ben",
     "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
   },
@@ -36,13 +30,35 @@ export default function YourNebu(props) {
     "title": "Sherlock homes museum",
     "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
   }]
+  const accountProfileState = props.toggle;
+  const action = props.action;
+  const accountName = props.accountName;
+  const [showInfo, setShowInfo] = useState([false])
+  const [showAllSelectBox, setShowAllSelectBox] = useState(false)
+  const [data, setData] = useState(mockData)
+  const [checkedStatus, setCheckedStatus] = useState(data.map(() => false)); // Initialize array with 'false' values for each checkbox
+  const [showDeletePopUp, setShowDeletePopUp] = useState(false)
 
-  // console.log("This is account name: ", accountName);
 
-  function handleSelect(){
+
+
+  console.log("This is account name: ", accountName);
+
+  function handleCheckboxClick(index) {
+    const newCheckedStatus = [...checkedStatus]; // Make a copy of the checkedStatus array
+    newCheckedStatus[index] = !newCheckedStatus[index]; // Toggle the checked status at the specific index
+    setCheckedStatus(newCheckedStatus); // Update the state with the modified array
+    // console.log("Checkbox change at: ", index);
 
   }
-  
+
+  function handleDeleteData(){
+    const updatedData = data.filter((_, i) => !checkedStatus[i]); // if checked(= true), we will not count so false
+    setData(updatedData); // Update the data array
+    setShowDeletePopUp(false);
+    setCheckedStatus([false])
+  }
+
 
   return (
     <div
@@ -64,7 +80,7 @@ export default function YourNebu(props) {
             </button>
         </div>
         <div className="flex flex-col mt-12 px-10 pb-5">
-            <h2 className="text-2xl text-center">Your Nebu</h2>
+            <h2 className="text-2xl text-center">My Nebu</h2>
             {data.map((data, index) => (
                 <>
                     <div className="flex flex-row text-white font-normal pl-5 py-1 mt-3 bg-blue rounded-lg w-full drop-shadow-md cursor-pointer"
@@ -75,7 +91,10 @@ export default function YourNebu(props) {
                         }}>
                             {data.title}
                             {/* <input type="checkbox" className="checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-white" /> */}
-                            <input type="checkbox" className={`${showAllSelectBox ? "visible opacity-100" : "invisible opacity-0"} checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-dashed border-white`} />
+                            <input type="checkbox" 
+                              className={`${showAllSelectBox ? "visible opacity-100" : "invisible opacity-0"} checkbox ml-auto mr-5 checkbox-accent border-[1.5px] border-dashed border-white`} 
+                              checked={checkedStatus[index]} // Set checked status based on the state
+                              onChange={() => handleCheckboxClick(index)}/>
                     </div>
                     <div className={`transition-all ease-in duration-00 ${showInfo[index] ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}>
                         { showInfo[index] && (
@@ -97,16 +116,39 @@ export default function YourNebu(props) {
                     </div>
                 </>
             ))}
-            
-            <button className="rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue" onClick={() => setShowAllSelectBox(!showAllSelectBox)}>Select</button>
-            
-            
+
+            { showAllSelectBox ?
+              <div className="flex px-1 lg:px-10">
+                <button className="mr-auto justify-self-start rounded-lg mt-16 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowAllSelectBox(!showAllSelectBox)}>Cancel</button>
+                <button className="ml-auto rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white bg-red" onClick={() => setShowDeletePopUp(!showDeletePopUp)}>Delete</button>
+              </div>
+              : 
+              <button className="rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white ml-auto mr-10 bg-blue" onClick={() => setShowAllSelectBox(!showAllSelectBox)}>Select</button>              
+            }
+
+            <div
+              className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-opacity ease-in duration-200  ${
+                showDeletePopUp
+                  ? "visible opacity-100 shadow-md bg-dim-grey w-[20rem] lg:w-[35rem] border-2"
+                  : "rounded-sm invisible opacity-0"
+              } `}
+            >
+              <div className="flex flex-col p-7">
+                <p className="text-lg">Do you want to confirm to delete your Nebu?</p>
+                <div className="flex px-10">
+                  <button className="mr-auto justify-self-start rounded-lg mt-16 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowDeletePopUp(!showDeletePopUp)}>Cancel</button>
+                  <button className="ml-auto rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white bg-red" onClick={() => handleDeleteData()}>Confirm</button>
+                </div>
+              </div>
+            </div>
+
+
         </div>
 
 
-        
 
-        
+
+
       </div>
     </div>
   );

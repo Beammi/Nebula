@@ -8,21 +8,9 @@ import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
-=======
-import MyNebu from "@/components/MyNebu"
->>>>>>> ff453ee (change 'Your Nebu' to 'My Nebu')
-=======
-import MyNebu from "@/components/MyNebu"
->>>>>>> 1d23e70 (change 'Your Nebu' to 'My Nebu')
-=======
-import MyNebu from "@/components/MyNebu"
->>>>>>> 4d8d319 (change 'Your Nebu' to 'My Nebu')
 import { useRouter } from "next/router"
 import React from "react"
 
