@@ -96,26 +96,32 @@ export default function AddNebu(props) {
 
   async function getEmail() {
     console.log("Pass getEmail()")
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        console.log("User signed in:", session.user);
-        if(session.user.app_metadata.provider=="email"){
-          setEmail(session.user.email);
-          setProvider("");
-          console.log("Email : ",email)
-          console.log("Provider : ",session.user.app_metadata.provider)
-        }else{
-          setEmail(session.user.user_metadata.email);
-          setProvider(session.user.app_metadata.provider || "");
-          console.log("Email Provider: ",email)
-          console.log("Provider : ",provider)
-        }
-        
-        
-      }else{
-        console.log("User not sign in")
-      }
-    });
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      console.log("Error in getUser")
+      return
+    }
+    if (user.app_metadata.provider == "email") {
+      console.log("Session: " + JSON.stringify(user.app_metadata.provider))
+      // console.log("emailllll: " + user.email)
+
+      setEmail(user.email)
+      setProvider("")
+      console.log("Email in email: ", email)
+      console.log("Provider: ", user.app_metadata.provider)
+    } else {
+      setEmail(user.user_metadata.email)
+      setProvider(user.app_metadata.provider || "")
+      console.log("Email Provider: ", email)
+      console.log("Provider : ", provider)
+    }
+   
   }
 
   const handleSummit = async (
@@ -168,7 +174,8 @@ export default function AddNebu(props) {
         return // Stop the submission if image uploads fail
       }
     }
-
+    const imagesArray = Array.isArray(imageUrls) ? imageUrls : [];
+    console.log(imagesArray)
     // Proceed to submit form data along with image URLs
     try {
       const {
@@ -240,6 +247,8 @@ export default function AddNebu(props) {
   useEffect(() => {
     getEmail()
     console.log("Check email" + email)
+    console.log("Updated email: ", email);
+
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -270,7 +279,7 @@ export default function AddNebu(props) {
     return () => {
       document.head.removeChild(styleElement)
     }
-  }, []) // Empty dependency array ensures the effect runs only once
+  }, [email]) // Empty dependency array ensures the effect runs only once
 
   function getImageSize(numImages) {
     const maxImagesPerRow = 8
