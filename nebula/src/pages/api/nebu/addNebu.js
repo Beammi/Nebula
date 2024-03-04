@@ -99,7 +99,7 @@ async function nebuCreationHandler(req, res) {
     const { rows: nebuInsertRows } = await db.query(nebuInsertQuery, [
       title,
       description,
-      [images], // Ensure images is properly encoded as JSON
+      images, // Ensure images is properly encoded as JSON
       duration,
       start_time,
       end_time,
