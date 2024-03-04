@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/identity": "^4.0.1",
+    "@azure/storage-blob": "^12.17.0",
     "@clerk/clerk-react": "^4.30.3",
     "@clerk/nextjs": "^4.29.2",
     "@prisma/client": "^5.7.0",
@@ -17,6 +19,8 @@
     "@types/leaflet": "^1.9.6",
     "autoprefixer": "10.4.16",
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "formidable": "^3.5.1",
     "leaflet": "^1.9.4",
     "next": "13.5.2",
     "next-auth": "^4.24.5",
@@ -25,7 +29,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-leaflet": "^4.2.1",
-    "tailwindcss": "3.3.3"
+    "tailwindcss": "3.3.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "20.10.4",
