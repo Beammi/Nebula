@@ -29,7 +29,7 @@ export default function AccountProfile(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey lg:w-[35rem] font-bold text-black lg:h-[40rem] overflow-y-scroll">
+      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black lg:h-[40rem] overflow-y-scroll">
         <div className="flex flex-col justify-start">
           <figure className="w-full">
             {" "}
@@ -42,7 +42,7 @@ export default function AccountProfile(props) {
             <Image src={whiteCloseIcon} alt="clsbtn" className="" width={20} />
           </button>
           <div className="px-8 flex">
-            <figure className="w-1/6 z-10 -mt-10">
+            <figure className="lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8">
               {" "}
               <Image src={profilePic} alt="pic" className="w-full" />{" "}
             </figure>
@@ -54,24 +54,60 @@ export default function AccountProfile(props) {
           <p className="text-base font-medium">
             Bio: A software develop who Love Travel, Enjoy new food
           </p>
+          <div className="text-base font-medium h-full">            
+            <p>Nebu</p>
+            <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden">
+              <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                <Image src={ferryWheelPic} alt="pic" className="w-full" />
+                <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Lancaster Hotel
+                </figcaption>
+              </div>
+              <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                <Image src={ferryWheelPic} alt="pic" className="w-full" />
+                <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Lancaster Hotel
+                </figcaption>
+              </div>
+              <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                <Image src={ferryWheelPic} alt="pic" className="w-full" />
+                <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Lancaster Hotel
+                </figcaption>
+              </div>
+              <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                <Image src={ferryWheelPic} alt="pic" className="w-full" />
+                <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Lancaster Hotel
+                </figcaption>
+              </div>
+              <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                <Image src={ferryWheelPic} alt="pic" className="w-full" />
+                <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Lancaster Hotel
+                </figcaption>
+              </div>
+            </div>
+            
+          </div>
           <div className="text-base font-medium">
-            Nebu
-            <div className="w-1/3 mt-2">
-              <Image src={ferryWheelPic} alt="pic" className="w-full" />
-              <figcaption className="text-white -mt-10 w-full text-right -ml-3">
-                Lancaster Hotel
-              </figcaption>
+            <p>Tour</p>
+            <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden">
+                <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                  <Image src={holmesPic} alt="pic" className="w-full" />
+                  <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                    Holmes Museum
+                  </figcaption>
+                </div>
+                <div className="lg:w-1/3 w-5/12 mt-2 shrink-0">
+                  <Image src={holmesPic} alt="pic" className="w-full" />
+                  <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
+                  Holmes Museum
+                  </figcaption>
+                </div>
             </div>
           </div>
-          <div className="text-base font-medium">
-            Tour
-            <figure className="w-1/3 mt-2">
-              <Image src={holmesPic} alt="pic" className="w-full" />
-              <figcaption className="text-white -mt-10 w-full text-right -ml-3">
-                Holmes Museum
-              </figcaption>
-            </figure>
-          </div>
+
         </div>
       </div>
     </div>
