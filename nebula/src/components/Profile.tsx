@@ -29,7 +29,7 @@ export default function Profile(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black lg:h-[40rem] overflow-y-scroll items-stretch">
+      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] overflow-y-scroll items-stretch">
         <div className="flex flex-col justify-start">
           <figure className="w-full">
             {" "}
@@ -60,7 +60,7 @@ export default function Profile(props) {
 
         </div>
 
-        <button className="rounded-lg py-2 px-5 normal-case font-normal text-white self-center mr-5 mt-7 text-lg bg-blue shadow">Save</button>
+        <button className="rounded-lg py-2 px-5 normal-case font-normal text-white self-center mr-5 lg:mt-10 my-7 text-lg bg-blue shadow">Save</button>
 
         
 
