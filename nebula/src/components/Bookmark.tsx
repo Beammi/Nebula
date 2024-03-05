@@ -95,7 +95,7 @@ export default function Bookmark(props) {
                   (data.type === "nebu") &&
                   <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row flex-wrap">
                     <div className="flex w-full gap-3 flex-col lg:flex-row">
-                      <figure className="lg:w-[8%]"><Image src={yellowPin} alt="pic"/></figure>
+                      <figure className="lg:w-[10%]"><Image src={yellowPin} alt="pic"/></figure>
                       <p className="w-full text-center lg:text-start">{data.title}</p>
                     </div>  
                     <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">added by {data.username}</p>
@@ -105,7 +105,7 @@ export default function Bookmark(props) {
                   (data.type === "tour") &&
                   <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row flex-wrap">
                     <div className="flex w-full gap-3 flex-col lg:flex-row">
-                      <figure className="lg:w-[8%]"><Image src={yellowFlag} alt="pic"/></figure>
+                      <figure className="lg:w-[10%]"><Image src={yellowFlag} alt="pic"/></figure>
                       <p className="w-full text-center lg:text-start">{data.title}</p>
                     </div>                    
                     <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">added by {data.username}</p>
