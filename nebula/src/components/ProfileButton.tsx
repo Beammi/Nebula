@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 import Bookmark from "@/components/Bookmark"
+import Profile from "@/components/Profile"
 
 
 interface IProfileButton {
@@ -18,6 +19,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   const [showMyNebu, setShowMyNebu] = useState(false);
   const [showMyTour, setShowMyTour] = useState(false);
   const [showBookmark, setShowBookmark] = useState(false);
+  const [showMyProfile, setShowMyProfile] = useState(false);
   const [accountNameValue, setAccountNameValue] = useState("");
   const router = useRouter()
 
@@ -48,6 +50,15 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
     setShowBookmark(true)
   }
 
+  function closeMyProfile() {
+    setShowMyProfile(false);
+  }
+
+  function handleMyProfileClick(){
+    setAccountNameValue("nat2100")
+    setShowMyProfile(true)
+  }
+
   async function handleLogOut() {
     let { error } = await supabase.auth.signOut()
     if(error){
@@ -72,7 +83,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
       >
 
         <ul className="flex flex-col gap-4 text-[black]">
-          <li>Profile</li>
+          <li className="cursor-pointer" onClick={() => handleMyProfileClick()}>Profile</li>
           <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>          
           <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
           <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
@@ -95,6 +106,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
       <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
       <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
       <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
+      <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
     </div>
   )
 }
