@@ -5,16 +5,19 @@ import Button from "@/components/Button"
 import AddNebu from "@/components/AddNebu"
 import AddTour from "@/components/AddTour"
 import AddPlaceModal from "@/components/AddPlaceModal"
+import MoveablePin from "@/components/MoveablePin"
 import { useState } from "react"
 import { useRouter } from "next/router"
 import { supabase } from "../lib/supabaseClient"
 import { useEffect } from "react"
+
 
 export default function Home() {
   const [addNebuState, setAddnebu] = useState(false)
   const [addNebuDropDown, setaddNebuDropdown] = useState(false)
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
+  const [showMoveablePin, setShowMoveablePin] = useState(false);
   const router = useRouter()
   async function checkSession() {
 
@@ -72,9 +75,11 @@ export default function Home() {
     setAddTourState(!addTourState)
   }
 
-  function openAddPlaceModal() {
-    setAddPlaceModalState(true);
+  function onAddPlaceClick(){
+    setShowMoveablePin(!showMoveablePin);
   }
+
+  console.log("ActivePin:", onAddPlaceClick);
 
   return (
     <div className="relative h-screen">
@@ -111,6 +116,8 @@ export default function Home() {
       </div>
       <AddNebu toggle={addNebuState} action={openAddNebu} />
       <AddTour toggle={addTourState} action={toggleAddTour}/>
+      <AddPlaceModal action={onAddPlaceClick} />
+      {showMoveablePin && <MoveablePin />}
       <div
         className={`fixed right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden ${
           addNebuDropDown ? "opacity-100" : "hidden"

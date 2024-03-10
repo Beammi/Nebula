@@ -5,11 +5,11 @@ import close from "../../public/images/close.png";
 import NebuTag from "./NebuTag";
 import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
+import MoveablePin from "@/components/MoveablePin"
 
 export default function AddTour(props) {
   const addTourState = props.toggle;
   const action = props.action;
-
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
   const [selected, setSelected] = useState("Official's Tag");
   const [OpenTag, setOpenTag] = useState(false);
