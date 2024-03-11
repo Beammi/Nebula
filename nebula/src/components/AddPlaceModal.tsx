@@ -2,11 +2,18 @@ import closeIcon from "../../public/images/close.png";
 import Image from "next/image";
 import Button from "./Button";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router"
 
 export default function AddPlaceModal(props) {
-  console.log(props)
-  const { toggle, action, onAddPlace, onAddPlaceClick } = props;
+  const { toggle, action } = props;
   const isOpen = toggle;
+  const router = useRouter()
+
+
+  function navigateMoveablePin(){
+    router.push("/SearchonMap")
+  }
 
   return (
       <div
@@ -21,8 +28,7 @@ export default function AddPlaceModal(props) {
             label="Add place"
             onClick={() => {
               action();
-              onAddPlace();
-              onAddPlaceClick();
+              navigateMoveablePin();
             }}
           ></Button>
           <Button

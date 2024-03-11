@@ -5,7 +5,7 @@ import close from "../../public/images/close.png";
 import NebuTag from "./NebuTag";
 import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
-import MoveablePin from "@/components/MoveablePin"
+import MoveablePin from "@/components/MoveablePin";
 
 export default function AddTour(props) {
   const addTourState = props.toggle;
@@ -14,7 +14,44 @@ export default function AddTour(props) {
   const [selected, setSelected] = useState("Official's Tag");
   const [OpenTag, setOpenTag] = useState(false);
   const [AddPlace, setAddPlace] = useState(false);
+  // Initialize state variables
+  const [tourName, setTourName] = useState("");
+  const [description, setDescription] = useState("");
 
+  // Load data from local storage when component mounts
+  useEffect(() => {
+    const savedTourName = localStorage.getItem("tourName");
+    const savedDescription = localStorage.getItem("description");
+    const savedTags = JSON.parse(
+      localStorage.getItem("confirmedAdditionalTags")
+    );
+
+    if (savedTourName) setTourName(savedTourName);
+    if (savedDescription) setDescription(savedDescription);
+    if (savedTags) setConfirmedAdditionalTags(savedTags);
+  }, []);
+
+  // Save data to local storage when input values change
+  useEffect(() => {
+    localStorage.setItem("tourName", tourName);
+  }, [tourName]);
+
+  useEffect(() => {
+    localStorage.setItem("description", description);
+  }, [description]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "confirmedAdditionalTags",
+      JSON.stringify(confirmedAdditionalTags)
+    );
+  }, [confirmedAdditionalTags]);
+
+  useEffect(() => {
+    const savedTags = JSON.parse(localStorage.getItem("confirmedAdditionalTags"));
+    if (savedTags) setConfirmedAdditionalTags(savedTags);
+  }, []);
+  
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
@@ -51,6 +88,8 @@ export default function AddTour(props) {
             <h3 className="text-lg">Tour name</h3>
             <input
               type="text"
+              value={tourName} // bind input value to state variable
+              onChange={(e) => setTourName(e.target.value)} // update state variable on change
               className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
             />
           </div>
@@ -60,6 +99,8 @@ export default function AddTour(props) {
               name="postContent"
               rows={5}
               cols={40}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
             />
           </div>
@@ -119,7 +160,6 @@ export default function AddTour(props) {
               <AddPlaceModal
                 toggle={AddPlace}
                 action={() => setAddPlace(false)}
-                onAddPlace={action} // Passing the action function to close AddTour
               />
             </div>
           </div>

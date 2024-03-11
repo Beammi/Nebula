@@ -17,8 +17,7 @@ export default function Home() {
   const [addNebuDropDown, setaddNebuDropdown] = useState(false)
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
-  const [showMoveablePin, setShowMoveablePin] = useState(false);
-  const router = useRouter()
+  
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
@@ -75,12 +74,6 @@ export default function Home() {
     setAddTourState(!addTourState)
   }
 
-  function onAddPlaceClick(){
-    setShowMoveablePin(!showMoveablePin);
-  }
-
-  console.log("ActivePin:", onAddPlaceClick);
-
   return (
     <div className="relative h-screen">
       <div className="absolute z-10 top-0 left-0 right-0 flex items-center justify-center md:justify-between px-4 pt-2">
@@ -116,8 +109,6 @@ export default function Home() {
       </div>
       <AddNebu toggle={addNebuState} action={openAddNebu} />
       <AddTour toggle={addTourState} action={toggleAddTour}/>
-      <AddPlaceModal action={onAddPlaceClick} />
-      {showMoveablePin && <MoveablePin />}
       <div
         className={`fixed right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden ${
           addNebuDropDown ? "opacity-100" : "hidden"
