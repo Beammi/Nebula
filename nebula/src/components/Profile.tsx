@@ -20,6 +20,11 @@ export default function Profile(props) {
   const state = props.toggle
   const action = props.action
   const accountName = props.accountName
+  const [showEditable, setShowEditable] = useState(false)
+
+  function saveProfile(){
+    
+  }
 
   return (
     <div
@@ -50,17 +55,25 @@ export default function Profile(props) {
           </div>
         </div>
 
-        <div className="pl-14 pr-16 mt-6 grid grid-cols-2 gap-y-5 items-center ">
+        <div className="lg:pl-14 lg:pr-16 px-7 mt-6 grid grid-cols-2 gap-y-5 items-center ">
             <p className="text-base font-medium w-fit">First name</p>
             <input type="text" placeholder="Type here" className="input input-bordered bg-grey shadow font-medium" />
             <p className="text-base font-medium w-fit">Last name</p>
             <input type="text" placeholder="Type here" className="input input-bordered bg-grey shadow font-medium" />
             <p className="text-base font-medium w-fit">Bio</p>
-            <textarea className="textarea textarea-md w-full bg-grey shadow font-medium" placeholder="Type here"></textarea>   
+            <textarea className="textarea textarea-md w-full bg-grey shadow text-base font-medium" placeholder="Type here"></textarea>   
 
         </div>
 
-        <button className="rounded-lg py-2 px-5 normal-case font-normal text-white self-center mr-5 lg:mt-10 my-7 text-lg bg-blue shadow">Save</button>
+        
+        { showEditable ?
+          <div className="flex px-7 mb-5 lg:mb-0 lg:px-10">
+            <button className="mr-auto justify-self-start rounded-lg mt-11 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowEditable(!showEditable)}>Cancel</button>
+            <button className="ml-auto rounded-lg mt-11 py-2 px-4 normal-case font-normal text-white bg-red" onClick={() => saveProfile()}>Save</button>
+          </div>
+          :          
+          <button className="ml-auto rounded-lg py-2 px-4 normal-case font-normal text-white self-center mr-5 lg:mt-11 my-7 text-lg bg-blue shadow" onClick={() => setShowEditable(!showEditable)}>Edit profile</button>
+        }
 
         
 
