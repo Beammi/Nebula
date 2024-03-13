@@ -34,7 +34,7 @@ export default function Profile(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] overflow-y-scroll items-stretch">
+      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] items-stretch">
         <div className="flex flex-col justify-start">
           <figure className="w-full">
             {" "}
@@ -68,11 +68,11 @@ export default function Profile(props) {
         
         { showEditable ?
           <div className="flex px-7 mb-5 lg:mb-0 lg:px-10">
-            <button className="mr-auto justify-self-start rounded-lg mt-11 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowEditable(!showEditable)}>Cancel</button>
-            <button className="ml-auto rounded-lg mt-11 py-2 px-4 normal-case font-normal text-white bg-red" onClick={() => saveProfile()}>Save</button>
+            <button className="mr-auto justify-self-start rounded-3xl mt-11 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowEditable(!showEditable)}>Cancel</button>
+            <button className="ml-auto rounded-3xl mt-11 py-2 px-4 normal-case font-normal text-white bg-blue" onClick={() => saveProfile()}>Save</button>
           </div>
           :          
-          <button className="ml-auto rounded-lg py-2 px-4 normal-case font-normal text-white self-center mr-5 lg:mt-11 my-7 text-lg bg-blue shadow" onClick={() => setShowEditable(!showEditable)}>Edit profile</button>
+          <button className="ml-auto rounded-3xl py-2 px-4 normal-case font-normal text-black bg-dim-grey border-2 border-black self-center mr-5 lg:mt-11 my-7 text-lg  shadow" onClick={() => setShowEditable(!showEditable)}>Edit profile</button>
         }
 
         
