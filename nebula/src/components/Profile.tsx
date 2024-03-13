@@ -11,6 +11,7 @@ import profilePic from "../../public/images/lionelPic.png"
 import holmesPic from "../../public/images/holmesPic.png"
 import ferryWheelPic from "../../public/images/ferryWheelPic.png"
 import whiteCloseIcon from "../../public/images/whiteCloseIcon.png"
+import addPhotoIcon from "../../public/images/addPhoto.png"
 
 import Link from "next/link"
 // import smallHashtag from "../../public/images/smallHashtag.png";
@@ -36,21 +37,45 @@ export default function Profile(props) {
     >
       <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] items-stretch">
         <div className="flex flex-col justify-start">
-          <figure className="w-full">
-            {" "}
-            <Image src={skyPic} alt="pic" className="w-full" />{" "}
-          </figure>
+
+          <div className="relative w-full h-[200px] rounded-t-lg overflow-hidden">
+            <Image src={skyPic} alt="sky background" className={`w-full h-full object-cover ${showEditable ? "filter brightness-75" : "filter-none"}`} />
+            {showEditable && (
+              <label htmlFor="backgroundPicInput" className={`absolute inset-0 flex items-center justify-center cursor-pointer ${showEditable ? "visible" : "invisible"}`}>
+                <Image src={addPhotoIcon} alt="add photo" width={50} height={50} className="opacity-60"/>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => console.log(e.target.files)}
+                  className="invisible absolute"
+                  id="backgroundPicInput"
+                  multiple
+                />
+              </label>
+            )}
+          </div>
+
           <button
             onClick={action}
             className="absolute top-0 right-0 mt-4 mr-4 z-10"
           >
             <Image src={whiteCloseIcon} alt="clsbtn" className="" width={20} />
           </button>
-          <div className="px-8 flex">
-            <figure className="lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8">
-              {" "}
-              <Image src={profilePic} alt="pic" className="w-full" />{" "}
+          <div className="px-8 flex ">
+            <figure className="lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8 cursor-pointer" onClick={() => showEditable && document.getElementById('profilePicInput').click()}>              
+              <Image src={profilePic} alt="pic" className={`w-full ${showEditable ? "filter brightness-75" : "filter-none"}`} />            
+              <Image src={addPhotoIcon} alt="pic" className={`w-[55%] opacity-60 lg:-mt-[67px] lg:ml-4 -mt-[53px] ml-[14px] ${showEditable ? "visible" : "invisible"}`} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => console.log(e.target.files)}
+                className="invisible"
+                id="profilePicInput"
+                multiple
+              />
+                          
             </figure>
+            
             <h3 className="text-2xl text-black ml-3 mt-1">{accountName}</h3>
           </div>
         </div>
