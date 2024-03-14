@@ -37,7 +37,7 @@ export default function YourNebu(props) {
     "description": "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!"
   }]
 
-  console.log("This is account name: ", accountName);
+  // console.log("This is account name: ", accountName);
 
   function handleSelect(){
 
