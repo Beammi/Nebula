@@ -1,5 +1,5 @@
 // NebuTag.jsx
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import closeIcon from "../../public/images/close.png";
 import Image from "next/image";
 
@@ -12,9 +12,26 @@ const NebuTag = (props) => {
   const [additionalTag, setAdditionalTag] = useState("");
   const [additionalTags, setAdditionalTags] = useState([]);
 
-  const handleConfirm = () => {
+  useEffect(() => {
+    console.log("Saving additional tags to Local Storage:", additionalTags);
+    localStorage.setItem("confirmedAdditionalTags", JSON.stringify(additionalTags));
+  }, [additionalTags]);
 
-    if (additionalTag.trim() !== ""){
+  useEffect(() => {
+    console.log("Attempting to load additional tags from Local Storage...");
+    const savedAdditionalTags = JSON.parse(localStorage.getItem("confirmedAdditionalTags"));
+    console.log("Loaded additional tags:", savedAdditionalTags);
+    if (savedAdditionalTags) {
+      console.log("Setting additional tags:", savedAdditionalTags);
+      setAdditionalTags(savedAdditionalTags);
+    }
+    else {
+      console.log("No additional tags found in Local Storage.");
+  }
+  }, []);
+
+  const handleConfirm = () => {
+    if (additionalTag.trim() !== "") {
       setAdditionalTags((prevTags) => [...prevTags, additionalTag]);
       setAdditionalTag("");
     }
@@ -25,11 +42,25 @@ const NebuTag = (props) => {
   };
 
   return (
-    <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${isOpen ? "visible opacity-100 drop-shadow-2xl" : "invisible opacity-0"}`}>
+    <div
+      className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
+        isOpen ? "visible opacity-100 drop-shadow-2xl" : "invisible opacity-0"
+      }`}
+    >
       <div className="flex flex-col p-6 bg-white">
         <div className="flex justify-end mb-2">
-          <button onClick={(event) => { event.preventDefault(); action(); }}>
-            <Image src={closeIcon} alt="Close button" className="pt-2" width={20} />
+          <button
+            onClick={(event) => {
+              event.preventDefault();
+              action();
+            }}
+          >
+            <Image
+              src={closeIcon}
+              alt="Close button"
+              className="pt-2"
+              width={20}
+            />
           </button>
         </div>
         <div className="my-2">
@@ -42,7 +73,13 @@ const NebuTag = (props) => {
           />
         </div>
         <div className="flex justify-center mt-4">
-          <button className="bg-blue text-white p-2 rounded-md" onClick={(event) => { event.preventDefault(); handleConfirm(); }}>
+          <button
+            className="bg-blue text-white p-2 rounded-md"
+            onClick={(event) => {
+              event.preventDefault();
+              handleConfirm();
+            }}
+          >
             Confirm
           </button>
         </div>
