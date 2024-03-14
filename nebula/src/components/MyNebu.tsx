@@ -42,7 +42,7 @@ export default function MyNebu(props) {
 
   
 
-  console.log("This is account name: ", accountName);
+  // console.log("This is account name: ", accountName);
 
   function handleCheckboxClick(index) {
     const newCheckedStatus = [...checkedStatus]; // Make a copy of the checkedStatus array

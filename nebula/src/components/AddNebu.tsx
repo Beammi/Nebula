@@ -493,9 +493,12 @@ export default function AddNebu(props) {
                 label="Complete"
                 type="button"
                 onClick={() => {
-                  handleSummit() // Correctly invoke the function
 
-                  action() // Assuming this is correctly invoking another function
+                  handleSummit(); // Correctly invoke the function
+              
+                  action(); // Assuming this is correctly invoking another function
+
+
                 }}
               />
             )}
