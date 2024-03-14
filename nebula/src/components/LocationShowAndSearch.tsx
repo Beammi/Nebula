@@ -4,6 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
+import { useRouter } from "next/router"
 
 interface ILocationShowAndSearch {
   text?: string;
@@ -81,6 +82,12 @@ const LocationShowAndSearch: React.FunctionComponent<
     searchPlace(searchTerm);
   };
 
+  const router = useRouter()
+
+  const handleConfirm = () =>{
+    router.push("/home")
+  }
+
   return (
     <>
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2">
@@ -88,18 +95,21 @@ const LocationShowAndSearch: React.FunctionComponent<
           <div className="card-body w-full">
             <h2 className="card-title">Location</h2>
             <p className="h-10 overflow-y-auto text-sm">{text}</p>
-            <div className="card-actions justify-end">
+            <div className="card-actions flex justify-between pt-2">
               <div>
-                <p className="text-xs text-blue p-2">
-                  Not your current location!
-                </p>
+                <button
+                  className="btn btn-sm btn-primary text-blue bg-white border-none hover:bg-dark-grey"
+                  onClick={handleClickChange}
+                >
+                  Change location
+                </button>
               </div>
               <div>
                 <button
                   className="btn btn-sm btn-primary text-white"
-                  onClick={handleClickChange}
+                  onClick={handleConfirm}
                 >
-                  Change
+                  Confirm
                 </button>
               </div>
             </div>
