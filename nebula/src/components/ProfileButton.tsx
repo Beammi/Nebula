@@ -2,7 +2,10 @@ import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import YourNebu from "@/components/YourNebu"
+import MyNebu from "@/components/MyNebu"
+import MyTour from "@/components/MyTour"
+import Bookmark from "@/components/Bookmark"
+import Profile from "@/components/Profile"
 
 
 interface IProfileButton {
@@ -13,17 +16,47 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   const colors = ["bg-blue", "bg-red", "bg-yellow", "bg-dark-grey"]
   const randomColor = colors[Math.floor(Math.random() * colors.length)]
   const [IsOpen, setIsOpen] = useState(false)
-  const [showYourNebu, setShowYourNebu] = useState(false);
+  const [showMyNebu, setShowMyNebu] = useState(false);
+  const [showMyTour, setShowMyTour] = useState(false);
+  const [showBookmark, setShowBookmark] = useState(false);
+  const [showMyProfile, setShowMyProfile] = useState(false);
   const [accountNameValue, setAccountNameValue] = useState("");
   const router = useRouter()
 
-  function closeYourNebu() {
-    setShowYourNebu(false);
+  function closeMyNebu() {
+    setShowMyNebu(false);
   }
 
-  function handleYourNebuClick(){
+  function handleMyNebuClick(){
     setAccountNameValue("nat2100")
-    setShowYourNebu(true)
+    setShowMyNebu(true)
+  }
+
+  function closeMyTour() {
+    setShowMyTour(false);
+  }
+
+  function handleMyTourClick(){
+    setAccountNameValue("nat2100")
+    setShowMyTour(true)
+  }
+
+  function closeBookmark() {
+    setShowBookmark(false);
+  }
+
+  function handleBookmarkClick(){
+    setAccountNameValue("nat2100")
+    setShowBookmark(true)
+  }
+
+  function closeMyProfile() {
+    setShowMyProfile(false);
+  }
+
+  function handleMyProfileClick(){
+    setAccountNameValue("nat2100")
+    setShowMyProfile(true)
   }
 
   async function handleLogOut() {
@@ -50,10 +83,10 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
       >
 
         <ul className="flex flex-col gap-4 text-[black]">
-          <li>Profile</li>
-          <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>          
-          <li>My Tour</li>
-          <li>Bookmark</li>
+          <li className="cursor-pointer" onClick={() => handleMyProfileClick()}>Profile</li>
+          <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>          
+          <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
+          <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
           <li>Setting</li>
           <li>
             <Link
@@ -70,7 +103,10 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
 
       </div>
 
-      <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+      <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
+      <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
+      <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
+      <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
     </div>
   )
 }

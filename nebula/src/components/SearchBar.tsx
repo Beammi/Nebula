@@ -8,7 +8,10 @@ import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
-import YourNebu from "@/components/YourNebu"
+import Bookmark from "@/components/Bookmark"
+import MyNebu from "@/components/MyNebu"
+import MyTour from "@/components/MyTour"
+import Profile from "@/components/Profile"
 import { useRouter } from "next/router"
 import React from "react"
 
@@ -25,7 +28,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showTagSuggestion, setShowTagSuggestion] = useState(false);
   const [showAccountProfile, setShowAccountProfile] = useState(false);
-  const [showYourNebu, setShowYourNebu] = useState(false);
+  const [showMyNebu, setShowMyNebu] = useState(false);
+  const [showMyTour, setShowMyTour] = useState(false);
+  const [showBookmark, setShowBookmark] = useState(false);
+  const [showMyProfile, setShowMyProfile] = useState(false);
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
@@ -38,13 +44,40 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     setShowAccountProfile(false);
   }
 
-  function closeYourNebu() {
-    setShowYourNebu(false);
+  function closeMyNebu() {
+    setShowMyNebu(false);
   }
 
-  function handleYourNebuClick(){
+  function handleMyNebuClick(){
     setAccountNameValue("nat2100")
-    setShowYourNebu(true)
+    setShowMyNebu(true)
+  }
+
+  function closeMyTour() {
+    setShowMyTour(false);
+  }
+
+  function handleMyTourClick(){
+    setAccountNameValue("nat2100")
+    setShowMyTour(true)
+  }
+
+  function closeBookmark() {
+    setShowBookmark(false);
+  }
+
+  function handleBookmarkClick(){
+    setAccountNameValue("nat2100")
+    setShowBookmark(true)
+  }
+
+  function closeMyProfile() {
+    setShowMyProfile(false);
+  }
+
+  function handleMyProfileClick(){
+    setAccountNameValue("nat2100")
+    setShowMyProfile(true)
   }
 
   // Function to handle suggestion click
@@ -163,16 +196,20 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
-        <YourNebu toggle={showYourNebu} action={closeYourNebu} accountName={accountNameValue}/>
+        
+        <MyNebu toggle={showMyNebu} action={closeMyNebu} accountName={accountNameValue}/>
+        <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
+        <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
+        <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
-                  <li>Profile</li>
-                  <li className="cursor-pointer" onClick={() => handleYourNebuClick()}>My Nebu</li>
-                  <li>My Tour</li>
-                  <li>Bookmark</li>
-                  <li>Setting</li>
-                  <li>Log Out</li>
+                <li className="cursor-pointer" onClick={() => handleMyProfileClick()}>Profile</li>
+                <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>
+                <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
+                <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
+                <li>Setting</li>
+                <li>Log Out</li>
               </ul>
         </div>
       </div>
