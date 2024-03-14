@@ -98,7 +98,7 @@ const LocationShowAndSearch: React.FunctionComponent<
             <div className="card-actions flex justify-between pt-2">
               <div>
                 <button
-                  className="btn btn-sm btn-primary text-white"
+                  className="btn btn-sm btn-primary text-blue bg-white border-none hover:bg-dark-grey"
                   onClick={handleClickChange}
                 >
                   Change location
