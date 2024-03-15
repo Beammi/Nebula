@@ -261,13 +261,16 @@ export default function PlaceInfoPanel({toggle, action, placeData}) {
             {othersNebuSection &&
               <div className='flex flex-col my-4 mx-7 transition-all delay-300 ease-in-out'>          
 
-                <div className="ml-auto dropdown dropdown-end dropdown-hover">
-                  <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-grey text-black border-none hover:border-none hover:bg-grey">Filter <figure className=''><Image src={filterIcon} alt="pic" className="" width={22} height={20}/></figure> </div>
-                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-grey text-black border-none hover:border-none hover:bg-grey rounded-box w-max">                    
-                    <li><a href='https://www.google.com/' className='hover:text-black'>High Rated</a></li>
-                    <li><a href='https://www.google.com/' className='hover:text-black'>Newest</a></li>
-                    <li><a href='https://www.google.com/' className='hover:text-black'>Oldest</a></li>
-                  </ul>
+                <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
+                  <select className="select bg-grey rounded-lg select-sm">
+                    {/* <option disabled selected>Filter</option> */}
+                    <option>Newest</option>
+                    <option>High Rated</option>
+                    <option>Oldest</option>
+                  </select>
+                  <figure className="select-icon absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Image src={filterIcon} alt="pic" className="" />
+                  </figure>
                 </div>
 
                 <div className='flex flex-col gap-y-7 mt-2'>
