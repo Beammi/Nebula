@@ -14,13 +14,9 @@ import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/PlaceInfoPanel"
 import UpdateMapView from "@/components/UpdateMapView"
 
-
-
-
 import largePinIcon from "../../public/images/large-pin-icon.png"
 import mediumPinIcon from "../../public/images/medium-pin-icon.png"
 import smallPinIcon from "../../public/images/small-pin-icon.png"
-
 
 import towerBridgePic from "../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../public/images/sherlock-pic.png"
@@ -67,8 +63,19 @@ const MyMap: React.FC = () => {
   //   14.7563, 100.5018,
   // ]) // Default to Bangkok
   // const [currentPlace, setCurrentPlace] = useState("")
+  const MapCenterEvents = ({ onCenterChange }) => {
+    useMapEvents({
+      moveend: (e) => {
+        const center = e.target.getCenter()
+        onCenterChange(center) // Callback to update parent component's state
+      },
+    })
+  
+    return null
+  }
   const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
     useLocation()
+  const [placeName, setPlaceName] = useState("")
 
   if (currentPosition === null) {
     const defaultLocation = [13.7563, 100.5018]
@@ -94,64 +101,24 @@ const MyMap: React.FC = () => {
     // for close
     setPlaceInfoPanel(false)
   }
-  // async function fetchCurrentLocation() {
-  //   try {
-  //     setCurrentPosition(await getCurrentLocation())
-  //     console.log(
-  //       "Current Lat: ",
-  //       currentPosition[0],
-  //       " Current Long: ",
-  //       currentPosition[1]
-  //     )
-  //   } catch (error) {
-  //     console.error("Error getting location:", error)
-  //     // Handle errors, such as user denying geolocation permission
-  //   }
-  // }
-  // function continuouslyUpdateLocation() {
-  //   const options = {
-  //     enableHighAccuracy: true,
-  //     maximumAge: 0,
-  //     timeout: 10000,
-  //   }
+  const [mapCenter, setMapCenter] = useState({
+    lat: currentPosition[0],
+    lng: currentPosition[1],
+  }) // Default center
 
-  //   async function update() {
-  //     // Make the function async
-  //     navigator.geolocation.getCurrentPosition(
-  //       async (position) => {
-  //         // Mark this callback as async
-  //         // Process position
-  //         const { latitude, longitude } = position.coords
-  //         setCurrentPosition([latitude,longitude])
-  //         console.log("Update: ", latitude, longitude)
-
-  //         try {
-  //           // Use the latitude and longitude to get the place name
-  //           const placeName = await getPlaceName(latitude, longitude)
-  //           console.log("Place Name update:", placeName)
-  //           setCurrentPlace(placeName)
-  //         } catch (error) {
-  //           console.error("Failed to fetch place name:", error)
-  //         }
-
-  //         // Schedule the next update
-  //         setTimeout(update, 120000) // Update every 60 seconds, adjust as needed
-  //       },
-  //       (error) => {
-  //         console.error(error)
-  //         setTimeout(update, 120000) // Attempt to update again after a delay
-  //       },
-  //       options
-  //     )
-  //   }
-
-  //   update() // Start the update process
-  // }
-  // useEffect(() => {
-  //   fetchCurrentLocation()
-  //   continuouslyUpdateLocation()
-  // }, [])
-
+  const handleCenterChange = async (center) => {
+    setMapCenter(center) // Update map center state
+    console.log("Map Center: " + mapCenter)
+    try {
+      const name = await getPlaceName(center.lat, center.lng); // Fetch place name
+      setPlaceName(name); // Update state with place name
+    } catch (error) {
+      console.error("Failed to fetch place name:", error);
+      setPlaceName("Unable to fetch place name");
+    }
+    console.log("Place name in the center: "+ placeName)
+  }
+  
   return (
     <div className="h-screen relative">
       <PlaceInfoPanel
@@ -186,6 +153,7 @@ const MyMap: React.FC = () => {
         />
         {/* <Marker position={[51.505, -0.09]} icon={customIcon} alt='Tower Bridges'>        
         </Marker> */}
+        <MapCenterEvents onCenterChange={handleCenterChange} />
 
         {placesData.map((place, index) => (
           <Marker
@@ -201,9 +169,8 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-        <LocationShowAndSearch text={currentPlace} location={currentPosition} />
-      <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2">
-      </div>
+      <LocationShowAndSearch text={currentPlace} location={currentPosition} />
+      <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
 }

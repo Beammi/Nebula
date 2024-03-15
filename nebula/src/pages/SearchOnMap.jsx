@@ -1,3 +1,4 @@
+//SearchOnMap.jsx
 import SearchBar from "@/components/SearchBar";
 import ProfileButton from "@/components/ProfileButton";
 import DynamicMap from "@/components/DynamicMap";
@@ -11,7 +12,7 @@ import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";
 import { useEffect } from "react";
 
-export default function Home() {
+export default function SearchOnMap() {
   const [addNebuState, setAddnebu] = useState(false);
   const [addNebuDropDown, setaddNebuDropdown] = useState(false);
   const [profileName, setProfileName] = useState("");

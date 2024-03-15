@@ -12,7 +12,7 @@ export default function AddPlaceModal(props) {
 
 
   function navigateMoveablePin(){
-    router.push("/SearchonMap")
+    router.push("/SearchOnMap")
   }
 
   return (
