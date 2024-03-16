@@ -26,12 +26,12 @@ async function handler(req, res) {
     res.status(422).json({ message: 'User exists already!' });
     return;
   }
-
+  const provider = "email"
   const hashedPassword = await hashPassword(password);
   let display_name = email.split("@")[0];
   await db.query(
-    'INSERT INTO users (email, hashed_password,display_name) VALUES ($1, $2, $3)',
-    [email, hashedPassword, display_name]
+    'INSERT INTO users (email, hashed_password,display_name,provider) VALUES ($1, $2, $3,$4)',
+    [email, hashedPassword, display_name,provider]
   );
 
   res.status(201).json({ message: 'Created user!' });
