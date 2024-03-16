@@ -1,5 +1,5 @@
 import Button from "./Button"
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import ImageUpload from "./ImageUpload"
 import TimeLimitBox from "./TimeLimitBox"
 import Image from "next/image"
@@ -8,6 +8,7 @@ import smallHashtag from "../../public/images/smallHashtag_blue.png"
 import filterIcon from "../../public/images/filter-icon.png"
 import skyPic from "../../public/images/skyPic.png"
 import profilePic from "../../public/images/lionelPic.png"
+import davidProfilePic from "../../public/images/davidProfilePic.png"
 import holmesPic from "../../public/images/holmesPic.png"
 import ferryWheelPic from "../../public/images/ferryWheelPic.png"
 import whiteCloseIcon from "../../public/images/whiteCloseIcon.png"
@@ -22,9 +23,34 @@ export default function Profile(props) {
   const action = props.action
   const accountName = props.accountName
   const [showEditable, setShowEditable] = useState(false)
+  const [newProfilePic, setNewProfilePic] = useState<File | null>(null);
+  const [newBackgroundPic, setNewBackgroundPic] = useState<File | null>(null);
+  const profilePicRef = useRef()
 
   function saveProfile(){
     
+  }
+
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setNewProfilePic(file);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const handleBackgroundPicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setNewBackgroundPic(file);
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   return (
@@ -35,21 +61,23 @@ export default function Profile(props) {
           : "rounded-sm invisible opacity-0"
       } `}
     >
-      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] items-stretch">
+      <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[38rem] items-stretch overflow-y-scroll">
         <div className="flex flex-col justify-start">
 
           <div className="relative w-full h-[200px] rounded-t-lg overflow-hidden">
-            <Image src={skyPic} alt="sky background" className={`w-full h-full object-cover ${showEditable ? "filter brightness-75" : "filter-none"}`} />
+            <img src={newBackgroundPic ? URL.createObjectURL(newBackgroundPic) : skyPic.src} alt="sky background" className={`w-full h-full object-cover ${showEditable ? "filter brightness-75" : "filter-none"}`} />
             {showEditable && (
               <label htmlFor="backgroundPicInput" className={`absolute inset-0 flex items-center justify-center cursor-pointer ${showEditable ? "visible" : "invisible"}`}>
-                <Image src={addPhotoIcon} alt="add photo" width={50} height={50} className="opacity-60"/>
+                <Image src={addPhotoIcon} alt="add photo" width={45} className="opacity-60"/>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => console.log(e.target.files)}
+                  onChange={(e) => {                
+                    handleBackgroundPicChange(e)
+                  }}
                   className="invisible absolute"
                   id="backgroundPicInput"
-                  multiple
+                  multiple                
                 />
               </label>
             )}
@@ -61,32 +89,34 @@ export default function Profile(props) {
           >
             <Image src={whiteCloseIcon} alt="clsbtn" className="" width={20} />
           </button>
-          <div className="px-8 flex ">
-            <figure className="lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8 cursor-pointer" onClick={() => showEditable && document.getElementById('profilePicInput').click()}>              
-              <Image src={profilePic} alt="pic" className={`w-full ${showEditable ? "filter brightness-75" : "filter-none"}`} />            
-              <Image src={addPhotoIcon} alt="pic" className={`w-[55%] opacity-60 lg:-mt-[67px] lg:ml-4 -mt-[53px] ml-[14px] ${showEditable ? "visible" : "invisible"}`} />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => console.log(e.target.files)}
-                className="invisible"
-                id="profilePicInput"
-                multiple
-              />
+          <div className="px-8 flex ">      
+            <figure className={`lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8 ${showEditable ? "cursor-pointer" : ""}`} onClick={() => showEditable && profilePicRef.current.click()}>              
+              <img src={newProfilePic ? URL.createObjectURL(newProfilePic) : profilePic.src} alt="pic" width={50} height={50} className={`w-52 ${showEditable ? "filter brightness-75" : "filter-none"}`} />
+              <img src={addPhotoIcon.src} alt="pic" className={`w-[43%] opacity-60 lg:-mt-[62px] lg:ml-[21px] -mt-[51px] ml-[17px] ${showEditable ? "visible" : "invisible"}`} />
                           
             </figure>
+            <input
+              type="file"
+              multiple accept="image/*"
+              onChange={(e) => {
+                handleProfilePicChange(e)                
+              }}
+              className="hidden"
+              id="profilePicInput"          
+              ref={profilePicRef}
+            />
             
             <h3 className="text-2xl text-black ml-3 mt-1">{accountName}</h3>
           </div>
         </div>
 
         <div className="lg:pl-14 lg:pr-16 px-7 mt-6 grid grid-cols-2 gap-y-5 items-center ">
-            <p className="text-base font-medium w-fit">First name</p>
-            <input type="text" placeholder="Type here" className="input input-bordered bg-grey shadow font-medium" />
+            <p className="text-base font-medium w-fit">First name</p>          
+            <input type="text" placeholder="type here" defaultValue="Natthapong" className={`input input-bordered bg-grey shadow font-medium disabled:bg-grey disabled:border-0 disabled:text-black-grey`} disabled={!showEditable} />
             <p className="text-base font-medium w-fit">Last name</p>
-            <input type="text" placeholder="Type here" className="input input-bordered bg-grey shadow font-medium" />
+            <input type="text" defaultValue="Lueang" className={`input input-bordered bg-grey shadow font-medium disabled:bg-grey disabled:border-0 disabled:text-black-grey`} disabled={!showEditable} />
             <p className="text-base font-medium w-fit">Bio</p>
-            <textarea className="textarea textarea-md w-full bg-grey shadow text-base font-medium" placeholder="Type here"></textarea>   
+            <textarea defaultValue="Hello! mate" className={`textarea textarea-md w-full bg-grey shadow text-base font-medium disabled:bg-grey disabled:border-0 disabled:text-black-grey`} disabled={!showEditable}></textarea>   
 
         </div>
 
@@ -94,14 +124,11 @@ export default function Profile(props) {
         { showEditable ?
           <div className="flex px-7 mb-5 lg:mb-0 lg:px-10">
             <button className="mr-auto justify-self-start rounded-3xl mt-11 py-2 px-4 normal-case font-normal text-black bg-dark-grey" onClick={() => setShowEditable(!showEditable)}>Cancel</button>
-            <button className="ml-auto rounded-3xl mt-11 py-2 px-4 normal-case font-normal text-white bg-blue" onClick={() => saveProfile()}>Save</button>
+            <button className="ml-auto rounded-3xl mt-11 py-2 px-4 normal-case font-normal text-white bg-blue" onClick={() => saveProfile()}>Save</button>                
           </div>
           :          
           <button className="ml-auto rounded-3xl py-2 px-4 normal-case font-normal text-black bg-dim-grey border-2 border-black self-center mr-5 lg:mt-11 my-7 text-lg  shadow" onClick={() => setShowEditable(!showEditable)}>Edit profile</button>
         }
-
-        
-
 
       </div>
     </div>

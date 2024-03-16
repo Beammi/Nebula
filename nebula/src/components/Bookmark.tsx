@@ -65,13 +65,16 @@ export default function Bookmark(props) {
             <figure className=""> <Image src={filledoutBlueBookmark} alt="pic" width={27}/> </figure>
             <h3 className="text-xl lg:text-2xl text-black flex gap-x-2">Bookmark items</h3>
           </div>          
-          <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
-            <div tabIndex={0} role="button" className="btn btn-sm m-1 normal-case bg-white drop-shadow-md text-black border-none hover:border-none hover:bg-grey flex flex-nowrap">Filter <figure className='w-full'><Image src={filterIcon} alt="pic" className="" /></figure> </div>
-            <ul tabIndex={0} className="dropdown-content z-[1] menu p-1 bg-grey text-black border-none hover:border-none hover:bg-grey rounded-box w-max">                    
-              <li><a href='https://www.google.com/' className='hover:text-black'>High Rated</a></li>
-              <li><a href='https://www.google.com/' className='hover:text-black'>Newest</a></li>
-              <li><a href='https://www.google.com/' className='hover:text-black'>Oldest</a></li>
-            </ul>
+          <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
+            <select className="select bg-white rounded-2xl select-sm">
+              {/* <option disabled selected>Filter</option> */}
+              <option>Newest</option>
+              <option>High Rated</option>
+              <option>Oldest</option>
+            </select>
+            <figure className="select-icon absolute right-3 top-1/2 transform -translate-y-1/2">
+              <Image src={filterIcon} alt="pic" className="" />
+            </figure>
           </div>
           <button onClick={action}>
             <Image

@@ -207,8 +207,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                 <li className="cursor-pointer" onClick={() => handleMyProfileClick()}>Profile</li>
                 <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>
                 <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
-                <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>
-                <li>Setting</li>
+                <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>                
                 <li>Log Out</li>
               </ul>
         </div>
