@@ -112,7 +112,7 @@ export default function AddNebu(props) {
       // console.log("emailllll: " + user.email)
 
       setEmail(user.email)
-      setProvider("")
+      setProvider("email")
       console.log("Email in email: ", email)
       console.log("Provider: ", user.app_metadata.provider)
     } else {

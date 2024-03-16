@@ -17,7 +17,7 @@ export default function Home() {
   const [addNebuDropDown, setaddNebuDropdown] = useState(false)
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
-  
+  const router = useRouter()
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
