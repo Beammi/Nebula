@@ -1,5 +1,5 @@
 import Button from "./Button"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import ImageUpload from "./ImageUpload"
 import TimeLimitBox from "./TimeLimitBox"
 import Image from "next/image"
@@ -44,8 +44,9 @@ export default function MyNebu(props) {
   const [data, setData] = useState([]) // Initialize data as empty array
   const [checkedStatus, setCheckedStatus] = useState({})
   const [showDeletePopUp, setShowDeletePopUp] = useState(false)
-  const [email,setEmail] = useState("")
-  const [provider,setProvider] = useState("")
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+
   // console.log("This is account name: ", accountName);
 
   function handleCheckboxClick(nebu_id) {
@@ -108,9 +109,31 @@ export default function MyNebu(props) {
       return acc
     }, [])
   }
+  const deleteImageList = async (imageUrls) => {
+    try {
+      const response = await fetch("/api/azure/deleteImageList", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ images: imageUrls }),
+      })
+
+      if (!response.ok) throw new Error("Failed to delete images")
+      console.log("Images deleted successfully")
+    } catch (error) {
+      console.error("Error deleting images:", error)
+    }
+  }
 
   async function deleteSelectedNebu() {
     const selectedNebuIds = collectSelectedNebuIds()
+    // Collect the URLs of images to delete
+    const imageUrlsToDelete = data
+      .filter(
+        (item) => selectedNebuIds.includes(item.nebu_id.toString()) // Convert to string if necessary
+      )
+      .flatMap((item) => item.images) 
 
     try {
       const response = await fetch("/api/nebu/deleteNebu", {
@@ -125,10 +148,12 @@ export default function MyNebu(props) {
 
       // Handle successful deletion
       // For example, refetching the posts or updating the UI accordingly
+      await deleteImageList(imageUrlsToDelete);
+
       console.log("Deleted successfully")
       setShowDeletePopUp(false)
       setCheckedStatus([false])
-      fetchData(email,provider)
+      fetchData(email, provider)
     } catch (error) {
       console.error("Error deleting Nebu posts:", error)
     }
@@ -271,7 +296,9 @@ export default function MyNebu(props) {
                           //     height={100}
                           //   />
                           // </figure>
-                          <p className="text-xs text-black">There is no image in this nebu.</p>
+                          <p className="text-xs text-black">
+                            There is no image in this nebu.
+                          </p>
                         )
                       )}
                     </div>
