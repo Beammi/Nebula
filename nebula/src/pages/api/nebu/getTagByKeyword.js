@@ -13,15 +13,23 @@ export default async function getTagByKeywordHandler(req, res) {
   }
 
   try {
-    const query = `
+    const queryUserTag = `
         SELECT tag_name FROM tag
-        WHERE tag_name LIKE '%${searchKey}%';
+        WHERE LOWER(tag_name) LIKE LOWER('%${searchKey}%');
     `
+    const resultUserTag = await db.query(queryUserTag)
 
-    const result = await db.query(query)
+    const queryOfficialTag = `
+        SELECT official_tag FROM nebu
+        WHERE LOWER(official_tag) LIKE LOWER('%${searchKey}%');
+    `
+    const resultOfficialTag = await db.query(queryOfficialTag)
     
     // Extracting values from the rows
-    const extractValue = result.rows.map(row => row.tag_name);
+    const extractValue = [
+      ...resultUserTag.rows.map(row => row.tag_name),
+      ...resultOfficialTag.rows.map(row => row.official_tag)
+    ];
 
     res.status(200).json(extractValue)
 
