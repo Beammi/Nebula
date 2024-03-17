@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Button from "./Button"
 import Image from 'next/image'
 import {mockData} from "./mockData"
@@ -102,49 +102,66 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   };
 
   // Function to handle input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setInputValue(value);
-    // Mocking suggestions, you should replace this with your own suggestion logic
-    setSuggestions(mockSuggestions(value));
-    // Show suggestions if input value is not empty
-    setShowSuggestions(value.trim() !== ""); // true = have, false = empty
-  };
+  const handleInputChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedData: { value: string, type: string }[] = [];
+    const key = event.target.value;
+    setInputValue(key)
 
-  // Mock function to generate suggestions (replace with your own logic)
-  const mockSuggestions = (value: string): { value: string; type: string }[] => {
+    // if(key === ""){
+    //   setShowSuggestions(false)
+    // }
 
-    let result: { value: string; type: string }[] = [];
-    const uniqueTags: { [tag: string]: boolean } = {};
-    const uniqueTours: { [tour: string]: boolean } = {};
+    // if (key === "") { // Clear suggestions if input is empty
+    //   // setSuggestions([]);
+    //   setShowSuggestions(false);
+    //   setTimeout(() => setSuggestions([]), 100); // Introduce a slight delay before clearing suggestions
+    //   return;
+    // }
 
-    result.push(
-      ...mockData.filter((item) =>
-        item.place.toLowerCase().includes(value.toLowerCase())
-      )
-      .map((item) => ({value: item.place, type: "place"}))
-    )
-
-    mockData.forEach((item) => {
-      if (item.tag.toLowerCase().includes(value.toLowerCase()) && !uniqueTags[item.tag.toLowerCase()]) {
-        result.push({value: item.tag, type: "tag"});
-        uniqueTags[item.tag.toLowerCase()] = true;
-      }
-      if (item.tour.toLowerCase().includes(value.toLowerCase()) && !uniqueTours[item.tour.toLowerCase()]) {
-        result.push({value: item.tour, type: "tour"});
-        uniqueTours[item.tour.toLowerCase()] = true;
-      }
-    });
-
-    result.push(
-      ...mockData.filter((item) =>
-        item.first_name.toLowerCase().includes(value.toLowerCase())
-      )
-      .map((item) => ({value: item.first_name, type: "user"}))
-    )    
+    if(key !== ""){    
     
-    return result
+      let url = `/api/nebu/getUsersByDisplayName?searchKey=${key}`
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        const data: string[] = await response.json(); // normal array same as write in api
+        data.forEach(name => formattedData.push({ value: name, type: "user" }));
+
+      } catch (error) {
+        console.error("Fetch error:", error)
+      }
+
+      url = `/api/nebu/getTagByKeyword?searchKey=${key}`
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        const data: string[] = await response.json();             
+        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
+        data.forEach(name => formattedData.push({ value: name, type: "tag" }));
+
+      } catch (error) {
+        console.error("Fetch error:", error)
+      }
+
+      setSuggestions(formattedData)        
+      setShowSuggestions(suggestions.length !== 0);
+      console.log(suggestions);  
+    } 
+
+    
   };
+
+  useEffect(() => {
+    // Check if input is empty after setting suggestions
+    if (inputValue === "") {
+      setShowSuggestions(false);
+      setSuggestions([]);
+    }
+  }, [inputValue]);
   
 
   return (
