@@ -1,6 +1,6 @@
 import db from "../../../lib/db"
 
-export default async function getUsersByDisplayHandler(req, res) {
+export default async function getTagByKeywordHandler(req, res) {
   // Ensure we're dealing with a GET request
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" })
@@ -13,17 +13,17 @@ export default async function getUsersByDisplayHandler(req, res) {
   }
 
   try {
-    const nameQuery = `
-        SELECT display_name FROM users
-        WHERE display_name LIKE '%${searchKey}%';
+    const query = `
+        SELECT tag_name FROM tag
+        WHERE tag_name LIKE '%${searchKey}%';
     `
 
-    const nameResult = await db.query(nameQuery)
+    const result = await db.query(query)
     
-    // Extracting display_name values from the rows
-    const extractDisplayNames = nameResult.rows.map(row => row.display_name);
+    // Extracting values from the rows
+    const extractValue = result.rows.map(row => row.tag_name);
 
-    res.status(200).json(extractDisplayNames)
+    res.status(200).json(extractValue)
 
   } catch (error) {
     console.error("Database error:", error)
