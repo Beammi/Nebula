@@ -42,19 +42,21 @@ export default function Profile(props) {
   })
 
   const saveProfile = async () => {
+    console.log("P: ", profileData);
+    
     let profilePicUrl = profileData.profilePictureUrl
     let bgPicUrl = profileData.bgPictureUrl
 
     //delete previous image
     // console.log("Pass delete1" + profileData.profilePictureUrl)
     fetchProfile(email,provider)
-    if (
-      originalProfilePicURL &&
-      originalProfilePicURL.startsWith("https://")
-    ) {
-      console.log("Pass delete2" + profileData.profilePictureUrl)
-      await deleteImage(originalProfilePicURL)
-    }
+    // if (
+    //   originalProfilePicURL &&
+    //   originalProfilePicURL.startsWith("https://")
+    // ) {
+    //   console.log("Pass delete2" + profileData.profilePictureUrl)
+    //   await deleteImage(originalProfilePicURL)
+    // }
 
     if (newProfilePic) {
       const formData = new FormData()
@@ -191,26 +193,28 @@ export default function Profile(props) {
 
   const handleCancel = () => {
     // Reset input fields and images to their default values
-    setProfileData({
-      firstname: "",
-      lastname: "",
-      bio: "",
-      profilePictureUrl: null,
-      bgPictureUrl: null,
-    })
+    // setProfileData({
+    //   firstname: "",
+    //   lastname: "",
+    //   bio: "",
+    //   profilePictureUrl: null,
+    //   bgPictureUrl: null,
+    // })
 
-    // Clear the file input for profile picture
-    setNewProfilePic(null)
-    if (profilePicRef.current) {
-      profilePicRef.current.value = "" // This directly resets the file input
-    }
+    // // Clear the file input for profile picture
+    // setNewProfilePic(null)
+    // // if (profilePicRef.current) {
+    // //   profilePicRef.current.value = "" // This directly resets the file input
+    // // }
 
-    setNewBackgroundPic(null)
-    if (backgroundPicRef.current) {
-      backgroundPicRef.current.value = "" // Reset the background file input as well
-    }
+    // setNewBackgroundPic(null)
+    // // if (backgroundPicRef.current) {
+    // //   backgroundPicRef.current.value = "" // Reset the background file input as well
+    // // }
 
-    // Hide the editable fields again
+    // // Hide the editable fields again
+    fetchProfile(email, provider)
+
     setShowEditable(false)
   }
 
@@ -337,10 +341,23 @@ export default function Profile(props) {
                   alt="add photo"
                   width={45}
                   className="opacity-60"
-                  onChange={handleBackgroundPicChange}
+                  // onChange={handleBackgroundPicChange}
+                  // ref={backgroundPicRef}
+                  
                 />
               </label>
             )}
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                handleBackgroundPicChange(e)
+              }}
+              className="hidden"
+              id="profilePicInput"
+              ref={backgroundPicRef}
+            />
             <button
               onClick={action}
               className="absolute top-0 right-0 mt-4 mr-4 z-10"
