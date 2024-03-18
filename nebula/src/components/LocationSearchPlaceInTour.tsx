@@ -5,15 +5,16 @@ import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
 import { useRouter } from "next/router";
+import AddTour from "./AddTour";
 
-interface ILocationShowAndSearch {
+interface ILocationSearchPlaceInTour {
   text?: string;
   location?: [number, number];
   onLocationChange?: (location: [number, number], placeName: string) => void; // Callback for changing the location
 }
 
-const LocationShowAndSearch: React.FunctionComponent<
-  ILocationShowAndSearch
+const LocationSearchPlaceInTour: React.FunctionComponent<
+  ILocationSearchPlaceInTour
 > = ({ text, location, onLocationChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const {
@@ -168,4 +169,4 @@ const LocationShowAndSearch: React.FunctionComponent<
     </>
   );
 };
-export default LocationShowAndSearch;
+export default LocationSearchPlaceInTour;

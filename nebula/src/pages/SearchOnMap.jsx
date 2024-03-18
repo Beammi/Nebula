@@ -2,6 +2,7 @@
 import SearchBar from "@/components/SearchBar";
 import ProfileButton from "@/components/ProfileButton";
 import DynamicMap from "@/components/DynamicMap";
+import DynamicMapForSearchLoaction from "../components/DynamicMapForSearchLoaction"
 import Button from "@/components/Button";
 import AddNebu from "@/components/AddNebu";
 import AddTour from "@/components/AddTour";
@@ -75,7 +76,7 @@ export default function SearchOnMap() {
           <div className="flex w-full justify-center md:justify-normal"></div>
         </div>
         <div className="absolute z-0 w-full h-full">
-          <DynamicMap />
+          <DynamicMapForSearchLoaction />
         </div>
       </div>
       <MoveablePin />
