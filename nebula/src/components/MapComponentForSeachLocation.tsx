@@ -54,7 +54,7 @@ export const placesData = [
   // Add more places as needed
 ]
 
-const MyMap: React.FC = () => {
+const MyMapForSearch: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string
     description: string
@@ -170,7 +170,7 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <LocationShowAndSearch text={currentPlace} location={currentPosition} />
+      <LocationSearchPlaceInTour text={placeName} location={currentPosition} />
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
@@ -193,4 +193,4 @@ const MapClickHandler: React.FC<MapClickHandlerProps> = ({
   return null
 }
 
-export default MyMap
+export default MyMapForSearch
