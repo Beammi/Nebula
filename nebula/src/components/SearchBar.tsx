@@ -110,32 +110,23 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     
 
     if (key.trim().length === 0 || key == null) { // Clear suggestions if input is empty
-      setShowSuggestions(false);
       setSuggestions([]);
+      setShowSuggestions(false);
+      // setSuggestions([]);
       return; // Exit early to prevent further execution of the function
     }
 
-    // if(key === ""){
-    //   setShowSuggestions(false)
-    // }
-
-    // if (key === "") { // Clear suggestions if input is empty
-    //   // setSuggestions([]);
-    //   setShowSuggestions(false);
-    //   setTimeout(() => setSuggestions([]), 100); // Introduce a slight delay before clearing suggestions
-    //   return;
-    // }
-
-    if(key !== ""){    
-    
-      let url = `/api/nebu/getUsersByDisplayName?searchKey=${key}`
+    if(key !== ""){
+      
+      let url = `/api/nebu/getNebuByKeyword?searchKey=${key}`
       try {
         const response = await fetch(url)
         if (!response.ok) {
           throw new Error("Network response was not ok")
         }
-        const data: string[] = await response.json(); // normal array same as write in api
-        data.forEach(name => formattedData.push({ value: name, type: "user" }));
+        const data: string[] = await response.json();             
+        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
+        data.forEach(name => formattedData.push({ value: name, type: "nebu" }));
 
       } catch (error) {
         console.error("Fetch error:", error)
@@ -154,22 +145,22 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       } catch (error) {
         console.error("Fetch error:", error)
       }
-
-      url = `/api/nebu/getNebuByKeyword?searchKey=${key}`
+    
+      url = `/api/nebu/getUsersByDisplayName?searchKey=${key}`
       try {
         const response = await fetch(url)
         if (!response.ok) {
           throw new Error("Network response was not ok")
         }
-        const data: string[] = await response.json();             
-        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
-        data.forEach(name => formattedData.push({ value: name, type: "nebu" }));
+        const data: string[] = await response.json(); // normal array same as write in api
+        data.forEach(name => formattedData.push({ value: name, type: "user" }));
 
       } catch (error) {
         console.error("Fetch error:", error)
       }
 
-      setSuggestions(formattedData)        
+      setSuggestions(formattedData)
+      // setSuggestions([]);        
       setShowSuggestions(suggestions.length !== 0);
       console.log(suggestions);  
     }
@@ -180,8 +171,9 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   useEffect(() => {
     // Check if input is empty after setting suggestions
     if (inputValue === "") {
-      setShowSuggestions(false);
       setSuggestions([]);
+      setShowSuggestions(false);
+      // setSuggestions([]);
     }
   }, [inputValue]);
   
