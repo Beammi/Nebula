@@ -30,6 +30,8 @@ export default function AddNebu(props) {
   const [endDate, setEndDate] = useState(null)
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
+  const [phoneNumber,setPhoneNumber] = useState("")
+  const [website,setWebsite] = useState("")
   const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
     useLocation()
 
@@ -213,6 +215,8 @@ export default function AddNebu(props) {
           close_time: closeTime,
           provider: provider,
           email: email,
+          phone_number: phoneNumber,
+          website
         }),
       })
 
