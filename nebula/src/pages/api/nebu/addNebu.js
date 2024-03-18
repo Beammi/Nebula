@@ -30,6 +30,8 @@ async function nebuCreationHandler(req, res) {
     close_time,
     provider,
     email,
+    phone_number,
+    website,
   } = req.body
   
   // Optionally, validate the input data here
