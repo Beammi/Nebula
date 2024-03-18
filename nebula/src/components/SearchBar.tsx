@@ -6,6 +6,7 @@ import smallPin from "../../public/images/smallPin.png"
 import smallFlag from "../../public/images/smallFlag.png"
 import smallUser from "../../public/images/smallUser.png"
 import smallTag from "../../public/images/smallTag.png"
+import smallThinPin from "../../public/images/placePinIcon.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
 import Bookmark from "@/components/Bookmark"
@@ -83,6 +84,8 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   // Function to handle suggestion click
   const handleSuggestionClick = (suggestion: { value: string; type: string }) => {
 
+    setInputValue(suggestion.value);
+    
     if(suggestion.type === "tag") {
       setShowTagSuggestion(true);
       setTagSuggestValue(suggestion.value)
@@ -93,9 +96,6 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       setShowAccountProfile(true)
       setAccountNameValue(suggestion.value)
 
-    }
-    else{
-      setInputValue(suggestion.value);
     }
 
     setShowSuggestions(false);
@@ -207,7 +207,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {(suggestion.type === "nebu") && 
-                    <figure><Image src={smallPin} alt="pic" className="" width={20}/></figure>
+                    <figure><Image src={smallPin} alt="pic" className="" width={23}/></figure>
+                  }
+                  {(suggestion.type === "place") && 
+                    <figure><Image src={smallThinPin} alt="pic" className="" width={23}/></figure>
                   }
                   {(suggestion.type === "tour") && 
                     <figure><Image src={smallFlag} alt="pic" className="" width={15}/></figure>
