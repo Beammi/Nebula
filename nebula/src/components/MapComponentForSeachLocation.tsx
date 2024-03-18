@@ -54,12 +54,16 @@ export const placesData = [
   // Add more places as needed
 ]
 
-const MyMap: React.FC = () => {
+const MyMapForSearch: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string
     description: string
   } | null>(null)
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false)
+  // const [currentPosition, setCurrentPosition] = useState<[number, number]>([
+  //   14.7563, 100.5018,
+  // ]) // Default to Bangkok
+  // const [currentPlace, setCurrentPlace] = useState("")
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
@@ -67,13 +71,13 @@ const MyMap: React.FC = () => {
         onCenterChange(center) // Callback to update parent component's state
       },
     })
-
+  
     return null
   }
   const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
     useLocation()
   const [placeName, setPlaceName] = useState("")
-  const [nebus, setNebus] = useState([])
+
   if (currentPosition === null) {
     const defaultLocation = [13.7563, 100.5018]
     setCurrentPosition(defaultLocation)
@@ -84,21 +88,15 @@ const MyMap: React.FC = () => {
     iconSize: [80, 80],
   })
 
-  const smallNebuPinIcon = new Icon({
-    iconUrl: smallPinIcon.src,
-    iconSize: [50,50]
-  })
-
   const currentLocationIcon = new Icon({
     iconUrl: currentPinLocation.src,
     iconSize: [18, 30],
   })
 
-  const handleMarkerClick = (nebu) => {
-    setSelectedPlace(nebu);
-    setPlaceInfoPanel(true);
-  };
-  
+  const handleMarkerClick = (place: { name: string; description: string }) => {
+    setSelectedPlace(place)
+    setPlaceInfoPanel(true) // click pin -> open only
+  }
 
   function closePlaceInfoPanel() {
     // for close
@@ -113,36 +111,19 @@ const MyMap: React.FC = () => {
     setMapCenter(center) // Update map center state
     console.log("Map Center: " + mapCenter)
     try {
-      const name = await getPlaceName(center.lat, center.lng) // Fetch place name
-      setPlaceName(name) // Update state with place name
+      const name = await getPlaceName(center.lat, center.lng); // Fetch place name
+      setPlaceName(name); // Update state with place name
     } catch (error) {
-      console.error("Failed to fetch place name:", error)
-      setPlaceName("Unable to fetch place name")
+      console.error("Failed to fetch place name:", error);
+      setPlaceName("Unable to fetch place name");
     }
-    console.log("Place name in the center: " + placeName)
+    console.log("Place name in the center: "+ placeName)
   }
-
-  useEffect(() => {
-    async function fetchNebuPosts() {
-      try {
-        const response = await fetch(
-          `/api/nebu/nebuPosts?lat=${mapCenter.lat}&lon=${mapCenter.lng}&radius=100`
-        )
-        if (!response.ok) throw new Error("Failed to fetch")
-        const data = await response.json()
-        setNebus(data)
-        // console.log("Nebu: " + JSON.stringify(nebus))
-      } catch (error) {
-        console.error("Error fetching Nebu posts:", error)
-      }
-    }
-
-    fetchNebuPosts()
-  }, [mapCenter])
+  
   return (
     <div className="h-screen relative">
       <PlaceInfoPanel
-        nebu={selectedPlace}
+        placeData={selectedPlace}
         toggle={placeInfoPanel}
         action={closePlaceInfoPanel}
       />
@@ -175,7 +156,7 @@ const MyMap: React.FC = () => {
         </Marker> */}
         <MapCenterEvents onCenterChange={handleCenterChange} />
 
-        {/* {placesData.map((place, index) => (
+        {placesData.map((place, index) => (
           <Marker
             key={index}
             position={[place.lat, place.lon]}
@@ -184,23 +165,12 @@ const MyMap: React.FC = () => {
           >
             <Popup>{place.name}</Popup>
           </Marker>
-        ))} */}
-        {nebus.map((nebu, index) => (
-          <Marker
-            key={index}
-            position={[nebu.latitude, nebu.longitude]} // Ensure your nebu objects have latitude and longitude properties
-            icon={smallNebuPinIcon}
-            eventHandlers={{
-              click: () => handleMarkerClick(nebu),
-            }}
-          >
-            <Popup>{nebu.title}</Popup>
-          </Marker>
         ))}
+
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <LocationShowAndSearch text={currentPlace} location={currentPosition} />
+      <LocationSearchPlaceInTour text={placeName} location={currentPosition} />
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
@@ -223,4 +193,4 @@ const MapClickHandler: React.FC<MapClickHandlerProps> = ({
   return null
 }
 
-export default MyMap
+export default MyMapForSearch
