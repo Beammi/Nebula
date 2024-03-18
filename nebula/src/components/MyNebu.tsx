@@ -248,15 +248,15 @@ export default function MyNebu(props) {
               >
                 {showInfo[index] && (
                   <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md">
-                    <h3 className="text-md mt-2">{item.title}</h3>
+                    <h3 className="text-lg mt-2">{item.title}</h3>
                     <p className="text-sm text-gray-600">
                       Duration: {item.duration}
                     </p>
-                    <p className="font-normal">{item.description}</p>
+                    <p className="font-normal line-clamp-3 lg:line-clamp-4">{item.description}</p>
                     <div className="flex flex-col md:flex-row">
                       <Button
                         type="button"
-                        buttonStyle="btn bg-yellow text-white btn-xs"
+                        buttonStyle="px-1 lg:px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm font-normal"
                         label={`#${item.official_tag}`}
                       ></Button>
                       <div className="flex gap-x-2 overflow-x-scroll">
@@ -268,22 +268,23 @@ export default function MyNebu(props) {
                               <Button
                                 key={index} // Using index as a key, consider a more stable key if possible
                                 type="button"
-                                buttonStyle="btn bg-grey text-black btn-xs"
+                                buttonStyle="px-1 lg:px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
                                 label={`#${tag}`} // Prepend "#" to each tag name
                               />
                             ))}
                       </div>
                     </div>
-                    <div className="flex gap-x-2 overflow-x-scroll">
+                    <div className="flex gap-x-2 w-full overflow-x-scroll">
                       {item.images.map((imgUrl, imgIndex) =>
                         imgUrl ? ( // Check if imgUrl is truthy (not null, undefined, or empty)
-                          <figure key={imgIndex}>
+                          <figure key={imgIndex} className="w-[150px] flex-shrink-0">
                             <Image
                               alt={`image-${imgIndex}`}
                               src={imgUrl}
-                              width={100}
-                              height={100}
-                            />
+                              width={150}
+                              height={150}
+                              className="object-cover w-full h-full "
+                            />                            
                           </figure>
                         ) : (
                           // Optionally render a placeholder if the URL is not available
