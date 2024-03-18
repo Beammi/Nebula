@@ -8,9 +8,7 @@ import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
 import MoveablePin from "@/components/MoveablePin";
 
-export default function AddTour(props) {
-  const addTourState = props.toggle;
-  const action = props.action;
+export default function AddTour({toggle, action, placeName}) {
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
   const [selected, setSelected] = useState("Official's Tag");
   const [OpenTag, setOpenTag] = useState(false);
@@ -49,10 +47,15 @@ export default function AddTour(props) {
   }, [confirmedAdditionalTags]);
 
   useEffect(() => {
-    const savedTags = JSON.parse(localStorage.getItem("confirmedAdditionalTags"));
+    const savedTags = JSON.parse(
+      localStorage.getItem("confirmedAdditionalTags")
+    );
     if (savedTags) setConfirmedAdditionalTags(savedTags);
   }, []);
-  
+
+  useEffect(() => {
+    console.log("Place Name in AddTour:", placeName);
+  }, [placeName]);
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
@@ -74,7 +77,7 @@ export default function AddTour(props) {
     <>
       <div
         className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-          addTourState
+          toggle
             ? "visible opacity-100 drop-shadow-2xl"
             : "rounded-sm invisible opacity-0"
         } `}
@@ -142,7 +145,9 @@ export default function AddTour(props) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Route</h3>
-            <div></div>
+            <div>
+              <h3 className="text-lg text-black">{placeName}</h3>
+            </div>
             <div className="flex flex-row items-center">
               <Button
                 type="button"

@@ -25,6 +25,8 @@ import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 
+import AddTour from "./AddTour";
+
 // Sample data for places
 export const placesData = [
   {
@@ -169,6 +171,7 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
+      <AddTour placeName={placeName} />
       <LocationShowAndSearch text={currentPlace} location={currentPosition} />
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
