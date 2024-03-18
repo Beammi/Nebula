@@ -14,13 +14,13 @@ export default async function getTagByKeywordHandler(req, res) {
 
   try {
     const queryUserTag = `
-        SELECT tag_name FROM tag
+        SELECT DISTINCT tag_name FROM tag
         WHERE LOWER(tag_name) LIKE LOWER('%${searchKey}%');
     `
     const resultUserTag = await db.query(queryUserTag)
 
     const queryOfficialTag = `
-        SELECT official_tag FROM nebu
+        SELECT DISTINCT official_tag FROM nebu
         WHERE LOWER(official_tag) LIKE LOWER('%${searchKey}%');
     `
     const resultOfficialTag = await db.query(queryOfficialTag)

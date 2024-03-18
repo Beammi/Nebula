@@ -106,6 +106,14 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     const formattedData: { value: string, type: string }[] = [];
     const key = event.target.value;
     setInputValue(key)
+    // console.log("K: ", key, ", ", key);
+    
+
+    if (key.trim().length === 0 || key == null) { // Clear suggestions if input is empty
+      setShowSuggestions(false);
+      setSuggestions([]);
+      return; // Exit early to prevent further execution of the function
+    }
 
     // if(key === ""){
     //   setShowSuggestions(false)
@@ -147,10 +155,24 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         console.error("Fetch error:", error)
       }
 
+      url = `/api/nebu/getNebuByKeyword?searchKey=${key}`
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        const data: string[] = await response.json();             
+        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
+        data.forEach(name => formattedData.push({ value: name, type: "nebu" }));
+
+      } catch (error) {
+        console.error("Fetch error:", error)
+      }
+
       setSuggestions(formattedData)        
       setShowSuggestions(suggestions.length !== 0);
       console.log(suggestions);  
-    } 
+    }
 
     
   };
@@ -192,7 +214,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   className="py-2 pl-4 cursor-pointer hover:bg-gray-400 flex items-center gap-x-3"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
-                  {(suggestion.type === "place") && 
+                  {(suggestion.type === "nebu") && 
                     <figure><Image src={smallPin} alt="pic" className="" width={20}/></figure>
                   }
                   {(suggestion.type === "tour") && 
