@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 
 interface ILocationShowAndSearch {
   text?: string;
@@ -23,6 +23,7 @@ const LocationShowAndSearch: React.FunctionComponent<
     setCurrentPosition,
   } = useLocation();
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [closeChangeLocation, setCloseChangeLocation] = useState(true);
   async function searchPlace(query) {
     // Replace spaces with '+' in the query for URL encoding
     const formattedQuery = query.replace(/\s/g, "+");
@@ -82,40 +83,43 @@ const LocationShowAndSearch: React.FunctionComponent<
     searchPlace(searchTerm);
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const handleConfirm = () =>{
-    router.push("/home")
-  }
+  const handleConfirm = () => {
+    router.push("/home");
+    setCloseChangeLocation(false);
+  };
 
   return (
     <>
-      <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2">
-        <div className="card w-48 md:w-96 bg-white text-black shadow-lg">
-          <div className="card-body w-full">
-            <h2 className="card-title">Location</h2>
-            <p className="h-10 overflow-y-auto text-sm">{text}</p>
-            <div className="card-actions flex justify-between pt-2">
-              <div>
-                <button
-                  className="btn btn-sm btn-primary text-blue bg-white border-none hover:bg-dark-grey"
-                  onClick={handleClickChange}
-                >
-                  Change location
-                </button>
-              </div>
-              <div>
-                <button
-                  className="btn btn-sm btn-primary text-white"
-                  onClick={handleConfirm}
-                >
-                  Confirm
-                </button>
+      {closeChangeLocation && (
+        <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2">
+          <div className="card w-48 md:w-96 bg-white text-black shadow-lg">
+            <div className="card-body w-full">
+              <h2 className="card-title">Location</h2>
+              <p className="h-10 overflow-y-auto text-sm">{text}</p>
+              <div className="card-actions flex justify-between pt-2">
+                <div>
+                  <button
+                    className="btn btn-sm btn-primary text-blue bg-white border-none hover:bg-dark-grey"
+                    onClick={handleClickChange}
+                  >
+                    Change location
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="btn btn-sm btn-primary text-white"
+                    onClick={handleConfirm}
+                  >
+                    Confirm
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       {/* Popup Card */}
       {showPopup && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
