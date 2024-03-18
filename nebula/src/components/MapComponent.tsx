@@ -130,7 +130,7 @@ const MyMap: React.FC = () => {
         if (!response.ok) throw new Error("Failed to fetch")
         const data = await response.json()
         setNebus(data)
-        console.log("Nebu: " + JSON.stringify(nebus))
+        // console.log("Nebu: " + JSON.stringify(nebus))
       } catch (error) {
         console.error("Error fetching Nebu posts:", error)
       }

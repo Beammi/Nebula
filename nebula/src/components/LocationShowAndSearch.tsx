@@ -1,91 +1,128 @@
 //LocationShowAndSearch.tsx
 
-import React from "react";
-import { useState } from "react";
-import { useLocation } from "@/contexts/LocationContext";
-import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
+import React from "react"
+import { useState } from "react"
+import { useLocation } from "@/contexts/LocationContext"
+import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import { useRouter } from "next/router"
 
 interface ILocationShowAndSearch {
-  text?: string;
-  location?: [number, number];
-  onLocationChange?: (location: [number, number], placeName: string) => void; // Callback for changing the location
+  text?: string
+  location?: [number, number]
+  onLocationChange?: (location: [number, number], placeName: string) => void // Callback for changing the location
 }
 
 const LocationShowAndSearch: React.FunctionComponent<
   ILocationShowAndSearch
 > = ({ text, location, onLocationChange }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
   const {
     currentPlace,
     setCurrentPlace,
     setEnableContinuousUpdate,
     setCurrentPosition,
-  } = useLocation();
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  } = useLocation()
+  const [showPopup, setShowPopup] = useState(false) // State to control popup visibility
+  const [searchResults, setSearchResults] = useState([])
+
   async function searchPlace(query) {
     // Replace spaces with '+' in the query for URL encoding
-    const formattedQuery = query.replace(/\s/g, "+");
+    const formattedQuery = query.replace(/\s/g, "+")
 
     // Construct the URL for the Nominatim API request
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
       formattedQuery
-    )}`;
+    )}`
 
+    // try {
+    //   // Perform the fetch request to the Nominatim API
+    //   const response = await fetch(url, {
+    //     method: "GET", // GET request to perform the search
+    //     headers: {
+    //       // Set a meaningful User-Agent header
+    //       "User-Agent": "Nebula/1.0 (63011290@kmitl.ac.th)",
+    //     },
+    //   })
+
+    //   // Parse the JSON response
+    //   const data = await response.json()
+
+    //   // Log the entire response data to see what's available
+    //   console.log(data)
+
+    //   // Example: Log the latitude and longitude of the first result
+    //   if (data.length > 0) {
+    //     console.log(`Latitude: ${data[0].lat}, Longitude: ${data[0].lon}`)
+    //     setCurrentPosition([data[0].lat, data[0].lon])
+    //     try {
+    //       const placeName = await getPlaceName(data[0].lat, data[0].lon)
+    //       setCurrentPlace(placeName)
+    //     } catch (error) {
+    //       console.error("Failed to fetch place name:", error)
+    //     }
+    //   } else {
+    //     console.log("No results found.")
+    //   }
+    // } catch (error) {
+    //   console.error("Error searching place:", error)
+    // }
     try {
-      // Perform the fetch request to the Nominatim API
       const response = await fetch(url, {
         method: "GET", // GET request to perform the search
         headers: {
           // Set a meaningful User-Agent header
           "User-Agent": "Nebula/1.0 (63011290@kmitl.ac.th)",
         },
-      });
+      })
+      const data = await response.json()
+      console.log(data)
 
-      // Parse the JSON response
-      const data = await response.json();
-
-      // Log the entire response data to see what's available
-      console.log(data);
-
-      // Example: Log the latitude and longitude of the first result
       if (data.length > 0) {
-        console.log(`Latitude: ${data[0].lat}, Longitude: ${data[0].lon}`);
-        setCurrentPosition([data[0].lat, data[0].lon]);
-        try {
-          const placeName = await getPlaceName(data[0].lat, data[0].lon);
-          setCurrentPlace(placeName);
-        } catch (error) {
-          console.error("Failed to fetch place name:", error);
-        }
+        // Update search results state with fetched data
+        setSearchResults(data)
       } else {
-        console.log("No results found.");
+        console.log("No results found.")
+        setSearchResults([]) // Clear previous results if no new results found
       }
     } catch (error) {
-      console.error("Error searching place:", error);
+      console.error("Error searching place:", error)
     }
   }
   const handleClickChange = () => {
-    console.log("Change location to:", searchTerm);
-    setEnableContinuousUpdate(false); // Stop continuous location updates
-    setShowPopup(true); // Show the popup
+    console.log("Change location to:", searchTerm)
+    setEnableContinuousUpdate(false) // Stop continuous location updates
+    setShowPopup(true) // Show the popup
 
     // If you had coordinates for the new location, you would call onLocationChange
     // e.g., onLocationChange([newLat, newLng], searchTerm);
-  };
+  }
   const handleClosePopup = () => {
-    setShowPopup(false); // Hide the popup
+    setShowPopup(false) // Hide the popup
     // setEnableContinuousUpdate(true)
-  };
+  }
 
   const handleSearchPlace = () => {
-    searchPlace(searchTerm);
-  };
+    searchPlace(searchTerm)
+  }
 
   const router = useRouter()
 
-  const handleConfirm = () =>{
+  const handleConfirm = () => {
     router.push("/home")
+  }
+  const handleSelectPlace = (result) => {
+    // Assuming result contains latitude (lat) and longitude (lon)
+    setCurrentPosition([parseFloat(result.lat), parseFloat(result.lon)])
+    setCurrentPlace(result.display_name) // Adjust based on your data structure
+    setShowPopup(false) // Optionally close the popup after selection
+
+    // If provided, call the onLocationChange callback
+    if (onLocationChange) {
+      onLocationChange(
+        [parseFloat(result.lat), parseFloat(result.lon)],
+        result.display_name
+      )
+    }
   }
 
   return (
@@ -150,7 +187,18 @@ const LocationShowAndSearch: React.FunctionComponent<
                   Search
                 </button>
               </div>
-
+              <div className="list w-full overflow-auto">
+                {searchResults.map((result, index) => (
+                  <div
+                    key={index}
+                    className="list-item"
+                    onClick={() => handleSelectPlace(result)}
+                  >
+                    {result.display_name}{" "}
+                    {/* Adjust based on your data structure */}
+                  </div>
+                ))}
+              </div>
               <button
                 className="btn btn-sm btn-error"
                 onClick={handleClosePopup}
@@ -162,6 +210,6 @@ const LocationShowAndSearch: React.FunctionComponent<
         </div>
       )}
     </>
-  );
-};
-export default LocationShowAndSearch;
+  )
+}
+export default LocationShowAndSearch
