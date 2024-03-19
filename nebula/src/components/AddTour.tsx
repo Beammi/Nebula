@@ -6,7 +6,7 @@ import close from "../../public/images/close.png";
 import NebuTag from "./NebuTag";
 import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
-import MoveablePin from "@/components/MoveablePin";
+import MoveablePin from "@/components/map/MoveablePin";
 
 export default function AddTour({toggle, action, placeName}) {
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
