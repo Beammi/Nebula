@@ -187,7 +187,7 @@ const LocationShowAndSearch: React.FunctionComponent<
                   Search
                 </button>
               </div>
-              <div className="list w-full overflow-auto">
+              <div className="list w-full overflow-auto text-black">
                 {searchResults.map((result, index) => (
                   <div
                     key={index}
