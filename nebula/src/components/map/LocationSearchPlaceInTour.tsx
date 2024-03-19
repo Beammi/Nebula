@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
 import { useRouter } from "next/router";
-import AddTour from "./AddTour";
+import AddTour from "../AddTour";
 
 interface ILocationSearchPlaceInTour {
   text?: string;
