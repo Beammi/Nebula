@@ -27,6 +27,7 @@ export const LocationProvider = ({ children }) => {
   const [currentPosition, setCurrentPosition] = useState([13.7563, 100.5018])
   const [currentPlace, setCurrentPlace] = useState("")
   const [enableContinuousUpdate, setEnableContinuousUpdate] = useState(true)
+  const [showMovablePin, setShowMovablePin] = useState(false)
   const updateTimeoutRef = useRef(null) // Ref to store the timeout ID
   const cancelUpdateRef = useRef(false) // Ref to manage cancellation
 
@@ -100,6 +101,8 @@ export const LocationProvider = ({ children }) => {
         currentPlace,
         setCurrentPlace,
         setEnableContinuousUpdate,
+        showMovablePin,
+        setShowMovablePin,
       }}
     >
       {children}

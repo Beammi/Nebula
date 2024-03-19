@@ -24,35 +24,8 @@ import currentPinLocation from "../../../public/images/pin_current_location.png"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
-import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour";
-
-// Sample data for places
-export const placesData = [
-  {
-    name: "Tower Bridge",
-    description:
-      "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-    image: { towerBridgePic },
-    pinSize: "big",
-    lat: 51.505,
-    lon: -0.09,
-  },
-  {
-    name: "London Stadium",
-    description: "Home of West Ham United",
-    image: { sherlockPic },
-    pinSize: "big",
-    lat: 51.51,
-    lon: -0.1,
-  },
-  {
-    name: "The Sherlock Holmes Museum",
-    description: "Sherlock Holmes Museum located in London",
-    lat: 51.515,
-    lon: -0.12,
-  },
-  // Add more places as needed
-]
+import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
+import MoveablePin from "./MoveablePin"
 
 const MyMap: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
@@ -63,17 +36,33 @@ const MyMap: React.FC = () => {
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
-        const center = e.target.getCenter()
-        onCenterChange(center) // Callback to update parent component's state
+        const newCenter = e.target.getCenter()
+        onCenterChange(newCenter) // Existing functionality
+        // setShowMovablePin(true); // Keep showing the movable pin on map move
+        // Fetch and update place name for new center
+        getPlaceName(newCenter.lat, newCenter.lng)
+          .then((newPlaceName) => {
+            setCurrentPlace(newPlaceName) // Assuming this function updates the context or props
+          })
+          .catch((error) => console.error("Failed to fetch place name:", error))
       },
     })
 
     return null
   }
-  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
-    useLocation()
+  const {
+    currentPosition,
+    setCurrentPosition,
+    currentPlace,
+    setCurrentPlace,
+    showMovablePin,
+    setShowMovablePin,
+  } = useLocation()
+  console.log("showMovablePin:", showMovablePin) // Debugging log
+  console.log("current position" + currentPosition + currentPlace)
   const [placeName, setPlaceName] = useState("")
   const [nebus, setNebus] = useState([])
+
   if (currentPosition === null) {
     const defaultLocation = [13.7563, 100.5018]
     setCurrentPosition(defaultLocation)
@@ -86,7 +75,7 @@ const MyMap: React.FC = () => {
 
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
-    iconSize: [50,50]
+    iconSize: [50, 50],
   })
 
   const currentLocationIcon = new Icon({
@@ -95,10 +84,9 @@ const MyMap: React.FC = () => {
   })
 
   const handleMarkerClick = (nebu) => {
-    setSelectedPlace(nebu);
-    setPlaceInfoPanel(true);
-  };
-  
+    setSelectedPlace(nebu)
+    setPlaceInfoPanel(true)
+  }
 
   function closePlaceInfoPanel() {
     // for close
@@ -121,7 +109,12 @@ const MyMap: React.FC = () => {
     }
     console.log("Place name in the center: " + placeName)
   }
+  useEffect(() => {
+    setShowMovablePin(false)
+  }, [])
+  useEffect(()=>{
 
+  },[currentPosition])
   useEffect(() => {
     async function fetchNebuPosts() {
       try {
@@ -136,9 +129,11 @@ const MyMap: React.FC = () => {
         console.error("Error fetching Nebu posts:", error)
       }
     }
+    console.log(showMovablePin)
 
     fetchNebuPosts()
   }, [mapCenter])
+
   return (
     <div className="h-screen relative">
       <PlaceInfoPanel
@@ -159,13 +154,7 @@ const MyMap: React.FC = () => {
       >
         <UpdateMapView position={currentPosition} />
         {/* Use currentPosition.toString() as a key for the Marker */}
-        <Marker
-          key={`position-${currentPosition[0]}-${currentPosition[1]}`}
-          position={currentPosition}
-          icon={currentLocationIcon}
-        >
-          <Popup>Current Location.</Popup>
-        </Marker>
+        
 
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -185,6 +174,13 @@ const MyMap: React.FC = () => {
             <Popup>{place.name}</Popup>
           </Marker>
         ))} */}
+        <Marker
+          key={`position-${currentPosition[0]}-${currentPosition[1]}`}
+          position={currentPosition}
+          icon={currentLocationIcon}
+        >
+          <Popup>Current Location.</Popup>
+        </Marker>
         {nebus.map((nebu, index) => (
           <Marker
             key={index}
@@ -200,7 +196,9 @@ const MyMap: React.FC = () => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <LocationShowAndSearch text={currentPlace} location={currentPosition} />
+      {showMovablePin && <MoveablePin />}
+
+      <LocationShowAndSearch text={currentPlace} location={mapCenter} />
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
