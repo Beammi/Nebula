@@ -62,7 +62,7 @@ export default function AccountProfile(props) {
         <div className="flex flex-col justify-start">
           <figure className="w-full h-[200px]">
             {" "}
-            <img src={accountData[0].bg_picture_url ? accountData[0].bg_picture_url : altImage.src} alt="pic" className="w-full h-[200px]" />{" "}
+            <img src={accountData[0]?.bg_picture_url ? accountData[0].bg_picture_url : altImage.src} alt="pic" className="w-full h-[200px]" />{" "}
           </figure>
           <button
             onClick={action}
@@ -73,7 +73,7 @@ export default function AccountProfile(props) {
           <div className="pl-3 lg:px-8 flex">
             <figure className="lg:w-[87px] w-full z-10 lg:-mt-10 -mt-8">
               {" "}
-              <img src={accountData[0].profile_picture_url ? accountData[0].profile_picture_url : altImage.src} alt="pic" className="w-full" />{" "}
+              <img src={accountData[0]?.profile_picture_url ? accountData[0].profile_picture_url : altImage.src} alt="pic" className="w-full" />{" "}
             </figure>
             {/* <h3 className="text-2xl text-black ml-3 mt-1">{accountName}</h3> */}
             <h3 className="text-2xl text-black ml-3 mt-1">{accountData[0]?.email}</h3>
