@@ -6,9 +6,10 @@ import close from "../../public/images/close.png";
 import NebuTag from "./NebuTag";
 import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
-import MoveablePin from "@/components/MoveablePin";
 
-export default function AddTour({toggle, action, placeName}) {
+
+export default function AddTour({toggle, action, text}) {
+  console.log("Text prop value:", toggle);
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
   const [selected, setSelected] = useState("Official's Tag");
   const [OpenTag, setOpenTag] = useState(false);
@@ -40,11 +41,11 @@ export default function AddTour({toggle, action, placeName}) {
   }, [confirmedAdditionalTags]);
 
   useEffect(() => {
-    const storedPlaceName = localStorage.getItem('placeName');
-    if (storedPlaceName) {
-      setPlaceNameTemp(storedPlaceName);
+    const storedText = localStorage.getItem('text');
+    if (storedText) {
+      setPlaceNameTemp(storedText);
     }
-  }, [placeName]);
+  }, [text]);
   
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
@@ -134,8 +135,8 @@ export default function AddTour({toggle, action, placeName}) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Route</h3>
-            <div className=" w-fit h-6 text-black">
-              <h3 className="text-lg text-black bg-yellow">place: {placeNameTemp}</h3>
+            <div className=" w-fit text-black">
+                <h3 className="bg-yellow">{placeNameTemp}</h3>
             </div>
             <div className="flex flex-row items-center">
               <Button
