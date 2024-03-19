@@ -15,10 +15,11 @@ import Link from 'next/link'
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag";
 
+
 export default function TagSuggestion(props) {
   const tagSuggestionState = props.toggle;
   const action = props.action;
-  const tagName = props.tagName;
+  const tag = props.tagName;
 
   // const mockHashtagData = [
   //   {
@@ -54,9 +55,30 @@ export default function TagSuggestion(props) {
   const [tagData, setTagData] = useState([])
   // const [userTag, setUserTag] = useState([])
   const [userTag, setUserTag] = useState<{ value: string; type: string }[]>([]);
+  const [tagName, setTagName] = useState("");
+
+  // console.log("t: ", tag);
+  // console.log("ttt: ", tagName);
+
+  useEffect(() => {
+    setTagName(tag);
+    fetchData()
+    // setTagData([])
+    // setUserTag([])
+
+  }, [tag, tagName])
+
+  function tagNameClick(tagName) {
+    setTagName(tagName)
+    setTagData([])
+    setUserTag([])
+    fetchData()
+  }
+  
 
   async function fetchData() {
 
+    setTagData([])
     let url = `/api/nebu/getNebuByTag?tagName=${tagName}`
     try {
       const response = await fetch(url)
@@ -65,9 +87,27 @@ export default function TagSuggestion(props) {
       }
       const data: string[] = await response.json();             
       setTagData(data)
-      console.log("D: ", tagData);
+      console.log("tag data: ", tagData);
+
+      // data.map((d) => (
+      //   getUserTag(d)
+      // ))       
       // tagData.map(d => d.title)
-      console.log("DDD: ", tagData.map((d => d.title)));            
+      // console.log("DDD: ", tagData.map((d => d.title)));
+      // tagData.map((data) => (
+      //   getUserTag(data.title)
+      // ))
+
+      // Fetch user tags for each nebula
+      // const userTagPromises = tagData.map(nebu => getUserTag(nebu));
+      // const userTags = await Promise.all(userTagPromises);
+
+      // console.log("User Tags:", userTags);      
+      setUserTag([]); // clear tag if refetch from click tag  
+      const userTagPromises = data.map(nebu => getUserTag(nebu.title));
+      const userTags = await Promise.all(userTagPromises);
+
+      console.log("User Tags:", userTags);    
 
     } catch (error) {
       console.error("Fetch error:", error)
@@ -76,63 +116,63 @@ export default function TagSuggestion(props) {
 
   }
 
-  // async function getUserTag() {
-  //   const formattedData: { value: string, type: string }[] = [];
-
-  //   tagData.map(async(tagdata) => {          
-  //     let url = `/api/nebu/getUserTagFromNebu?nebuName=${tagdata.title}`
-  //     try {
-  //       const response = await fetch(url)
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok")
-  //       }
-  //       const data: string[] = await response.json();        
-  //       data.forEach(tagName => formattedData.push({ value: tagName, type: tagdata.title }));
-  //       // setUserTag(data)       
-  //       // setTagData(data)
-  //       // console.log("usertag: ", userTag);
-  //       // tagData.map(d => d.title)
-  //       // console.log("DDD: ", tagData.map((d => d.title)));            
-
-  //     } catch (error) {
-  //       console.error("Fetch error:", error)
-  //     }
-  //   })
-  //   setUserTag(formattedData)
-  //   console.log("userTag: ", userTag);
-    
-  // }
-
-  async function getUserTag() {
+  const getUserTag = async(nebuName) => {
+    // const formattedData: { value: string, type: string }[] = [];
     try {
-      const formattedData = await Promise.all(tagData.map(async(tagdata) => {          
-        let url = `/api/nebu/getUserTagFromNebu?nebuName=${tagdata.title}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();        
-        return { value: data, type: tagdata.title };
-      }));
+      const url = `/api/nebu/getUserTagFromNebu?nebuName=${nebuName}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      // Create an array of objects with value and type properties
+      const formattedData = data.map(tagName => ({ value: tagName, type: nebuName }));
       
-      // Flatten the array of arrays into a single array
-      // const flattenedData = formattedData.flat();
-  
-      setUserTag(formattedData);
-      console.log("userTag: ", userTag);
-      
+      // Update userTag state with the fetched data
+      // setUserTag(prevState => [...prevState, ...formattedData]);
+
+      // Filter out duplicate entries
+      // const uniqueFormattedData = formattedData.filter((item, index, self) =>
+      //     index === self.findIndex((t) => (
+      //         t.value === item.value && t.type === item.type
+      //     ))
+      // );
+
+      // Filter out duplicate entries using reduce method
+      const uniqueFormattedData = formattedData.reduce((uniqueItems, currentItem) => {
+          // Check if the current item is already present in the uniqueItems array
+          const isDuplicate = uniqueItems.some(item => item.value === currentItem.value && item.type === currentItem.type);
+
+          // If the current item is not a duplicate, add it to the uniqueItems array
+          if (!isDuplicate) {
+              uniqueItems.push(currentItem);
+          }
+
+          return uniqueItems;
+      }, []);
+
+      // Update userTag state with unique entries only
+      setUserTag(prevState => [...prevState, ...uniqueFormattedData]);
+
     } catch (error) {
       console.error("Fetch error:", error);
+      return [];
     }
   }
   
 
-  useEffect(() => {
-    fetchData()
-    getUserTag()
+  // useEffect(() => {
+  //   // fetchData()
+  //   setTagName(tag);
 
+  // }, [tagName])
 
-  }, [tagName]) // ***************
+  // useEffect(() => {
+  //   fetchData()
+  // }, [])
+
+  
 
   return (
     <div
@@ -172,16 +212,22 @@ export default function TagSuggestion(props) {
           
           {tagData.map((data, index) => (
             <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row">
-              <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.images[0]} alt="pic" className=" lg:h-auto"/></figure>
-              {/* <figure className="w-full lg:w-[20%] flex-shrink-0"><img src={marketPic} alt="pic" className=" lg:h-auto"/></figure> */}
+              <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.images[0]} alt="pic" className=" lg:h-auto"/></figure>              
               <div className="card-body flex flex-col justify-between">
                 {
                   // (data.type === "nebu") &&                  
                   <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
                     <figure className="lg:w-[3%]"><Image src={yellowPin} alt="pic" /></figure>
                     {data.title}
-                    <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.username}</p>
+                    <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
                   </h2>
+                  // <div className="card-title w-full lg:w-full flex flex-col lg:flex-row">
+                  //   <figure className="lg:w-[8%]"><Image src={yellowPin} alt="pic" /></figure>
+                  //   <div>
+                  //     <h2 className="font-normal text-base text-black">{data.title}</h2>
+                  //     <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
+                  //   </div>
+                  // </div>
                 }
 
                 {/* {
@@ -194,19 +240,13 @@ export default function TagSuggestion(props) {
                 }                 */}
                 <p className="font-medium">{data.address}</p>
                 <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.description}</p>
-                {/* {userTag.map((usertag) => (
-                  <div className='flex flex-row mt-1'>
-                    <div className='flex gap-2 flex-wrap'>
-                      <Link href="https://www.google.com/" className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link>
-                      <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</Link>                      
-                    </div>
-                  </div>
-                ))} */}
                 <div className='flex flex-row mt-1'>
                   <div className='flex gap-2 flex-wrap'>
-                    <Link href="https://www.google.com/" className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link>
+                    {/* <Link className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link> */}
+                    <button onClick={() => tagNameClick(data.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</ button>
                     {userTag.map((usertag) => (
-                      usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</Link>                    
+                      // usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag.value}</Link>                    
+                      usertag.type == data.title && <button onClick={() => tagNameClick(usertag.value)} className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag.value}</button>                    
                     ))}
                     {/* <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#bridge</Link>                     */}
                   </div>
