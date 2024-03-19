@@ -152,8 +152,13 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         if (!response.ok) {
           throw new Error("Network response was not ok")
         }
+        // const data: string[] = await response.json(); // normal array same as write in api
         const data: string[] = await response.json(); // normal array same as write in api
-        data.forEach(name => formattedData.push({ value: name, type: "user" }));
+        // data.forEach(name => formattedData.push({ value: name, type: "user" }));
+        // data.forEach(d => formattedData.push({ value: d, type: "user" }));
+        data.forEach(d => formattedData.push({ value: d.display_name, type: "user" }));
+        
+        // setAccountData(data)
 
       } catch (error) {
         console.error("Fetch error:", error)
