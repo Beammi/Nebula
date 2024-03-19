@@ -382,10 +382,10 @@ export default function Profile(props) {
             </button>
           </div>
 
-          {/* Profile picture part */}
-          <div className="px-8 flex ">
+          {/* Profile picture part */}          
+          <div className="pl-3 lg:px-8 flex ">
             <figure
-              className={`lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8 ${
+              className={`lg:w-[87px] w-full z-10 lg:-mt-10 -mt-8 ${
                 showEditable ? "cursor-pointer" : ""
               }`}
               onClick={() => showEditable && profilePicRef.current.click()}
@@ -397,9 +397,9 @@ export default function Profile(props) {
                     : altImage.src
                 } // Fallback to profilePic.src if profilePictureUrl is null
                 alt="Profile"
-                width={50}
-                height={50}
-                className={`w-52 ${
+                // width={50}
+                // height={50}
+                className={`w-full rounded-full ${
                   showEditable ? "filter brightness-75" : "filter-none"
                 }`}
               />
@@ -411,6 +411,7 @@ export default function Profile(props) {
                   showEditable ? "visible" : "invisible"
                 }`}
               />
+              
             </figure>
             <input
               type="file"

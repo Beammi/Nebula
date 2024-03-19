@@ -52,10 +52,12 @@ export default function TagSuggestion(props) {
   // ]
 
   const [tagData, setTagData] = useState([])
+  // const [userTag, setUserTag] = useState([])
+  const [userTag, setUserTag] = useState<{ value: string; type: string }[]>([]);
 
   async function fetchData() {
 
-    const url = `/api/nebu/getNebuByTag?tagName=${tagName}`
+    let url = `/api/nebu/getNebuByTag?tagName=${tagName}`
     try {
       const response = await fetch(url)
       if (!response.ok) {
@@ -70,14 +72,67 @@ export default function TagSuggestion(props) {
     } catch (error) {
       console.error("Fetch error:", error)
     }
+    
 
   }
 
+  // async function getUserTag() {
+  //   const formattedData: { value: string, type: string }[] = [];
+
+  //   tagData.map(async(tagdata) => {          
+  //     let url = `/api/nebu/getUserTagFromNebu?nebuName=${tagdata.title}`
+  //     try {
+  //       const response = await fetch(url)
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok")
+  //       }
+  //       const data: string[] = await response.json();        
+  //       data.forEach(tagName => formattedData.push({ value: tagName, type: tagdata.title }));
+  //       // setUserTag(data)       
+  //       // setTagData(data)
+  //       // console.log("usertag: ", userTag);
+  //       // tagData.map(d => d.title)
+  //       // console.log("DDD: ", tagData.map((d => d.title)));            
+
+  //     } catch (error) {
+  //       console.error("Fetch error:", error)
+  //     }
+  //   })
+  //   setUserTag(formattedData)
+  //   console.log("userTag: ", userTag);
+    
+  // }
+
+  async function getUserTag() {
+    try {
+      const formattedData = await Promise.all(tagData.map(async(tagdata) => {          
+        let url = `/api/nebu/getUserTagFromNebu?nebuName=${tagdata.title}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();        
+        return { value: data, type: tagdata.title };
+      }));
+      
+      // Flatten the array of arrays into a single array
+      // const flattenedData = formattedData.flat();
+  
+      setUserTag(formattedData);
+      console.log("userTag: ", userTag);
+      
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  }
+  
+
   useEffect(() => {
     fetchData()
+    getUserTag()
 
 
-  }, [tagName])
+  }, [tagName]) // ***************
 
   return (
     <div
@@ -139,12 +194,21 @@ export default function TagSuggestion(props) {
                 }                 */}
                 <p className="font-medium">{data.address}</p>
                 <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.description}</p>
+                {/* {userTag.map((usertag) => (
+                  <div className='flex flex-row mt-1'>
+                    <div className='flex gap-2 flex-wrap'>
+                      <Link href="https://www.google.com/" className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link>
+                      <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</Link>                      
+                    </div>
+                  </div>
+                ))} */}
                 <div className='flex flex-row mt-1'>
                   <div className='flex gap-2 flex-wrap'>
                     <Link href="https://www.google.com/" className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link>
-                    <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#bridge</Link>
-                    <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#natLikes</Link>
-                    <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#natLikes</Link>
+                    {userTag.map((usertag) => (
+                      usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</Link>                    
+                    ))}
+                    {/* <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#bridge</Link>                     */}
                   </div>
                 </div>
                 
