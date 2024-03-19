@@ -1,13 +1,13 @@
 //SearchOnMap.jsx
 import SearchBar from "@/components/SearchBar";
 import ProfileButton from "@/components/ProfileButton";
-import DynamicMap from "@/components/DynamicMap";
-import DynamicMapForSearchLoaction from "../components/DynamicMapForSearchLoaction"
+import DynamicMap from "@/components/map/DynamicMap";
+import DynamicMapForSearchLoaction from "@/components/map/DynamicMapForSearchLoaction"
 import Button from "@/components/Button";
-import AddNebu from "@/components/AddNebu";
+import AddNebu from "@/components/nebu/AddNebu";
 import AddTour from "@/components/AddTour";
 import AddPlaceModal from "@/components/AddPlaceModal";
-import MoveablePin from "@/components/MoveablePin";
+import MoveablePin from "@/components/map/MoveablePin";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";

@@ -3,9 +3,9 @@ import { useState } from "react";
 
 import Image from "next/image"
 
-import largePinIcon from "../../public/images/large-pin-icon.png"
-import mediumPinIcon from "../../public/images/medium-pin-icon.png"
-import smallPinIcon from "../../public/images/small-pin-icon.png"
+import largePinIcon from "../../../public/images/large-pin-icon.png"
+import mediumPinIcon from "../../../public/images/medium-pin-icon.png"
+import smallPinIcon from "../../../public/images/small-pin-icon.png"
 
 export default function MoveablePin() {
 
