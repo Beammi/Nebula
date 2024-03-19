@@ -14,10 +14,10 @@ export default async function getNebuByKeywordHandler(req, res) {
 
   try {
     const query = `
-        SELECT title FROM nebu
-        WHERE LOWER(title) LIKE LOWER('%${searchKey}%');
+      SELECT title FROM nebu
+      WHERE LOWER(title) LIKE LOWER('%' || $1 || '%');
     `
-    const result = await db.query(query)
+    const result = await db.query(query, [searchKey])
 
     const extractValue = result.rows.map(row => row.title);
 

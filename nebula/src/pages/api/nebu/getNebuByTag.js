@@ -14,15 +14,17 @@ export default async function getNebuByTagHandler(req, res) {
 
   try {
     const queryOfficialTag = `
-        SELECT * FROM nebu
+        SELECT nebu.*, users.email FROM nebu
+        LEFT JOIN users ON nebu.user_id = users.user_id
         WHERE official_tag = '${tagName}';
     `
     const resultOfficialTag = await db.query(queryOfficialTag)
 
     const queryUserTag = `
-      SELECT * FROM nebu
+      SELECT nebu.*, users.email FROM nebu
       LEFT JOIN nebu_tag ON nebu.nebu_id = nebu_tag.nebu_id
       LEFT JOIN tag ON nebu_tag.tag_id = tag.tag_id
+      LEFT JOIN users ON nebu.user_id = users.user_id
       WHERE tag.tag_name = '${tagName}'
       ;
     `

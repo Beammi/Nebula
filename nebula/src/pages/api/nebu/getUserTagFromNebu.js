@@ -14,7 +14,8 @@ export default async function getUserTagFromNebuHandler(req, res) {
 
   try {
     const query = `
-        SELECT tag.tag_name FROM tag
+        SELECT tag.tag_name
+        FROM tag
         LEFT JOIN nebu_tag ON tag.tag_id = nebu_tag.tag_id
         LEFT JOIN nebu on nebu_tag.nebu_id = nebu.nebu_id
         WHERE nebu.title = $1;
