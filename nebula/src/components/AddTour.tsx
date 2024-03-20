@@ -8,23 +8,28 @@ import Officialdropdown from "./Officialdropdown";
 import AddPlaceModal from "./AddPlaceModal";
 import MoveablePin from "@/components/map/MoveablePin";
 
-export default function AddTour({toggle, action, placeName}) {
+
+
+export default function AddTour({toggle, action, placeText}) {
+  console.log("Text prop value:", placeText);
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
   const [selected, setSelected] = useState("Official's Tag");
   const [OpenTag, setOpenTag] = useState(false);
   const [AddPlace, setAddPlace] = useState(false);
   const [tourName, setTourName] = useState("");
   const [description, setDescription] = useState("");
-  const [placeNameTemp, setPlaceNameTemp] = useState("");
+  const [routePlaces, setRoutePlaces] = useState([]); // Array to store route places
 
   useEffect(() => {
     const savedTourName = localStorage.getItem("tourName");
     const savedDescription = localStorage.getItem("description");
     const savedTags = JSON.parse(localStorage.getItem("confirmedAdditionalTags"));
+    const storedPlaceText = localStorage.getItem('text');
 
     if (savedTourName) setTourName(savedTourName);
     if (savedDescription) setDescription(savedDescription);
     if (savedTags) setConfirmedAdditionalTags(savedTags);
+    if (storedPlaceText) setRoutePlaces([storedPlaceText]);
   }, []);
 
   useEffect(() => {
@@ -39,12 +44,12 @@ export default function AddTour({toggle, action, placeName}) {
     localStorage.setItem("confirmedAdditionalTags", JSON.stringify(confirmedAdditionalTags));
   }, [confirmedAdditionalTags]);
 
-  useEffect(() => {
-    const storedPlaceName = localStorage.getItem('placeName');
-    if (storedPlaceName) {
-      setPlaceNameTemp(storedPlaceName);
-    }
-  }, [placeName]);
+    // Add route place to local storage when it changes
+    useEffect(() => {
+      if (routePlaces.length > 0) {
+        localStorage.setItem("text", JSON.stringify(routePlaces));
+      }
+    }, [routePlaces]);
   
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
@@ -134,9 +139,11 @@ export default function AddTour({toggle, action, placeName}) {
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Route</h3>
-            <div className=" w-fit h-6 text-black">
-              <h3 className="text-lg text-black bg-yellow">place: {placeNameTemp}</h3>
-            </div>
+            {routePlaces.map((place, index) => (
+              <div key={index} className="w-fit text-black">
+                <h3 className="bg-yellow">{place}</h3>
+              </div>
+            ))}
             <div className="flex flex-row items-center">
               <Button
                 type="button"
