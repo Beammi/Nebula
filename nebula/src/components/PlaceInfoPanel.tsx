@@ -15,6 +15,7 @@ import smallWorld from "../../public/images/small-world.png"
 import smallPhone from "../../public/images/small-phone.png"
 import otherNebuPic1 from "../../public/images/others-nebu-1.png"
 import otherNebuPic2 from "../../public/images/others-nebu-2.png"
+import altImage from "../../public/images/altImage.png"
 import Link from "next/link"
 import RatingInput from "./RatingInput"
 import Ratings from "./Ratings"
@@ -43,6 +44,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     )
     return openDays.join(", ")
   }
+
   useEffect(() => {
     console.log("O: ", panelRef)
 
@@ -87,6 +89,11 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     setMobileInfoPanel(false)
   }
 
+  const isValidDate = (dateString) => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  };
+
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -110,14 +117,40 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
             <div
               className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer lg:hidden`}
             ></div>
-            {nebu.images.map((imgUrl, imgIndex) =>
+            <div className="carousel flex justify-center">
+              {nebu.images && nebu.images.length > 0 ? (nebu.images.map((imgUrl, imgIndex) =>
+                (
+                  <figure key={imgIndex} className="carousel-item w-full">
+                    <img
+                      alt={`image-${imgIndex}`}
+                      src={imgUrl ? imgUrl : altImage.src}
+                      className="w-full h-[240px] lg:h-[290px]"
+                    />
+                  </figure>
+                )                 
+              )) : 
+              <img                      
+                src={altImage.src}
+                className="w-full h-[240px] lg:h-[290px]"
+              /> 
+              }
+            </div>
+            <div className="-mt-14 mb-2 flex items-center justify-between">
+              <div></div> {/* !! dont delete pls, it make the button go right corner */}
+              <Button
+                buttonStyle=" px-2 py-1 w-fit bg-black-grey opacity-75 text-white rounded-lg normal-case border-0 text-xs cursor-pointer"
+                type="button"
+                label={`slide for more images`}
+              >                  
+              </Button>
+            </div>
+            {/* {nebu.images.map((imgUrl, imgIndex) =>
               imgUrl ? (
                 <figure key={imgIndex}>
-                  <Image
+                  <img
                     alt={`image-${imgIndex}`}
                     src={imgUrl}
-                    width={300}
-                    height={300}
+                    className="w-full h-[300px]"
                   />
                 </figure>
               ) : (
@@ -125,7 +158,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                   There is no image in this nebu.
                 </p>
               )
-            )}
+            )} */}
             {/* <figure>
               <Image
                 src={towerBridgePic}
@@ -210,25 +243,25 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                 </button>
               </div>
 
-              <div className="flex flex-row mt-1 gap-x-2">
-                <button
-                  className=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
+              <div className="flex flex-col md:flex-row gap-x-2 flex-wrap max-w-full">
+                <Button
+                  buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
-                >
-                  #{nebu.official_tag}
-                </button>
+                  label={`#${nebu.official_tag}`}
+                >                  
+                </Button>
                 {nebu.tags &&
-                  nebu.tags.filter((tag) => tag).length > 0 &&
-                  nebu.tags
-                    .filter((tag) => tag)
-                    .map((tag, index) => (
-                      <Button
-                        key={index} // Using index as a key, consider a more stable key if possible
-                        type="button"
-                        buttonStyle="px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
-                        label={`#${tag}`} // Prepend "#" to each tag name
-                      />
-                    ))}
+                    nebu.tags.filter((tag) => tag).length > 0 &&
+                    nebu.tags
+                      .filter((tag) => tag)
+                      .map((tag, index) => (
+                        <Button
+                          key={index} // Using index as a key, consider a more stable key if possible
+                          type="button"
+                          buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
+                          label={`#${tag}`} // Prepend "#" to each tag name
+                        />
+                ))}                
                 {/* <button
                   className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
@@ -309,11 +342,11 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                       src={smallPin}
                       alt="pic"
                       className="mr-4"
-                      width={16}
+                      width={22}
                       height={22}
                     />
                   </figure>
-                  <p className="leading-5">{nebu.place_name}</p>
+                  <p className="leading-5 ml-5">{nebu.place_name}</p>
                 </div>
 
                 {/* <div className="flex flex-row">
@@ -340,8 +373,10 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                     />
                   </figure>
                   <p className="leading-5">
-                    {nebu.open_time} - {nebu.close_time}
+                    {formatDaysOpen(nebu)}       
+                    <div>{nebu.open_time} - {nebu.close_time}</div>                    
                   </p>
+                  
                 </div>
                 {/* <div className="flex flex-row">
                   <figure className="">
@@ -365,7 +400,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                       height={18}
                     />
                   </figure>
-                  <p className="leading-5">Open Days: {formatDaysOpen(nebu)}</p>
+                  <p className="leading-5">{new Date(nebu.start_time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(nebu.end_time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
                 </div>
 
                 <div className="flex flex-row">
