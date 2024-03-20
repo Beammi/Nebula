@@ -66,7 +66,7 @@ export default function TagSuggestion(props) {
     // setTagData([])
     // setUserTag([])
 
-  }, [tag, tagName])
+  }, [tagName])
 
   function tagNameClick(tagName) {
     setTagName(tagName)
