@@ -274,7 +274,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                 </button>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-x-2 flex-wrap max-w-full">
+              <div className="flex flex-row gap-x-2 flex-wrap max-w-full">
                 <Button
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
@@ -431,7 +431,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                       height={18}
                     />
                   </figure>
-                  <p className="leading-5">{new Date(nebu.start_time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(nebu.end_time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                  <p className="leading-5">{new Date(nebu.start_time).toLocaleDateString(undefined, { year: 'numeric',month: 'short', day: 'numeric' })} - {new Date(nebu.end_time).toLocaleDateString(undefined, { year: 'numeric',month: 'short', day: 'numeric' })}</p>
                 </div>
 
                 <div className="flex flex-row">
