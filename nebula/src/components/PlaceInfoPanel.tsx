@@ -8,6 +8,7 @@ import recommendIcon from "../../public/images/recommend-tour-pic.png"
 import bookmarkIcon from "../../public/images/bookmark-pic.png"
 import bookmarkSavedIcon from "../../public/images/bookmarkSaved.png"
 import filterIcon from "../../public/images/filter-icon.png"
+import { saveBookmark } from '@/utils/saveBookmarkAPI'; 
 
 import smallPin from "../../public/images/small-pin.png"
 import smallShop from "../../public/images/small-shop.png"
@@ -89,19 +90,27 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     setMobileInfoPanel(false)
   }
   // Placeholder function for saving to the database
-  const saveToDatabase = async () => {
-    // Your database saving logic here
-    // This could involve setting up an API endpoint that handles the save action
-    console.log("Saving to database...")
-    // For example: await api.savePlace({ id: nebu.id, saved: isSaved });
-  }
+  // const saveToDatabase = async () => {
+    
+  //   console.log("Saving to database...")
+  //   // For example: await api.savePlace({ id: nebu.id, saved: isSaved });
+  // }
 
-  // Function to toggle save status and trigger database update
-  const handleSaveClick = () => {
-    const newSavedStatus = !isSaved
-    setIsSaved(newSavedStatus)
-    saveToDatabase() // This would ideally pass necessary data for the save operation
-  }
+  // // Function to toggle save status and trigger database update
+  // const handleSaveClick = () => {
+  //   const newSavedStatus = !isSaved
+  //   setIsSaved(newSavedStatus)
+  //   saveToDatabase() // This would ideally pass necessary data for the save operation
+  // }
+  const handleSaveBookmark = async () => {
+    try {
+      const result = await saveBookmark(nebu.user_id, nebu.nebu_id);
+      alert('Bookmark saved successfully!');
+      // Update UI as needed
+    } catch (error) {
+      alert('Failed to save bookmark.');
+    }
+  };
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -206,7 +215,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
 
                 <button
                   className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey"
-                  onClick={handleSaveClick}
+                  onClick={handleSaveBookmark}
                   style={{ display: "flex", alignItems: "center", gap: "4px" }} // Ensure alignment and spacing
                 >
                   <div
