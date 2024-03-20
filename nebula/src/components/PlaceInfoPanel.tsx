@@ -6,7 +6,9 @@ import shareIcon from "../../public/images/share-pic.png"
 import directionsIcon from "../../public/images/directions-pic.png"
 import recommendIcon from "../../public/images/recommend-tour-pic.png"
 import bookmarkIcon from "../../public/images/bookmark-pic.png"
+import bookmarkSavedIcon from "../../public/images/bookmarkSaved.png"
 import filterIcon from "../../public/images/filter-icon.png"
+import { saveBookmark } from '@/utils/saveBookmarkAPI'; 
 
 import smallPin from "../../public/images/small-pin.png"
 import smallShop from "../../public/images/small-shop.png"
@@ -25,6 +27,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
   const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
@@ -86,7 +89,28 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   function minimizePlaceInfoPanel() {
     setMobileInfoPanel(false)
   }
+  // Placeholder function for saving to the database
+  // const saveToDatabase = async () => {
+    
+  //   console.log("Saving to database...")
+  //   // For example: await api.savePlace({ id: nebu.id, saved: isSaved });
+  // }
 
+  // // Function to toggle save status and trigger database update
+  // const handleSaveClick = () => {
+  //   const newSavedStatus = !isSaved
+  //   setIsSaved(newSavedStatus)
+  //   saveToDatabase() // This would ideally pass necessary data for the save operation
+  // }
+  const handleSaveBookmark = async () => {
+    try {
+      const result = await saveBookmark(nebu.user_id, nebu.nebu_id);
+      alert('Bookmark saved successfully!');
+      // Update UI as needed
+    } catch (error) {
+      alert('Failed to save bookmark.');
+    }
+  };
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -189,16 +213,27 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                   Recommend Tour
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey">
-                  <figure>
+                <button
+                  className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey"
+                  onClick={handleSaveBookmark}
+                  style={{ display: "flex", alignItems: "center", gap: "4px" }} // Ensure alignment and spacing
+                >
+                  <div
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      position: "relative",
+                    }}
+                  >
+                    {" "}
+                    {/* Adjust size as needed */}
                     <Image
-                      src={bookmarkIcon}
-                      alt="pic"
-                      className=""
-                      width={26}
-                      height={26}
+                      src={isSaved ? bookmarkSavedIcon : bookmarkIcon}
+                      alt="Save"
+                      layout="fill"
+                      objectFit="contain" // This ensures the image respects the aspect ratio and fits within the container
                     />
-                  </figure>
+                  </div>
                   Save
                 </button>
 
@@ -398,7 +433,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
 
             {rateCommentSection && (
               <div>
-                <RatingInput nebuId={nebu.nebu_id}/>
+                <RatingInput nebuId={nebu.nebu_id} />
                 <Ratings nebuId={nebu.nebu_id}></Ratings>
               </div>
 
