@@ -33,6 +33,7 @@ export default function Profile(props) {
   const [provider, setProvider] = useState("")
   const prevProfileDataRef = useRef()
   const [originalProfilePicURL, setOriginalProfilePicURL] = useState(null)
+  const [originalBgPicURL, setOriginalBgPicURL] = useState(null)
   const [profileData, setProfileData] = useState({
     firstname: "",
     lastname: "",
@@ -48,15 +49,20 @@ export default function Profile(props) {
     let bgPicUrl = profileData.bgPictureUrl
 
     //delete previous image
-    // console.log("Pass delete1" + profileData.profilePictureUrl)
-    fetchProfile(email,provider)
-    // if (
-    //   originalProfilePicURL &&
-    //   originalProfilePicURL.startsWith("https://")
-    // ) {
-    //   console.log("Pass delete2" + profileData.profilePictureUrl)
-    //   await deleteImage(originalProfilePicURL)
-    // }
+    if (
+      originalProfilePicURL &&
+      originalProfilePicURL.startsWith("https://")
+    ) {
+      console.log("Pass delete2" + profileData.profilePictureUrl)
+      await deleteImage(originalProfilePicURL)
+    }
+    console.log("Pass delete: "+originalBgPicURL)
+    if(
+      originalBgPicURL &&
+      originalBgPicURL.startsWith("https://")
+    ){
+      await deleteImage(originalBgPicURL)
+    }
 
     if (newProfilePic) {
       const formData = new FormData()
@@ -115,6 +121,9 @@ export default function Profile(props) {
     fetchProfile(email,provider);
     if(originalProfilePicURL===null){
       fetchProfile(email,provider);
+    }
+    if(originalBgPicURL===null){
+      fetchProfile(email,provider)
     }
     setShowEditable(true)
   }
@@ -193,24 +202,24 @@ export default function Profile(props) {
 
   const handleCancel = () => {
     // Reset input fields and images to their default values
-    // setProfileData({
-    //   firstname: "",
-    //   lastname: "",
-    //   bio: "",
-    //   profilePictureUrl: null,
-    //   bgPictureUrl: null,
-    // })
+    setProfileData({
+      firstname: "",
+      lastname: "",
+      bio: "",
+      profilePictureUrl: null,
+      bgPictureUrl: null,
+    })
 
-    // // Clear the file input for profile picture
-    // setNewProfilePic(null)
-    // // if (profilePicRef.current) {
-    // //   profilePicRef.current.value = "" // This directly resets the file input
-    // // }
+    // Clear the file input for profile picture
+    setNewProfilePic(null)
+    if (profilePicRef.current) {
+      profilePicRef.current.value = "" // This directly resets the file input
+    }
 
-    // setNewBackgroundPic(null)
-    // // if (backgroundPicRef.current) {
-    // //   backgroundPicRef.current.value = "" // Reset the background file input as well
-    // // }
+    setNewBackgroundPic(null)
+    if (backgroundPicRef.current) {
+      backgroundPicRef.current.value = "" // Reset the background file input as well
+    }
 
     // // Hide the editable fields again
     fetchProfile(email, provider)
@@ -257,7 +266,9 @@ export default function Profile(props) {
           ? `${data.bg_picture_url}?${uniqueString}`
           : altImage.src
         setOriginalProfilePicURL(data.profile_picture_url)
+        setOriginalBgPicURL(data.bg_picture_url)
         console.log("Original pic in fetchhhh: "+originalProfilePicURL)
+        console.log("Original BG in fetchh: "+originalBgPicURL)
         setProfileData({
           firstname: data.firstname || "",
           lastname: data.lastname || "",
@@ -371,10 +382,10 @@ export default function Profile(props) {
             </button>
           </div>
 
-          {/* Profile picture part */}
-          <div className="px-8 flex ">
+          {/* Profile picture part */}          
+          <div className="pl-3 lg:px-8 flex ">
             <figure
-              className={`lg:w-1/6 w-[23%] z-10 lg:-mt-10 -mt-8 ${
+              className={`lg:w-[87px] w-full z-10 lg:-mt-10 -mt-8 ${
                 showEditable ? "cursor-pointer" : ""
               }`}
               onClick={() => showEditable && profilePicRef.current.click()}
@@ -386,9 +397,9 @@ export default function Profile(props) {
                     : altImage.src
                 } // Fallback to profilePic.src if profilePictureUrl is null
                 alt="Profile"
-                width={50}
-                height={50}
-                className={`w-52 ${
+                // width={50}
+                // height={50}
+                className={`w-full rounded-full ${
                   showEditable ? "filter brightness-75" : "filter-none"
                 }`}
               />
@@ -400,6 +411,7 @@ export default function Profile(props) {
                   showEditable ? "visible" : "invisible"
                 }`}
               />
+              
             </figure>
             <input
               type="file"

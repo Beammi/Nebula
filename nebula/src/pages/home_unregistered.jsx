@@ -1,8 +1,8 @@
 import SearchBar from "@/components/SearchBar"
 import ProfileButton from "@/components/ProfileButton"
-import DynamicMap from "@/components/DynamicMap"
+import DynamicMap from "@/components/map/DynamicMap"
 import Button from "@/components/Button"
-import AddNebu from "@/components/AddNebu"
+import AddNebu from "@/components/nebu/AddNebu"
 import { useState } from "react"
 
 export default function HomeUnregistered() {

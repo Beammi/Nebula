@@ -15,15 +15,15 @@ export default async function getTagByKeywordHandler(req, res) {
   try {
     const queryUserTag = `
         SELECT DISTINCT tag_name FROM tag
-        WHERE LOWER(tag_name) LIKE LOWER('%${searchKey}%');
+        WHERE LOWER(tag_name) LIKE LOWER('%' || $1 || '%');
     `
-    const resultUserTag = await db.query(queryUserTag)
+    const resultUserTag = await db.query(queryUserTag, [searchKey])
 
     const queryOfficialTag = `
         SELECT DISTINCT official_tag FROM nebu
-        WHERE LOWER(official_tag) LIKE LOWER('%${searchKey}%');
+        WHERE LOWER(official_tag) LIKE LOWER('%' || $1 || '%');
     `
-    const resultOfficialTag = await db.query(queryOfficialTag)
+    const resultOfficialTag = await db.query(queryOfficialTag, [searchKey])
     
     // Extracting values from the rows
     const extractValue = [

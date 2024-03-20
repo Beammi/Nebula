@@ -1,7 +1,6 @@
 import Button from "./Button"
 import React, { useState, useEffect, useRef } from "react"
 import ImageUpload from "./ImageUpload"
-import TimeLimitBox from "./TimeLimitBox"
 import Image from "next/image"
 import closeIcon from "../../public/images/close.png"
 import smallHashtag from "../../public/images/smallHashtag_blue.png"
