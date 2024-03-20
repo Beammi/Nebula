@@ -36,7 +36,7 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
   return (
     <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
       {ratings.map((rating) => (
-        <div key={rating.rating_id} className="px-3 flex items-center bg-white">
+        <div key={rating.rating_id} className="px-0 flex items-center bg-white">
           {rating.profile_picture_url ? (
             <img
               src={rating.profile_picture_url}
@@ -53,12 +53,13 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
               {rating.email}
             </p>
             <div className="flex flex-col">
-              <p className="text-xs -mt-0.5 font-normal text-black">
-                {rating.rating_comment || "No comment"}
-              </p>
-              <div className="rating rating-xs flex">
+            <div className="rating rating-xs flex -mt-2">
                 {renderStars(rating.rate)}
               </div>
+              <p className="text-sm mt-2 font-normal text-black">
+                {rating.rating_comment || "No comment"}
+              </p>
+              
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import altProfilePic from "../../public/images/altProfilePic.png"
 
 const RatingInput = ({ nebuId }) => {
   const [rating, setRating] = useState(0)
@@ -7,6 +8,7 @@ const RatingInput = ({ nebuId }) => {
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
   const [userId, setUserId] = useState(0)
+  const [userProfilePic, setUserProfilePic] = useState()
   async function getEmail() {
     const {
       data: { user },
@@ -37,6 +39,8 @@ const RatingInput = ({ nebuId }) => {
       if (response.ok) {
         setUserId(data.user_id)
         console.log("user id",userId)
+
+        setUserProfilePic(data.profile_picture_url)
       } else {
         throw new Error(
           data.message || "An error occurred while fetching the profile"
@@ -94,20 +98,23 @@ const RatingInput = ({ nebuId }) => {
   ))
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="flex mt-1">
-        
-        <div className="rating rating-sm p-4">{ratingInputs}</div>
+      <div className="flex mt-4">
+        <img className="ml-8 w-12 h-12" src={userProfilePic ? userProfilePic : altProfilePic.src}/>
+        <div className="flex mt-1 h-min">        
+          <div className="rating rating-sm p-4">{ratingInputs}</div>
+        </div>
       </div>
-      <div className="mt-2 flex flex-row">
+      
+      <div className="-mt-4 flex flex-row">
         <input
           type="text"
           placeholder="Type your comment..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="input input-bordered bg-white rounded-none border-x-0 border-t-0 border-b-2 focus:outline-0 focus:outline-offset-0 focus:border-black transition-all delay-100 ease-in-out w-full max-w-xs"
+          className="input input-bordered ml-20 mr-4 bg-white rounded-none border-x-0 border-t-0 border-b-2 focus:outline-0 focus:outline-offset-0 focus:border-black transition-all delay-100 ease-in-out w-full max-w-xs"
         />
-        <button onClick={postRating} className="btn mt-4 btn-sm" type="button">
-        Submit
+        <button onClick={postRating} className="mt-4 py-1 px-2 rounded-lg mr-1 normal-case bg-grey border-0 text-black" type="button">
+        Confirm
       </button>
       </div>
       
