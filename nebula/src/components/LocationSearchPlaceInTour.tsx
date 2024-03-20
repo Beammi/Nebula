@@ -17,7 +17,7 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
   ILocationSearchPlaceInTour
 > = ({ text, location, onLocationChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [placeText, setPlaceText] = useState("");
+  const [placeText, setPlaceText] = useState([]);
   const {
     currentPlace,
     setCurrentPlace,
@@ -90,7 +90,7 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
   const handleConfirm = () => {
     router.push("/home");
     setCloseChangeLocation(false);
-    setPlaceText(text)
+    setPlaceText(((prevPlaceText) => [...prevPlaceText, text]))
     localStorage.setItem("text", text);
   };
 
@@ -122,7 +122,7 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
               </div>
             </div>
           </div>
-          <AddTour text={placeText} toggle={undefined} action={undefined}/>
+          <AddTour placeText={placeText} toggle={undefined} action={undefined}/>
         </div>
       )}
       {/* Popup Card */}
