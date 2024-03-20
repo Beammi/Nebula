@@ -12,6 +12,7 @@ import {
 } from "react-leaflet"
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/PlaceInfoPanel"
+import TourInfoPanel from "@/components/TourInfoPanel"
 import UpdateMapView from "@/components/UpdateMapView"
 
 import largePinIcon from "../../../public/images/large-pin-icon.png"
@@ -141,6 +142,11 @@ const MyMap: React.FC = () => {
         toggle={placeInfoPanel}
         action={closePlaceInfoPanel}
       />
+      {/* <TourInfoPanel
+        tour={selectedPlace}
+        toggle={placeInfoPanel}
+        action={closePlaceInfoPanel}
+      /> */}
 
       <MapContainer
         center={currentPosition}
