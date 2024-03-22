@@ -1,45 +1,71 @@
-import Button from "@/components/Button";
-import React, { useState, useEffect } from "react";
-import ImageUpload from "@/components/ImageUpload";
-import TimeLimitBox from "@/components/TimeLimitBox";
-import Image from "next/image";
-import close from "../../../public/images/close.png";
-import NebuTag from "@/components/NebuTag";
-import Officialdropdown from "@/components/Officialdropdown";
-import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils";
-import { useLocation } from "@/contexts/LocationContext";
-import { supabase } from "@/lib/supabaseClient";
-
+import Button from "@/components/Button"
+import React, { useState, useEffect } from "react"
+import ImageUpload from "@/components/ImageUpload"
+import TimeLimitBox from "@/components/TimeLimitBox"
+import Image from "next/image"
+import close from "../../../public/images/close.png"
+import NebuTag from "@/components/NebuTag"
+import Officialdropdown from "@/components/Officialdropdown"
+import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
+import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "@/lib/supabaseClient"
+interface LatLng {
+  lat: number;
+  lng: number;
+}
 export default function AddNebu(props) {
-  const addNebuState = props.toggle;
-  const action = props.action;
+  const addNebuState = props.toggle
+  const action = props.action
 
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [OpenTag, setOpenTag] = useState(false);
-  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
-  const [officialTag, setofficialTag] = useState("Official's Tag");
-  const [currentStep, setCurrentStep] = useState(1);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageNebu, setImageNebu] = useState("");
-  const [workHour, setWorkHour] = useState(false);
-  const [openTime, setOpenTime] = useState(null);
-  const [closeTime, setCloseTime] = useState(null);
-  const [timeLimitType, setTimeLimitType] = useState("permanent");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
-  const [email, setEmail] = useState("");
-  const [provider, setProvider] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [website, setWebsite] = useState("");
-  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
-    useLocation();
+  const [uploadedImages, setUploadedImages] = useState([])
+  const [OpenTag, setOpenTag] = useState(false)
+  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([])
+  const [officialTag, setofficialTag] = useState("Official's Tag")
+  const [currentStep, setCurrentStep] = useState(1)
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [imageNebu, setImageNebu] = useState("")
+  const [workHour, setWorkHour] = useState(false)
+  const [openTime, setOpenTime] = useState(null)
+  const [closeTime, setCloseTime] = useState(null)
+  const [timeLimitType, setTimeLimitType] = useState("permanent")
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(null)
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [website, setWebsite] = useState("")
+  const [readyToSubmit, setReadyToSubmit] = useState(false)
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLongitude] = useState(null)
+  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace }=
+    useLocation()
+  const prepareSubmit = (e) => {
+    e.preventDefault() // Prevent default form submission
+    if (
+      !currentPosition ||
+      currentPosition[0] == null ||
+      currentPosition[1] == null
+    ) {
+      console.log("Waiting for current position...")
+      setReadyToSubmit(true) // Mark form as ready to submit, actual submission will be triggered by useEffect
+    } else {
+      console.log("Position available, submitting...")
+      handleSummit()
+    }
+  }
+  useEffect(() => {
+    if (readyToSubmit && currentPosition) {
+      handleSummit()
+      setReadyToSubmit(false) // Reset submission flag
+    }
+  }, [currentPosition, readyToSubmit]) // Depend on currentPosition and readyToSubmit
 
   if (currentPosition === null) {
-    const defaultLocation = [13.7563, 100.5018];
-    setCurrentPosition(defaultLocation);
+    const defaultLocation = [13.7563, 100.5018]
+    setCurrentPosition(defaultLocation)
   }
-  const totalSteps = 2;
+  const totalSteps = 2
   const [isChecked, setIsChecked] = useState({
     Mon: false,
     Tue: false,
@@ -48,135 +74,135 @@ export default function AddNebu(props) {
     Fri: false,
     Sat: false,
     Sun: false,
-  }); // State to track checkbox status
+  }) // State to track checkbox status
 
   function openTagModal() {
-    setOpenTag(!OpenTag);
+    setOpenTag(!OpenTag)
   }
 
   const isValidImageExtension = (fileName) => {
-    return /\.(jpg|jpeg|png|gif)$/i.test(fileName);
-  };
+    return /\.(jpg|jpeg|png|gif)$/i.test(fileName)
+  }
 
   const handleImagesUpload = ({ file, dataURL }) => {
     // Now, file should correctly be a File object, and dataURL should be its data URL
     if (!isValidImageExtension(file.name)) {
-      alert("Unsupported file type.");
-      return;
+      alert("Unsupported file type.")
+      return
     }
-    setUploadedImages((prevImages) => [...prevImages, { dataURL, file }]);
-    console.log(uploadedImages);
-  };
+    setUploadedImages((prevImages) => [...prevImages, { dataURL, file }])
+    console.log(uploadedImages)
+  }
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
-      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
+      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag])
     }
 
-    setOpenTag(false);
-  };
+    setOpenTag(false)
+  }
 
   const handleNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
+    setCurrentStep(currentStep + 1)
+  }
 
   const handlePrevious = () => {
-    setCurrentStep(currentStep - 1);
-  };
+    setCurrentStep(currentStep - 1)
+  }
 
   function handleWorkHourCheckBox() {
-    let checkbox = document.getElementById("workHourCB") as HTMLInputElement;
+    let checkbox = document.getElementById("workHourCB") as HTMLInputElement
     if (checkbox && checkbox.checked) {
-      setWorkHour(true);
+      setWorkHour(true)
     }
   }
   const getOpenDays = () => {
     return Object.entries(isChecked)
       .filter(([day, checked]) => checked)
-      .map(([day]) => day);
-  };
+      .map(([day]) => day)
+  }
 
   async function getEmail() {
-    console.log("Pass getEmail()");
+    console.log("Pass getEmail()")
 
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser()
     // console.log(JSON.stringify(user))
 
     if (error || user === null) {
-      console.log("Error in getUser");
-      return;
+      console.log("Error in getUser")
+      return
     }
     if (user.app_metadata.provider == "email") {
-      console.log("Session: " + JSON.stringify(user.app_metadata.provider));
+      console.log("Session: " + JSON.stringify(user.app_metadata.provider))
       // console.log("emailllll: " + user.email)
 
-      setEmail(user.email);
-      setProvider("email");
-      console.log("Email in email: ", email);
-      console.log("Provider: ", user.app_metadata.provider);
+      setEmail(user.email)
+      setProvider("email")
+      console.log("Email in email: ", email)
+      console.log("Provider: ", user.app_metadata.provider)
     } else {
-      setEmail(user.user_metadata.email);
-      setProvider(user.app_metadata.provider || "");
-      console.log("Email Provider: ", email);
-      console.log("Provider : ", provider);
+      setEmail(user.user_metadata.email)
+      setProvider(user.app_metadata.provider || "")
+      console.log("Email Provider: ", email)
+      console.log("Provider : ", provider)
     }
   }
 
   const handleSummit = async (
     e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
-    console.log("handleSummit is called"); // Debugging line
+    console.log("handleSummit is called") // Debugging line
 
-    e?.preventDefault();
+    e?.preventDefault()
 
     // Initialize an array to hold the URLs of the uploaded images
-    let imageUrls = [];
+    let imageUrls = []
 
     // Check for required fields or any other validation you have
     if (title === "" || officialTag === "Official's Tag") {
       alert(
         "Please name the nebu title before submitting or select an official's tag."
-      );
-      return; // Stop execution if validation fails
+      )
+      return // Stop execution if validation fails
     }
 
     // Upload images first if there are any
     if (uploadedImages.length > 0) {
       const uploadPromises = uploadedImages.map(async (image) => {
-        const formData = new FormData();
-        formData.append("image", image.file); //'image' is the expected field on the server
+        const formData = new FormData()
+        formData.append("image", image.file) //'image' is the expected field on the server
 
         try {
           const response = await fetch("/api/azure/uploadImages", {
             method: "POST",
             body: formData,
             // Include headers for authentication if necessary
-          });
+          })
 
           if (!response.ok) {
-            throw new Error(`Failed to upload image: ${response.statusText}`);
+            throw new Error(`Failed to upload image: ${response.statusText}`)
           }
 
-          const result = await response.json();
-          return result.imageUrl; // Adjust based on your actual API response
+          const result = await response.json()
+          return result.imageUrl // Adjust based on your actual API response
         } catch (error) {
-          console.error("Error uploading image:", error);
-          throw error; // Rethrow to handle outside
+          console.error("Error uploading image:", error)
+          throw error // Rethrow to handle outside
         }
-      });
+      })
 
       try {
-        imageUrls = await Promise.all(uploadPromises);
+        imageUrls = await Promise.all(uploadPromises)
       } catch (error) {
-        alert("Failed to upload one or more images. Please try again.");
-        return; // Stop the submission if image uploads fail
+        alert("Failed to upload one or more images. Please try again.")
+        return // Stop the submission if image uploads fail
       }
     }
-    const imagesArray = Array.isArray(imageUrls) ? imageUrls : [];
-    console.log(imagesArray);
+    const imagesArray = Array.isArray(imageUrls) ? imageUrls : []
+    console.log(imagesArray)
     // Proceed to submit form data along with image URLs
     try {
       const {
@@ -187,7 +213,24 @@ export default function AddNebu(props) {
         Fri: open_friday,
         Sat: open_saturday,
         Sun: open_sunday,
-      } = isChecked;
+      } = isChecked
+      console.log(
+        "Test current position: ",
+        currentPosition[0],
+        " ",
+        currentPosition[1]
+      )
+
+      if (!currentPosition) {
+        // Attempt to fetch location again or show a message to the user.
+        console.log("Fetching location again...")
+        await currentPosition // This should be a function that updates `currentPosition`.
+        return
+      }
+      if (currentPosition.lat == null || currentPosition.lng == null) {
+        alert("Lat Long are null")
+        return
+      }
       const response = await fetch("/api/nebu/addNebu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -198,8 +241,8 @@ export default function AddNebu(props) {
           duration: timeLimitType,
           official_tag: officialTag,
           tags: confirmedAdditionalTags,
-          latitude: currentPosition[0],
-          longitude: currentPosition[1],
+          latitude: latitude,
+          longitude: longitude,
           place_name: currentPlace,
           open_sunday,
           open_monday,
@@ -217,41 +260,57 @@ export default function AddNebu(props) {
           phone_number: phoneNumber,
           website,
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`Failed to submit form: ${response.statusText}`);
+        throw new Error(`Failed to submit form: ${response.statusText}`)
       }
 
       // Handle successful form submission
-      alert("Form submitted successfully!");
+      alert("Form submitted successfully!")
       // Perform any additional actions like redirecting or clearing the form
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("There was an error submitting the form. Please try again.");
+      console.error("Error submitting form:", error)
+      alert("There was an error submitting the form. Please try again.")
     }
-  };
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = event.target; // Update state when checkbox status changes
+    const { id, checked } = event.target // Update state when checkbox status changes
 
     setIsChecked((prevState) => ({
       ...prevState,
       [id]: checked,
-    }));
+    }))
 
     // Send isChecked value to the server
     // You can use isChecked to send the correct boolean value to the server
-    console.log("Checkbox is checked:", id, checked);
+    console.log("Checkbox is checked:", id, checked)
     // Here you can make an API call to send the isChecked value to the server
-  };
+  }
 
   // Append the style element to the document head
   useEffect(() => {
-    getEmail();
-    console.log("Check email" + email);
-    console.log("Updated email: ", email);
+    if (currentPosition != null) {
+      setLatitude(currentPosition.lat);
+      setLongitude(currentPosition.lng);
+      // Log the values directly from currentPosition
+      console.log("current position,",currentPosition)
+      console.log("lat&long directly", currentPosition.lat, ",", currentPosition.lng);
+    }
+  }, [currentPosition]);
+  
 
+  // Add another useEffect to log the updated values of latitude and longitude
+  useEffect(() => {
+    if (latitude != null && longitude != null) {
+      console.log("Updated lat & long", latitude, ",", longitude)
+    }
+  }, [latitude, longitude])
+  useEffect(() => {
+    getEmail()
+    console.log("Check email" + email)
+    console.log("Updated email: ", email)
     const additionalStyles = `
     .content input[type="checkbox"] {
       display: none;
@@ -268,31 +327,31 @@ export default function AddNebu(props) {
       background-color: #544CE6;
       color: #ffffff;
     }
-  `;
+  `
 
     // Create a style element
-    const styleElement = document.createElement("style");
+    const styleElement = document.createElement("style")
 
     // Set the inner HTML of the style element to your CSS styles
-    styleElement.innerHTML = additionalStyles;
+    styleElement.innerHTML = additionalStyles
 
-    document.head.appendChild(styleElement);
+    document.head.appendChild(styleElement)
 
     // Clean up function to remove the style element when component unmounts
     return () => {
-      document.head.removeChild(styleElement);
-    };
-  }, [email]); // Empty dependency array ensures the effect runs only once
+      document.head.removeChild(styleElement)
+    }
+  }, [email]) // Empty dependency array ensures the effect runs only once
 
   function getImageSize(numImages) {
-    const maxImagesPerRow = 8;
-    const maxImageSize = 100;
+    const maxImagesPerRow = 8
+    const maxImageSize = 100
 
     const imageSize = Math.min(
       maxImageSize,
       100 / Math.min(numImages, maxImagesPerRow)
-    );
-    return `w-${imageSize}px h-${imageSize}px`;
+    )
+    return `w-${imageSize}px h-${imageSize}px`
   }
 
   return (
@@ -388,8 +447,8 @@ export default function AddNebu(props) {
                     label="+"
                     type="button"
                     onClick={(event) => {
-                      event.preventDefault();
-                      openTagModal();
+                      event.preventDefault()
+                      openTagModal()
                     }}
                   ></Button>
                 </div>
@@ -519,10 +578,11 @@ export default function AddNebu(props) {
                 buttonStyle="btn btn-primary bg-blue w-fit border-none"
                 label="Complete"
                 type="button"
-                onClick={() => {
-                  handleSummit(); // Correctly invoke the function
+                onClick={(e) => {
+                  prepareSubmit(e) // Use prepareSubmit instead
+                  // Correctly invoke the function
 
-                  action(); // Assuming this is correctly invoking another function
+                  action() // Assuming this is correctly invoking another function
                 }}
               />
             )}
@@ -530,5 +590,5 @@ export default function AddNebu(props) {
         </form>
       </div>
     </div>
-  );
+  )
 }

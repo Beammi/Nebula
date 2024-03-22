@@ -24,6 +24,7 @@ const LocationShowAndSearch: React.FunctionComponent<
     setCurrentPosition,
     setShowMovablePin,
     showMovablePin,
+    currentPosition,
   } = useLocation()
   const [showPopup, setShowPopup] = useState(false) // State to control popup visibility
   const [searchResults, setSearchResults] = useState([])
@@ -114,6 +115,13 @@ const LocationShowAndSearch: React.FunctionComponent<
     setCurrentPlace(text);
     setShowCard(false); // Hide the card
     setShowMovablePin(false)
+    console.log("Confirm location: ",currentPosition)
+    if (onLocationChange) {
+          onLocationChange(
+            [location[0], location[1]],
+            text
+          )
+        }
     // Navigate or close the popup as needed
 };
   // const handleConfirm = () => {
@@ -224,7 +232,6 @@ const LocationShowAndSearch: React.FunctionComponent<
   )
 }
 export default LocationShowAndSearch
-LocationShowAndSearch.tsx
 
 // import React from "react"
 // import { useState } from "react"
