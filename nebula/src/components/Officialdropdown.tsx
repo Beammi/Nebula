@@ -4,7 +4,7 @@ const Dropdown = ({ selected, setSelected }) => {
   const [isActive, setIsActive] = useState(false);
 
   const options = ["Restaurant", "Cafe with Wifi", "Public Toliet", "Bar", "Attraction","Landmark", 
-    "Street Market", "Party", "Motor Show", "Football Match", "Concert", "Product Opening"];
+     "Event", "Sales","Street Market", "Party",  "Motor Show", "Football Match", "Concert", "Product Opening"];
 
   return (
     <div className="pt-4 relative">
