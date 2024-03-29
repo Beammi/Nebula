@@ -22,6 +22,7 @@ import Link from "next/link"
 import RatingInput from "./RatingInput"
 import Ratings from "./Ratings"
 import Button from "./Button"
+import { supabase } from "@/lib/supabaseClient"
 
 export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [overviewSection, setOverviewSection] = useState(true)
@@ -29,7 +30,9 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [othersNebuSection, setOthersNebuSection] = useState(false)
   const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
-
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+  const [userId,setUserId] = useState("")
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const formatDaysOpen = (nebu) => {
@@ -47,8 +50,51 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     )
     return openDays.join(", ")
   }
+  async function getEmail() {
+    console.log("Pass getEmail()")
 
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      console.log("Error in getUser")
+      return
+    }
+    const userEmail =
+      user.app_metadata.provider === "email"
+        ? user.email
+        : user.user_metadata.email
+    const userProvider = user.app_metadata.provider || ""
+    
+    setEmail(userEmail)
+    setProvider(userProvider)
+    fetchProfile(userEmail, userProvider)
+
+  }
+  const fetchProfile = async (email, provider) => {
+    const url = `/api/users/getUserProfile?email=${encodeURIComponent(
+      email
+    )}&provider=${encodeURIComponent(provider)}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const userIdForFetch = data.user_id
+        setUserId(userIdForFetch)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the profile"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error)
+    }
+  }
   useEffect(() => {
+    getEmail()
     console.log("O: ", panelRef)
 
     const handleScroll = () => {
@@ -107,7 +153,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   // }
   const handleSaveBookmark = async () => {
     try {
-      const result = await saveBookmark(nebu.user_id, nebu.nebu_id)
+      const result = await saveBookmark(userId, nebu.nebu_id)
       alert("Bookmark saved successfully!")
       // Update UI as needed
     } catch (error) {
