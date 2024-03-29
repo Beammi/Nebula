@@ -79,7 +79,7 @@ export default function TagSuggestion(props) {
   async function fetchData() {
 
     setTagData([])
-    let url = `/api/nebu/getNebuByTag?tagName=${tagName}`
+    let url = `/api/search/getNebuByTag?tagName=${tagName}`
     try {
       const response = await fetch(url)
       if (!response.ok) {
