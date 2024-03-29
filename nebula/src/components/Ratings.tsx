@@ -26,44 +26,56 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
     return (
       <div className="flex">
         {[...Array(5)].map((_, index) => (
-          <span key={index} className={`inline-block w-4 h-4 ${index < (rating ?? 0) ? "text-yellow" : "text-slate-100"} `}>★</span>
+          <span
+            key={index}
+            className={`inline-block w-4 h-4 ${
+              index < (rating ?? 0) ? "text-yellow" : "text-slate-100"
+            } `}
+          >
+            ★
+          </span>
         ))}
       </div>
-    );
-  };
-  
+    )
+  }
 
   return (
     <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
-      {ratings.map((rating) => (
-        <div key={rating.rating_id} className="px-0 flex items-center bg-white">
-          {rating.profile_picture_url ? (
-            <img
-              src={rating.profile_picture_url}
-              className="h-12 w-12 rounded-full border-2 border-white"
-              alt=""
-            />
-          ) : (
-            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
-              {getInitials(rating.email)}
-            </div>
-          )}
-          <div className="ml-4 pr-7">
-            <p className="text-sm font-medium text-black mb-1">
-              {rating.email}
-            </p>
-            <div className="flex flex-col">
-            <div className="rating rating-xs flex -mt-2">
-                {renderStars(rating.rate)}
+      {ratings.length > 0 ? (
+        ratings.map((rating) => (
+          <div
+            key={rating.rating_id}
+            className="px-0 flex items-center bg-white"
+          >
+            {rating.profile_picture_url ? (
+              <img
+                src={rating.profile_picture_url}
+                className="h-12 w-12 rounded-full border-2 border-white"
+                alt=""
+              />
+            ) : (
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
+                {getInitials(rating.email)}
               </div>
-              <p className="text-sm mt-2 font-normal text-black">
-                {rating.rating_comment || "No comment"}
+            )}
+            <div className="ml-4 pr-7">
+              <p className="text-sm font-medium text-black mb-1">
+                {rating.email}
               </p>
-              
+              <div className="flex flex-col">
+                <div className="rating rating-xs flex -mt-2">
+                  {renderStars(rating.rate)}
+                </div>
+                <p className="text-sm mt-2 font-normal text-black">
+                  {rating.rating_comment || "No comment"}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p className="ml-7">No ratings available</p>
+      )}
     </div>
   )
 }

@@ -27,7 +27,7 @@ const RatingInput = ({ nebuId }) => {
     const userProvider = user.app_metadata.provider || ""
     setEmail(userEmail)
     setProvider(userProvider)
-    fetchProfile(userEmail,userProvider)
+    fetchProfile(userEmail, userProvider)
   }
   const fetchProfile = async (email, provider) => {
     const url = `/api/users/getUserProfile?email=${encodeURIComponent(
@@ -38,7 +38,7 @@ const RatingInput = ({ nebuId }) => {
       const data = await response.json()
       if (response.ok) {
         setUserId(data.user_id)
-        console.log("user id",userId)
+        console.log("user id", userId)
 
         setUserProfilePic(data.profile_picture_url)
       } else {
@@ -82,8 +82,9 @@ const RatingInput = ({ nebuId }) => {
   }
   const handleRating = (rateValue) => {
     setRating(rateValue)
-    console.log("Rate",rateValue)
+    console.log("Rate", rateValue)
   }
+  const getInitials = (email: string) => email.substring(0, 2).toUpperCase()
 
   // Prepare rating inputs based on the current rating
   const ratingInputs = Array.from({ length: 5 }, (_, i) => (
@@ -99,12 +100,22 @@ const RatingInput = ({ nebuId }) => {
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <div className="flex mt-4">
-        <img className="ml-8 w-12 h-12" src={userProfilePic ? userProfilePic : altProfilePic.src}/>
-        <div className="flex mt-1 h-min">        
+        {userProfilePic ? (
+          <img
+            src={userProfilePic}
+            className="ml-8 h-12 w-12 rounded-full border-2 border-white"
+            alt=""
+          />
+        ) : (
+          <div className="ml-8 flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
+            {getInitials(email)}
+          </div>
+        )}{" "}
+        <div className="flex mt-1 h-min">
           <div className="rating rating-sm p-4">{ratingInputs}</div>
         </div>
       </div>
-      
+
       <div className="-mt-4 flex flex-row">
         <input
           type="text"
@@ -113,11 +124,14 @@ const RatingInput = ({ nebuId }) => {
           onChange={(e) => setComment(e.target.value)}
           className="input input-bordered ml-20 mr-4 bg-white rounded-none border-x-0 border-t-0 border-b-2 focus:outline-0 focus:outline-offset-0 focus:border-black transition-all delay-100 ease-in-out w-full max-w-xs"
         />
-        <button onClick={postRating} className="mt-4 py-1 px-2 rounded-lg mr-1 normal-case bg-grey border-0 text-black" type="button">
-        Confirm
-      </button>
+        <button
+          onClick={postRating}
+          className="mt-4 py-1 px-2 rounded-lg mr-1 normal-case bg-grey border-0 text-black"
+          type="button"
+        >
+          Confirm
+        </button>
       </div>
-      
     </form>
   )
 }

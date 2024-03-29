@@ -59,8 +59,8 @@ const MyMap: React.FC = () => {
     showMovablePin,
     setShowMovablePin,
   } = useLocation()
-  console.log("showMovablePin:", showMovablePin) // Debugging log
-  console.log("current position" + currentPosition + currentPlace)
+  // console.log("showMovablePin:", showMovablePin) // Debugging log
+  // console.log("current position" + currentPosition + currentPlace)
   const [placeName, setPlaceName] = useState("")
   const [nebus, setNebus] = useState([])
 
@@ -104,6 +104,7 @@ const MyMap: React.FC = () => {
     try {
       const name = await getPlaceName(center.lat, center.lng) // Fetch place name
       setPlaceName(name) // Update state with place name
+      // setCurrentPosition(mapCenter)
     } catch (error) {
       console.error("Failed to fetch place name:", error)
       setPlaceName("Unable to fetch place name")

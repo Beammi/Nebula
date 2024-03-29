@@ -7,7 +7,14 @@ import React, {
   useRef,
 } from "react"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
-
+// Defining the shape of the context's state using JSDoc comments for clarity
+/** 
+ * @typedef LocationContextType
+ * @property {[number, number]} currentPosition - The current position as [lat, lng].
+ * @property {(position: [number, number]) => void} setCurrentPosition - Function to set the current position.
+ * @property {string} currentPlace - The name of the current place.
+ * @property {(place: string) => void} setCurrentPlace - Function to set the name of the current place.
+ */
 const defaultState = {
   currentPosition: [13.7563, 100.5018],
   setCurrentPosition: (position) => {
