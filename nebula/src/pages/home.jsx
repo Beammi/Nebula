@@ -80,7 +80,7 @@ export default function Home() {
         <div className="flex w-full justify-center md:justify-normal">
           <SearchBar text="Search" />
           <Button
-            buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-14 2xl:ml-10 border-none text-black normal-case"
+            buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-14 lg:ml-16 border-none text-black normal-case"
             label="Café with wifi"
           ></Button>
           <Button
