@@ -9,6 +9,7 @@ import smallTag from "../../public/images/smallTag.png"
 import smallThinPin from "../../public/images/placePinIcon.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
+import ViewTourList from "@/components/ViewTourList"
 import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
@@ -33,6 +34,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [showMyTour, setShowMyTour] = useState(false);
   const [showBookmark, setShowBookmark] = useState(false);
   const [showMyProfile, setShowMyProfile] = useState(false);
+  const [showViewTourList, setShowViewTourList] = useState(false)
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
@@ -81,6 +83,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     setShowMyProfile(true)
   }
 
+  function closeViewTourList() {
+    setShowViewTourList(false);
+  }
+
   // Function to handle suggestion click
   const handleSuggestionClick = (suggestion: { value: string; type: string }) => {
 
@@ -88,7 +94,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     
     if(suggestion.type === "tag") {
       setShowTagSuggestion(true);
-      setTagSuggestValue(suggestion.value)
+
+      // setShowViewTourList(true)
+      
+      setTagSuggestValue(suggestion.value)      
+
     }
     else if(suggestion.type === "user"){
       // const fullPath = `/${suggestion.value}`
@@ -118,7 +128,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
     if(key !== ""){
       
-      let url = `/api/nebu/getNebuByKeyword?searchKey=${key}`
+      let url = `/api/search/getNebuByKeyword?searchKey=${key}`
       try {
         const response = await fetch(url)
         if (!response.ok) {
@@ -132,7 +142,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         console.error("Fetch error:", error)
       }
 
-      url = `/api/nebu/getTagByKeyword?searchKey=${key}`
+      url = `/api/search/getTagByKeyword?searchKey=${key}`
       try {
         const response = await fetch(url)
         if (!response.ok) {
@@ -146,7 +156,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         console.error("Fetch error:", error)
       }
     
-      url = `/api/nebu/getUsersByDisplayName?searchKey=${key}`
+      url = `/api/search/getUsersByDisplayName?searchKey=${key}`
       try {
         const response = await fetch(url)
         if (!response.ok) {
@@ -234,6 +244,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           </div>
         )}
 
+        <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
         

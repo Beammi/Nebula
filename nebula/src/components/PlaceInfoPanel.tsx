@@ -22,12 +22,14 @@ import Link from "next/link"
 import RatingInput from "./RatingInput"
 import Ratings from "./Ratings"
 import Button from "./Button"
+import ViewTourList from "@/components/ViewTourList"
 
 export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
   const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
+  const [showViewTourList, setShowViewTourList] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
 
   const panelRef = useRef(null)
@@ -92,6 +94,10 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     setMobileInfoPanel(false)
   }
 
+  function closeViewTourList() {
+    setShowViewTourList(false);
+  }
+
   // Placeholder function for saving to the database
   // const saveToDatabase = async () => {
 
@@ -122,6 +128,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
       ref={panelRef}
     >
+
       <div className=" text-black ">
         {nebu ? (
           <div
@@ -165,28 +172,6 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                 label={`slide for more images`}
               ></Button>
             </div>
-            {/* {nebu.images.map((imgUrl, imgIndex) =>
-              imgUrl ? (
-                <figure key={imgIndex}>
-                  <img
-                    alt={`image-${imgIndex}`}
-                    src={imgUrl}
-                    className="w-full h-[300px]"
-                  />
-                </figure>
-              ) : (
-                <p className="text-xs text-black">
-                  There is no image in this nebu.
-                </p>
-              )
-            )} */}
-            {/* <figure>
-              <Image
-                src={towerBridgePic}
-                alt="pic"
-                className="pt-0 mb-1 w-full "
-              />
-            </figure> */}
             <div className="flex flex-col pl-4 pt-2 gap-y-1">
               <div className="flex flex-row">
                 <h3 className="font-bold text-xl text-black  bg-white w-fit">
@@ -715,6 +700,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
           <p>No place selected</p>
         )}
       </div>
+      {/* <ViewTourList action={showViewTourList} toggle={closeViewTourList} name={nebu?.title} /> */}
     </div>
   )
 }
