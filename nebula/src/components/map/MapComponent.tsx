@@ -11,7 +11,7 @@ import {
   useMap,
 } from "react-leaflet"
 import pinIcon from "../../public/images/pin-icon.png"
-import PlaceInfoPanel from "@/components/PlaceInfoPanel"
+import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
 import UpdateMapView from "@/components/UpdateMapView"
 
 import largePinIcon from "../../../public/images/large-pin-icon.png"
