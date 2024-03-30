@@ -14,12 +14,31 @@ export default async function getNebuByKeywordHandler(req, res) {
 
   try {
     const query = `
-      SELECT title FROM nebu
-      WHERE LOWER(title) LIKE LOWER('%' || $1 || '%');
+      SELECT
+        nebu.*,
+        place.latitude,
+        place.longitude,
+        array_agg(DISTINCT tag.tag_name) FILTER (WHERE tag.tag_name IS NOT NULL) AS tags,
+        AVG(rating.rate) AS average_rating,
+        users.email,
+        place.place_name      
+      FROM 
+        nebu      
+        LEFT JOIN place ON nebu.place_id = place.place_id
+        LEFT JOIN nebu_tag ON nebu.nebu_id = nebu_tag.nebu_id
+        LEFT JOIN tag ON nebu_tag.tag_id = tag.tag_id
+        LEFT JOIN rating ON nebu.nebu_id = rating.nebu_id
+        LEFT JOIN users ON nebu.user_id = users.user_id
+      WHERE LOWER(nebu.title) LIKE LOWER('%' || $1 || '%')
+      GROUP BY 
+        nebu.nebu_id, place.latitude, place.longitude, users.email, place.place_name
+      ORDER BY 
+        nebu.created_time DESC;
     `
-    const result = await db.query(query, [searchKey])
+    const result = await db.query(query, [`%${searchKey}%`])
 
-    const extractValue = result.rows.map(row => row.title);
+    // const extractValue = result.rows.map(row => row.title);
+    const extractValue = result.rows.map(row => row);
 
     res.status(200).json(extractValue)
 
