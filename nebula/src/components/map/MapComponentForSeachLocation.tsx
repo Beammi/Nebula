@@ -12,7 +12,7 @@ import {
 } from "react-leaflet"
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
-import UpdateMapView from "@/components/UpdateMapView"
+import UpdateMapView from "@/components/map/UpdateMapView"
 
 import largePinIcon from "../../../public/images/large-pin-icon.png"
 import mediumPinIcon from "../../../public/images/medium-pin-icon.png"
