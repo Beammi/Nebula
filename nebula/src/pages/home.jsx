@@ -3,8 +3,8 @@ import ProfileButton from "@/components/ProfileButton"
 import DynamicMap from "@/components/map/DynamicMap"
 import Button from "@/components/Button"
 import AddNebu from "@/components/nebu/AddNebu"
-import AddTour from "@/components/AddTour"
-import AddPlaceModal from "@/components/AddPlaceModal"
+import AddTour from "@/components/tour/AddTour"
+import AddPlaceModal from "@/components/tour/AddPlaceModal"
 import MoveablePin from "@/components/map/MoveablePin"
 import { useState } from "react"
 import { useRouter } from "next/router"
@@ -61,7 +61,17 @@ export default function Home() {
   useEffect(() => {
     checkSession()
     checkProviderAccount()
-  }, [])
+
+    // Check if we should open the AddTour modal based on the query parameter
+    if (router.query.addTour === 'true') {
+      setAddTourState(true);
+    }
+
+    // Clean up the URL by removing the query parameter (optional)
+    const pathname = router.pathname;
+    const asPath = router.asPath.split('?')[0]; // Remove query params
+    router.replace({ pathname, query: {} }, asPath, { shallow: true });
+  }, [router.query.addTour]);
   function openAddNebu() {
     setAddnebu(!addNebuState)
   }
