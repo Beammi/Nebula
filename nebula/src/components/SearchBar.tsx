@@ -167,7 +167,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       console.log('Nebu data:', nebuData);
       console.log('Tag data:', tagData);
       console.log('User data:', userData);
-      console.log('Nominatim data:', nominatimData);
+      // console.log('Nominatim data:', nominatimData);
 
       // Process data and update API state
       // const formattedData = [];
