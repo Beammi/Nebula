@@ -12,14 +12,15 @@ interface ILocationSearchPlaceInTour {
   text?: string;
   location?: [number, number];
   onLocationChange?: (location: [number, number], placeName: string) => void; // Callback for changing the location
+  mode:string;
 }
 
 const LocationSearchPlaceInTour: React.FunctionComponent<
   ILocationSearchPlaceInTour
-> = ({ text, location, onLocationChange }) => {
+> = ({ text, location, onLocationChange, mode }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [placeText, setPlaceText] = useState([]);
-  const { addPlace } = useTour() as TourContextType;
+  const { addPlace,addWaypoint } = useTour() as TourContextType;
 
   const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
   const [closeChangeLocation, setCloseChangeLocation] = useState(true);
@@ -40,14 +41,19 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
     // Example: Assuming you fetch the location and place name based on searchTerm
     // const location: [number, number] = [0, 0]; // Placeholder for actual location fetching logic
     // const placeName: string = searchTerm; // Placeholder for actual place name fetching logic
-
+    console.log("context in location search ",mode)
     const newPlace = {
       id: Date.now(), // or a better ID generation strategy
       name: text,
       location,
     };
+    if(mode==="waypoint"){
+      addWaypoint(newPlace)
+    }else{
+      addPlace(newPlace);
 
-    addPlace(newPlace);
+    }
+
     
     // Navigate back to the AddTour page or handle closing the modal as needed
     router.push('/home?addTour=true');

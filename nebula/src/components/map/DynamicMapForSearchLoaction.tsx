@@ -1,17 +1,26 @@
+// DynamicMapForSearchLocation.jsx
 import dynamic from 'next/dynamic';
-import React from 'react';
+import React, { useState } from 'react';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-const MapComponentForSearchLocation = dynamic(
+const MapComponentForSearchLocation = dynamic<any>(
   () => import('./MyMapForSearch'),
   { ssr: false }
 );
+// Within the parent component of DynamicMapForSearchLocation
 
-const DynamicMap: React.FC = () => {
+
+// In DynamicMapForSearchLocation
+const DynamicMapForSearchLocation: React.FC<{ context: string }> = ({ context }) => {
+  console.log("context in dynamic map ",context)
   return (
     <div>
-      <MapComponentForSearchLocation />
+      {/* Force re-rendering when context changes */}
+      <MapComponentForSearchLocation key={context} context={context} />
     </div>
   );
 };
 
-export default DynamicMap;
+
+export default DynamicMapForSearchLocation;

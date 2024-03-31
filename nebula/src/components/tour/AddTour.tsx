@@ -11,7 +11,7 @@ import { useTour } from "@/contexts/TourContext" // Adjust the import path as ne
 import { TourContextType } from "../../types/tourContext"
 
 export default function AddTour({ toggle, action, placeText }) {
-  console.log("Text prop value:", placeText)
+  // console.log("Text prop value:", placeText)
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([])
   const [selected, setSelected] = useState("Official's Tag")
   const [OpenTag, setOpenTag] = useState(false)
@@ -152,18 +152,24 @@ export default function AddTour({ toggle, action, placeText }) {
             </div>
           </div>
           <div className="flex flex-col mt-4">
-            <h3 className="text-lg">Route</h3>
+            <h3 className="text-lg">Place</h3>
             {tourData.routePlaces.map((place, index) => (
               <div key={index} className="w-fit text-black">
-                <h3 className="bg-yellow">{place.name}</h3>
+                <h3 className="bg-white text-black">- {place.name}</h3>
+              </div>
+            ))}
+            <h3 className="text-lg">Waypoint</h3>
+            {tourData.waypoints.map((place, index) => (
+              <div key={index} className="w-fit text-black">
+                <h3 className="bg-white text-black">- {place.name}</h3>
               </div>
             ))}
             <div className="flex flex-row items-center">
-              <Button
+              {/* <Button
                 type="button"
                 buttonStyle="p-2 mt-2 bg-blue text-white rounded-lg"
                 label="Add place"
-              ></Button>
+              ></Button> */}
               <Button
                 buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
                 label="+"
@@ -179,6 +185,7 @@ export default function AddTour({ toggle, action, placeText }) {
               />
             </div>
           </div>
+          <button className="btn btn-primary p-2">Confirm</button>
         </div>
       </div>
     </>

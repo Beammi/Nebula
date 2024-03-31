@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";
 import { useEffect } from "react";
+import { useSearchParams } from 'next/navigation'
 
 export default function SearchOnMap() {
   const [addNebuState, setAddnebu] = useState(false);
@@ -19,8 +20,9 @@ export default function SearchOnMap() {
   const [profileName, setProfileName] = useState("");
   const [addTourState, setAddTourState] = useState(false);
   const router = useRouter();
+  const [context, setContext] = useState(""); // Default context
+  const queryContext = router.query.context;
 
-  
   async function checkSession() {
     const {
       data: { user },
@@ -32,9 +34,9 @@ export default function SearchOnMap() {
       router.push("/home_unregistered");
     } else {
       let str = JSON.stringify(user.email);
-      console.log("Session: " + JSON.stringify(user.app_metadata.provider));
+      // console.log("Session: " + JSON.stringify(user.app_metadata.provider));
       setProfileName(str.substring(1, 3));
-      console.log(profileName);
+      // console.log(profileName);
     }
   }
 
@@ -67,6 +69,7 @@ export default function SearchOnMap() {
   useEffect(() => {
     checkSession();
     checkProviderAccount();
+    console.log("context ",queryContext)
   }, []);
 
   return (
@@ -76,7 +79,7 @@ export default function SearchOnMap() {
           <div className="flex w-full justify-center md:justify-normal"></div>
         </div>
         <div className="absolute z-0 w-full h-full">
-          <DynamicMapForSearchLoaction />
+          <DynamicMapForSearchLoaction context={queryContext}/>
         </div>
       </div>
       <MoveablePin />
