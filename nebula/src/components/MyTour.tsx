@@ -83,7 +83,7 @@ export default function MyTour(props) {
         <div className="flex flex-col mt-12 px-10 pb-5">
             <h2 className="text-2xl text-center">My Tour</h2>
             {data.map((data, index) => (
-                <>
+                <React.Fragment key={index}>
                     <div className="flex flex-row text-white font-normal py-1 mt-3 bg-blue rounded-lg w-full drop-shadow-md">
                       <p className="w-full pl-5 cursor-pointer"
                           onClick={() => {
@@ -124,7 +124,7 @@ export default function MyTour(props) {
                             </div>
                         )}
                     </div>
-                </>
+                </React.Fragment>
             ))}
             
             { showAllSelectBox ?
