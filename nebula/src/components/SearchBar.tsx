@@ -14,10 +14,9 @@ import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 import Profile from "@/components/Profile"
-import PlaceInfoPanel from "@/components/PlaceInfoPanel"
+import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
 import { useRouter } from "next/router"
 import { useLocation } from "@/contexts/LocationContext"
-import debounce from 'lodash/debounce';
 import React from "react"
 
 
