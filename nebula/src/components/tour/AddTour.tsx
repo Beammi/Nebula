@@ -1,70 +1,84 @@
 //AddTour.tsx
-import Button from "./Button";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import close from "../../public/images/close.png";
-import NebuTag from "./NebuTag";
-import Officialdropdown from "./Officialdropdown";
-import AddPlaceModal from "./AddPlaceModal";
-import MoveablePin from "@/components/map/MoveablePin";
+import Button from "../Button"
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
+import close from "../../../public/images/close.png"
+import NebuTag from "../NebuTag"
+import Officialdropdown from "../Officialdropdown"
+import AddPlaceModal from "./AddPlaceModal"
+import MoveablePin from "@/components/map/MoveablePin"
+import { useTour } from "@/contexts/TourContext" // Adjust the import path as needed
+import { TourContextType } from "../../types/tourContext"
 
-
-
-export default function AddTour({toggle, action, placeText}) {
-  console.log("Text prop value:", placeText);
-  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([]);
-  const [selected, setSelected] = useState("Official's Tag");
-  const [OpenTag, setOpenTag] = useState(false);
-  const [AddPlace, setAddPlace] = useState(false);
-  const [tourName, setTourName] = useState("");
-  const [description, setDescription] = useState("");
-  const [routePlaces, setRoutePlaces] = useState([]); // Array to store route places
-
-  useEffect(() => {
-    const savedTourName = localStorage.getItem("tourName");
-    const savedDescription = localStorage.getItem("description");
-    const savedTags = JSON.parse(localStorage.getItem("confirmedAdditionalTags"));
-    const storedPlaceText = localStorage.getItem('text');
-
-    if (savedTourName) setTourName(savedTourName);
-    if (savedDescription) setDescription(savedDescription);
-    if (savedTags) setConfirmedAdditionalTags(savedTags);
-    if (storedPlaceText) setRoutePlaces([storedPlaceText]);
-  }, []);
+export default function AddTour({ toggle, action, placeText }) {
+  console.log("Text prop value:", placeText)
+  const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([])
+  const [selected, setSelected] = useState("Official's Tag")
+  const [OpenTag, setOpenTag] = useState(false)
+  const [AddPlace, setAddPlace] = useState(false)
+  const [tourName, setTourName] = useState("")
+  const [description, setDescription] = useState("")
+  const [routePlaces, setRoutePlaces] = useState([]) // Array to store route places
+  const {
+    tourData,
+    addPlace,
+    setOfficialTag,
+    toggleOpenTagModal,
+    addAdditionalTag,
+    updateTags,
+  } = useTour() as TourContextType
 
   useEffect(() => {
-    localStorage.setItem("tourName", tourName);
-  }, [tourName]);
+    const savedTourName = localStorage.getItem("tourName")
+    const savedDescription = localStorage.getItem("description")
+    const savedTags = JSON.parse(
+      localStorage.getItem("confirmedAdditionalTags")
+    )
+    const storedPlaceText = localStorage.getItem("text")
+
+    if (savedTourName) setTourName(savedTourName)
+    if (savedDescription) setDescription(savedDescription)
+    if (savedTags) setConfirmedAdditionalTags(savedTags)
+    if (storedPlaceText) setRoutePlaces([storedPlaceText])
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem("description", description);
-  }, [description]);
+    localStorage.setItem("tourName", tourName)
+  }, [tourName])
 
   useEffect(() => {
-    localStorage.setItem("confirmedAdditionalTags", JSON.stringify(confirmedAdditionalTags));
-  }, [confirmedAdditionalTags]);
+    localStorage.setItem("description", description)
+  }, [description])
 
-    // Add route place to local storage when it changes
-    useEffect(() => {
-      if (routePlaces.length > 0) {
-        localStorage.setItem("text", JSON.stringify(routePlaces));
-      }
-    }, [routePlaces]);
-  
+  useEffect(() => {
+    localStorage.setItem(
+      "confirmedAdditionalTags",
+      JSON.stringify(confirmedAdditionalTags)
+    )
+  }, [confirmedAdditionalTags])
+
+
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
-      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag]);
+      setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag])
+
+      additionalTag.forEach((tag) => addAdditionalTag(tag)) 
     }
 
-    setOpenTag(false);
-  };
+    // setOfficialTag(officialTag)
+    // updateTags(officialTag, tourData.additionalTags);
+
+    toggleOpenTagModal()
+    setOpenTag(false)
+
+  }
 
   function openTagModal() {
-    setOpenTag(!OpenTag);
+    setOpenTag(!OpenTag)
   }
 
   function openAddPlaceModal() {
-    setAddPlace(!AddPlace);
+    setAddPlace(!AddPlace)
   }
 
   return (
@@ -107,12 +121,12 @@ export default function AddTour({toggle, action, placeText}) {
             <div className="flex items-center ">
               <div>
                 <Officialdropdown
-                  selected={selected}
-                  setSelected={setSelected}
+                  selected={tourData.officialTag}
+                  setSelected={setOfficialTag}
                 />
               </div>
               <div className="pt-4 flex ml-2 overflow-x-auto">
-                {confirmedAdditionalTags.map((tag, index) => (
+                {tourData.additionalTags.map((tag, index) => (
                   <div
                     key={index}
                     className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
@@ -131,17 +145,17 @@ export default function AddTour({toggle, action, placeText}) {
                 label="+"
                 type="button"
                 onClick={(event) => {
-                  event.preventDefault();
-                  openTagModal();
+                  event.preventDefault()
+                  openTagModal()
                 }}
               ></Button>
             </div>
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="text-lg">Route</h3>
-            {routePlaces.map((place, index) => (
+            {tourData.routePlaces.map((place, index) => (
               <div key={index} className="w-fit text-black">
-                <h3 className="bg-yellow">{place}</h3>
+                <h3 className="bg-yellow">{place.name}</h3>
               </div>
             ))}
             <div className="flex flex-row items-center">
@@ -155,8 +169,8 @@ export default function AddTour({toggle, action, placeText}) {
                 label="+"
                 type="button"
                 onClick={(event) => {
-                  event.preventDefault();
-                  openAddPlaceModal();
+                  event.preventDefault()
+                  openAddPlaceModal()
                 }}
               ></Button>
               <AddPlaceModal
@@ -168,5 +182,5 @@ export default function AddTour({toggle, action, placeText}) {
         </div>
       </div>
     </>
-  );
+  )
 }

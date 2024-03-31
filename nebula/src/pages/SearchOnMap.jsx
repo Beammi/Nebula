@@ -5,8 +5,8 @@ import DynamicMap from "@/components/map/DynamicMap";
 import DynamicMapForSearchLoaction from "@/components/map/DynamicMapForSearchLoaction"
 import Button from "@/components/Button";
 import AddNebu from "@/components/nebu/AddNebu";
-import AddTour from "@/components/AddTour";
-import AddPlaceModal from "@/components/AddPlaceModal";
+import AddTour from "@/components/tour/AddTour";
+import AddPlaceModal from "@/components/tour/AddPlaceModal";
 import MoveablePin from "@/components/map/MoveablePin";
 import { useState } from "react";
 import { useRouter } from "next/router";

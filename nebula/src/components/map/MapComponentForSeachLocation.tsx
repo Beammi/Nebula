@@ -11,8 +11,8 @@ import {
   useMap,
 } from "react-leaflet"
 import pinIcon from "../../public/images/pin-icon.png"
-import PlaceInfoPanel from "@/components/PlaceInfoPanel"
-import UpdateMapView from "@/components/UpdateMapView"
+import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
+import UpdateMapView from "@/components/map/UpdateMapView"
 
 import largePinIcon from "../../../public/images/large-pin-icon.png"
 import mediumPinIcon from "../../../public/images/medium-pin-icon.png"
@@ -26,33 +26,7 @@ import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour";
 
-// Sample data for places
-export const placesData = [
-  {
-    name: "Tower Bridge",
-    description:
-      "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-    image: { towerBridgePic },
-    pinSize: "big",
-    lat: 51.505,
-    lon: -0.09,
-  },
-  {
-    name: "London Stadium",
-    description: "Home of West Ham United",
-    image: { sherlockPic },
-    pinSize: "big",
-    lat: 51.51,
-    lon: -0.1,
-  },
-  {
-    name: "The Sherlock Holmes Museum",
-    description: "Sherlock Holmes Museum located in London",
-    lat: 51.515,
-    lon: -0.12,
-  },
-  // Add more places as needed
-]
+
 
 const MyMapForSearch: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
@@ -156,7 +130,7 @@ const MyMapForSearch: React.FC = () => {
         </Marker> */}
         <MapCenterEvents onCenterChange={handleCenterChange} />
 
-        {placesData.map((place, index) => (
+        {/* {placesData.map((place, index) => (
           <Marker
             key={index}
             position={[place.lat, place.lon]}
@@ -165,7 +139,7 @@ const MyMapForSearch: React.FC = () => {
           >
             <Popup>{place.name}</Popup>
           </Marker>
-        ))}
+        ))} */}
 
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />

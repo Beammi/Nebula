@@ -1,27 +1,29 @@
 import React, { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 
-import towerBridgePic from "../../public/images/tower-bridge-pic.png"
-import shareIcon from "../../public/images/share-pic.png"
-import directionsIcon from "../../public/images/directions-pic.png"
-import recommendIcon from "../../public/images/recommend-tour-pic.png"
-import bookmarkIcon from "../../public/images/bookmark-pic.png"
-import bookmarkSavedIcon from "../../public/images/bookmarkSaved.png"
-import filterIcon from "../../public/images/filter-icon.png"
+import towerBridgePic from "../../../public/images/tower-bridge-pic.png"
+import shareIcon from "../../../public/images/share-pic.png"
+import directionsIcon from "../../../public/images/directions-pic.png"
+import recommendIcon from "../../../public/images/recommend-tour-pic.png"
+import bookmarkIcon from "../../../public/images/bookmark-pic.png"
+import bookmarkSavedIcon from "../../../public/images/bookmarkSaved.png"
+import filterIcon from "../../../public/images/filter-icon.png"
 import { saveBookmark } from "@/utils/saveBookmarkAPI"
 
-import smallPin from "../../public/images/small-pin.png"
-import smallShop from "../../public/images/small-shop.png"
-import smallClock from "../../public/images/small-clock.png"
-import smallWorld from "../../public/images/small-world.png"
-import smallPhone from "../../public/images/small-phone.png"
-import otherNebuPic1 from "../../public/images/others-nebu-1.png"
-import otherNebuPic2 from "../../public/images/others-nebu-2.png"
-import altImage from "../../public/images/altImage.png"
+import smallPin from "../../../public/images/small-pin.png"
+import smallShop from "../../../public/images/small-shop.png"
+import smallClock from "../../../public/images/small-clock.png"
+import smallWorld from "../../../public/images/small-world.png"
+import smallPhone from "../../../public/images/small-phone.png"
+import otherNebuPic1 from "../../../public/images/others-nebu-1.png"
+import otherNebuPic2 from "../../../public/images/others-nebu-2.png"
+import altImage from "../../../public/images/altImage.png"
 import Link from "next/link"
-import RatingInput from "./RatingInput"
-import Ratings from "./Ratings"
-import Button from "./Button"
+import RatingInput from "../RatingInput"
+import Ratings from "../Ratings"
+import OtherNebu from "./OtherNebu"
+import Button from "../Button"
+import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/ViewTourList"
 
 export default function PlaceInfoPanel({ toggle, action, nebu }) {
@@ -31,7 +33,9 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
   const [showViewTourList, setShowViewTourList] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
-
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+  const [userId,setUserId] = useState("")
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const formatDaysOpen = (nebu) => {
@@ -49,8 +53,51 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     )
     return openDays.join(", ")
   }
+  async function getEmail() {
+    console.log("Pass getEmail()")
 
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      console.log("Error in getUser")
+      return
+    }
+    const userEmail =
+      user.app_metadata.provider === "email"
+        ? user.email
+        : user.user_metadata.email
+    const userProvider = user.app_metadata.provider || ""
+    
+    setEmail(userEmail)
+    setProvider(userProvider)
+    fetchProfile(userEmail, userProvider)
+
+  }
+  const fetchProfile = async (email, provider) => {
+    const url = `/api/users/getUserProfile?email=${encodeURIComponent(
+      email
+    )}&provider=${encodeURIComponent(provider)}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const userIdForFetch = data.user_id
+        setUserId(userIdForFetch)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the profile"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error)
+    }
+  }
   useEffect(() => {
+    getEmail()
     console.log("O: ", panelRef)
 
     const handleScroll = () => {
@@ -113,7 +160,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   // }
   const handleSaveBookmark = async () => {
     try {
-      const result = await saveBookmark(nebu.user_id, nebu.nebu_id)
+      const result = await saveBookmark(userId, nebu.nebu_id)
       alert("Bookmark saved successfully!")
       // Update UI as needed
     } catch (error) {
@@ -481,90 +528,6 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                 <RatingInput nebuId={nebu.nebu_id} />
                 <Ratings nebuId={nebu.nebu_id}></Ratings>
               </div>
-
-              // <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=60&raw_url=true&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnN8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     {/* <Image src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3880&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pic" className="" width={48} height={48}/>                   */}
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Natlntt
-              //       </p>
-              //       <input
-              //         type="text"
-              //         placeholder="Type your comment..."
-              //         className="input input-bordered bg-white rounded-none border-x-0 border-t-0 border-b-2 focus:outline-0 focus:outline-offset-0 focus:border-black transition-all delay-100 ease-in-out w-full max-w-xs"
-              //       />
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Beammi_2000
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         BirdieInwZaa
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=3988&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Henry7
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-              // </div>
             )}
 
             {othersNebuSection && (
@@ -580,8 +543,10 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                     <Image src={filterIcon} alt="pic" className="" />
                   </figure>
                 </div>
-
-                <div className="flex flex-col gap-y-7 mt-2">
+                <div>
+                  <OtherNebu originalNebuId={nebu.nebu_id} placeName={nebu.place_name}></OtherNebu>
+                </div>
+                {/* <div className="flex flex-col gap-y-7 mt-2">
                   <div className="px-3 flex items-top bg-white cursor-pointer">
                     <img
                       src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
@@ -690,7 +655,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                       </figure>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
 
