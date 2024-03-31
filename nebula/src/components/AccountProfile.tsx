@@ -30,7 +30,7 @@ export default function AccountProfile(props) {
   }, [accountName])
 
   async function fetchAccountProfile(){
-    const url = `/api/nebu/getUsersByDisplayName?searchKey=${accountName}`
+    const url = `/api/search/getUsersByDisplayName?searchKey=${accountName}`
     try {
       const response = await fetch(url)
       if (!response.ok) {

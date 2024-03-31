@@ -79,7 +79,7 @@ export default function TagSuggestion(props) {
   async function fetchData() {
 
     setTagData([])
-    let url = `/api/nebu/getNebuByTag?tagName=${tagName}`
+    let url = `/api/search/getNebuByTag?tagName=${tagName}`
     try {
       const response = await fetch(url)
       if (!response.ok) {
@@ -119,7 +119,7 @@ export default function TagSuggestion(props) {
   const getUserTag = async(nebuName) => {
     // const formattedData: { value: string, type: string }[] = [];
     try {
-      const url = `/api/nebu/getUserTagFromNebu?nebuName=${nebuName}`;
+      const url = `/api/search/getUserTagFromNebu?nebuName=${nebuName}`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Network response was not ok");

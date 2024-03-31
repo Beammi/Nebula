@@ -172,6 +172,11 @@ const MyMap: React.FC = () => {
         toggle={placeInfoPanel}
         action={closePlaceInfoPanel}
       />
+      {/* <TourInfoPanel
+        tour={selectedPlace}
+        toggle={placeInfoPanel}
+        action={closePlaceInfoPanel}
+      /> */}
 
       <MapContainer
         center={currentPosition}

@@ -9,11 +9,15 @@ import smallTag from "../../public/images/smallTag.png"
 import smallThinPin from "../../public/images/placePinIcon.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
+import ViewTourList from "@/components/ViewTourList"
 import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 import Profile from "@/components/Profile"
+import PlaceInfoPanel from "@/components/PlaceInfoPanel"
 import { useRouter } from "next/router"
+import { useLocation } from "@/contexts/LocationContext"
+import debounce from 'lodash/debounce';
 import React from "react"
 
 
@@ -33,9 +37,19 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [showMyTour, setShowMyTour] = useState(false);
   const [showBookmark, setShowBookmark] = useState(false);
   const [showMyProfile, setShowMyProfile] = useState(false);
+  const [showViewTourList, setShowViewTourList] = useState(false)
+  const [showPlaceInfoPanel, setShowPlaceInfoPanel] = useState(false)
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
+  const [nebu, setNebu] = useState([]);
+  const [api, setApi] = useState<{ value: string; type: string }[]>([]);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+  const {
+    currentPlace,
+    setCurrentPlace,
+    setEnableContinuousUpdate,
+    setCurrentPosition,
+  } = useLocation()
 
   function closeTagSuggestion() {
     setShowTagSuggestion(false);
@@ -81,111 +95,132 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     setShowMyProfile(true)
   }
 
-  // Function to handle suggestion click
-  const handleSuggestionClick = (suggestion: { value: string; type: string }) => {
+  function closeViewTourList() {
+    setShowViewTourList(false);
+  }
 
-    setInputValue(suggestion.value);
+  function closePlaceInfoPanel() {
+    setShowPlaceInfoPanel(false);
+  }
+
+  // Function to handle suggestion click
+  // const handleSuggestionClick = (suggestion: { value: string; type: string }) => {
+  const handleSuggestionClick = async (suggestion) => {
     
     if(suggestion.type === "tag") {
+      setInputValue(suggestion.value);
       setShowTagSuggestion(true);
-      setTagSuggestValue(suggestion.value)
+
+      // setShowViewTourList(true)
+
+      setTagSuggestValue(suggestion.value)      
+
     }
     else if(suggestion.type === "user"){
+      setInputValue(suggestion.value);
       // const fullPath = `/${suggestion.value}`
       // router.push(fullPath)
       setShowAccountProfile(true)
       setAccountNameValue(suggestion.value)
 
     }
+    else if(suggestion.type === "place"){
+      setInputValue(suggestion.value.display_name);
+      setCurrentPosition([parseFloat(suggestion.value.lat), parseFloat(suggestion.value.lon)])
+      setCurrentPlace(suggestion.value.display_name)
+    }
+    else if(suggestion.type === "nebu"){
+      setInputValue(suggestion.value.title);
+      setCurrentPosition([parseFloat(suggestion.value.latitude), parseFloat(suggestion.value.longitude)])
+      
+      setShowPlaceInfoPanel(true)
+      // setPlaceInfoName(suggestion.value.title)
+      setNebu(suggestion.value)    
+    }
 
     setShowSuggestions(false);
   };
 
-  // Function to handle input change
-  const handleInputChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedData: { value: string, type: string }[] = [];
-    const key = event.target.value;
-    setInputValue(key)
-    // console.log("K: ", key, ", ", key);
-    
+  // Function to fetch data from API
+  const fetchData = async (key) => {
+    try {
+      // Fetch data from multiple endpoints
+      const [nebuResponse, tagResponse, userResponse, nominatimResponse] = await Promise.all([
+        fetch(`/api/search/getNebuByKeyword?searchKey=${key}`),
+        fetch(`/api/search/getTagByKeyword?searchKey=${key}`),
+        fetch(`/api/search/getUsersByDisplayName?searchKey=${key}`),
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(key.replace(/\s/g, '+'))}`, {
+          method: 'GET',
+          headers: {
+            'User-Agent': 'Nebula/1.0 (63011290@kmitl.ac.th)',
+          },
+        }),
+      ]);
 
-    if (key.trim().length === 0 || key == null) { // Clear suggestions if input is empty
-      setSuggestions([]);
-      setShowSuggestions(false);
-      // setSuggestions([]);
-      return; // Exit early to prevent further execution of the function
-    }
+      // Parse responses
+      const [nebuData, tagData, userData, nominatimData] = await Promise.all([
+        nebuResponse.json(),
+        tagResponse.json(),
+        userResponse.json(),
+        nominatimResponse.json(),
+      ]);
 
-    if(key !== ""){
+      console.log('Nebu data:', nebuData);
+      console.log('Tag data:', tagData);
+      console.log('User data:', userData);
+      console.log('Nominatim data:', nominatimData);
+
+      // Process data and update API state
+      // const formattedData = [];
+      const formattedData: { value: string, type: string }[] = [];
+      if (nebuData.length > 0) {
+        nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
+      }
+      if (tagData.length > 0) {
+        tagData.map((name) => formattedData.push({ value: name, type: 'tag' }));
+      }
+      if (userData.length > 0) {
+        userData.map((d) => formattedData.push({ value: d.display_name, type: 'user' }));
+      }
+      if (nominatimData.length > 0) {
+        nominatimData.map((d) => formattedData.push({ value: d, type: 'place' }));
+      }
       
-      let url = `/api/nebu/getNebuByKeyword?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        const data: string[] = await response.json();             
-        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
-        data.forEach(name => formattedData.push({ value: name, type: "nebu" }));
+      setApi(formattedData);
 
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
 
-      url = `/api/nebu/getTagByKeyword?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        const data: string[] = await response.json();             
-        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
-        data.forEach(name => formattedData.push({ value: name, type: "tag" }));
+  const handleInputChange = (event) => {
+    const key = event.target.value
+    setInputValue(key);
 
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-    
-      url = `/api/nebu/getUsersByDisplayName?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        // const data: string[] = await response.json(); // normal array same as write in api
-        const data: string[] = await response.json(); // normal array same as write in api
-        // data.forEach(name => formattedData.push({ value: name, type: "user" }));
-        // data.forEach(d => formattedData.push({ value: d, type: "user" }));
-        data.forEach(d => formattedData.push({ value: d.display_name, type: "user" }));
-        
-        // setAccountData(data)
-
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-
-      setSuggestions(formattedData)
-      // setSuggestions([]);        
-      setShowSuggestions(suggestions.length !== 0);
-      console.log(suggestions);  
+    if (key.trim().length === 0 || key == null) {
+      setSuggestions([]); // Clear suggestions if input is empty
+      setShowSuggestions(false);
+      return;
     }
 
-    
+    setShowSuggestions(true)
   };
 
   useEffect(() => {
-    // Check if input is empty after setting suggestions
-    if (inputValue === "") {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      // setSuggestions([]);
-    }
+    console.log("API:", api);
+    setSuggestions(api)
+  }, [api]);
+
+  useEffect(() => {
+    fetchData(inputValue)
   }, [inputValue]);
+  
   
 
   return (
     
-      <div className="relative w-full 2xl:w-[30%] lg:w-2/5 md:w-1/4 sm:w-3/4 p-4 max-w-md">
+      <div className="relative w-full 2xl:w-[25%] lg:w-2/5 md:w-1/4 sm:w-3/4 p-4">
+      {/* // <div className="relative w-full 2xl:w-[30%] lg:w-2/5 md:w-1/4 sm:w-3/4 p-4 max-w-lg"> */}
         <input
           type="text"
           className="pl-10 pr-4 py-2 w-full input input-bordered bg-[#fefefe] text-black shadow-neutral-500 shadow-sm"
@@ -202,20 +237,16 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           <Button buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
-        {showSuggestions && (
-          // <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg text-black">
-          <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg text-black transition-opacity delay-300 duration-500 ease-in-out opacity-100">
+        {showSuggestions && (          
+          <div className="absolute mt-2 w-full max-h-[500px] overflow-y-auto bg-white shadow-lg rounded-lg text-black transition-opacity delay-300 duration-500 ease-in-out opacity-100">
             {suggestions.map((suggestion, index) => (
               <div className="flex flex-row" key={index}>
                 <div
-                  className="py-2 pl-4 cursor-pointer hover:bg-gray-400 flex items-center gap-x-3"
+                  className="py-2 pl-4 cursor-pointer hover:bg-gray-400 flex items-center gap-x-3 flex-shrink-0"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {(suggestion.type === "nebu") && 
                     <figure><Image src={smallPin} alt="pic" className="" width={23}/></figure>
-                  }
-                  {(suggestion.type === "place") && 
-                    <figure><Image src={smallThinPin} alt="pic" className="" width={23}/></figure>
                   }
                   {(suggestion.type === "tour") && 
                     <figure><Image src={smallFlag} alt="pic" className="" width={15}/></figure>
@@ -226,13 +257,32 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "user") && 
                     <figure><Image src={smallUser} alt="pic" className="" width={18}/></figure>
                   }
-                  <span>{suggestion.value}</span>
+                  {(suggestion.type === "place") && 
+                    <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
+                  }
+                  {(suggestion.type === "place") && 
+                    <div>{suggestion.value.display_name}</div>
+                  }
+                  {(suggestion.type === "nebu") && 
+                    <div>{suggestion.value.title}</div>
+                  }
+                  {(suggestion.type === "tour") && 
+                    <div>{suggestion.value}</div>
+                  }
+                  {(suggestion.type === "tag") && 
+                    <div>{suggestion.value}</div>
+                  }
+                  {(suggestion.type === "user") && 
+                    <div>{suggestion.value}</div>
+                  }                  
                 </div>
               </div>
             ))}
           </div>
         )}
 
+        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>              
+        <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
         
