@@ -1,5 +1,7 @@
 import "@/styles/globals.css"
 import "leaflet/dist/leaflet.css"
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { LocationProvider } from "@/contexts/LocationContext" // Assuming LocationProvider is exported from LocationContext
 import { TourProvider } from "@/contexts/TourContext"
 export default function App({ Component, pageProps }) {

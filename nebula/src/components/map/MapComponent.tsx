@@ -10,9 +10,12 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet"
+import L from "leaflet"
+
 import pinIcon from "../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
 import UpdateMapView from "@/components/map/UpdateMapView"
+import "leaflet.markercluster"
 
 import largePinIcon from "../../../public/images/large-pin-icon.png"
 import mediumPinIcon from "../../../public/images/medium-pin-icon.png"
@@ -26,7 +29,36 @@ import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
 import MoveablePin from "./MoveablePin"
+const MarkerCluster = ({ nebus, onMarkerClick }) => {
+  const map = useMap()
+  const smallNebuPinIcon = new Icon({
+    iconUrl: smallPinIcon.src,
+    iconSize: [20, 20],
+  })
 
+  useEffect(() => {
+    const markerClusterGroup = L.markerClusterGroup()
+
+    nebus.forEach((nebu) => {
+      const marker = L.marker([nebu.latitude, nebu.longitude], {
+        title: nebu.title,
+        icon: smallNebuPinIcon,
+      })
+        .bindPopup(`<b>${nebu.title}</b>`)
+        .on('click', () => onMarkerClick(nebu));
+
+      markerClusterGroup.addLayer(marker)
+    })
+
+    map.addLayer(markerClusterGroup)
+
+    return () => {
+      map.removeLayer(markerClusterGroup)
+    }
+  }, [map, nebus,onMarkerClick]) // Ensure the effect runs when `nebus` or `map` changes
+
+  return null
+}
 const MyMap: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string
@@ -75,12 +107,12 @@ const MyMap: React.FC = () => {
 
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
-    iconSize: [50, 50],
+    iconSize: [20, 20],
   })
 
   const currentLocationIcon = new Icon({
     iconUrl: currentPinLocation.src,
-    iconSize: [18, 30],
+    iconSize: [15, 25],
   })
 
   const handleMarkerClick = (nebu) => {
@@ -113,9 +145,7 @@ const MyMap: React.FC = () => {
   useEffect(() => {
     setShowMovablePin(false)
   }, [])
-  useEffect(()=>{
-
-  },[currentPosition])
+  useEffect(() => {}, [currentPosition])
   useEffect(() => {
     async function fetchNebuPosts() {
       try {
@@ -155,7 +185,6 @@ const MyMap: React.FC = () => {
       >
         <UpdateMapView position={currentPosition} />
         {/* Use currentPosition.toString() as a key for the Marker */}
-        
 
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -164,6 +193,7 @@ const MyMap: React.FC = () => {
         {/* <Marker position={[51.505, -0.09]} icon={customIcon} alt='Tower Bridges'>        
         </Marker> */}
         <MapCenterEvents onCenterChange={handleCenterChange} />
+        <MarkerCluster nebus={nebus} onMarkerClick={handleMarkerClick} />
 
         {/* {placesData.map((place, index) => (
           <Marker
@@ -182,7 +212,7 @@ const MyMap: React.FC = () => {
         >
           <Popup>Current Location.</Popup>
         </Marker>
-        {nebus.map((nebu, index) => (
+        {/* {nebus.map((nebu, index) => (
           <Marker
             key={index}
             position={[nebu.latitude, nebu.longitude]} // Ensure your nebu objects have latitude and longitude properties
@@ -193,7 +223,7 @@ const MyMap: React.FC = () => {
           >
             <Popup>{nebu.title}</Popup>
           </Marker>
-        ))}
+        ))} */}
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
