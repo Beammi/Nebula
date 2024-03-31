@@ -259,7 +259,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "place") && 
                     <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
                   }
-                  {/* {(suggestion.type === "place") && 
+                  {(suggestion.type === "place") && 
                     <h2>{suggestion.value.display_name}</h2>
                   }
                   {(suggestion.type === "nebu") && 
@@ -273,19 +273,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   }
                   {(suggestion.type === "user") && 
                     <h2>{suggestion.value}</h2>
-                  }                   */}
-                  {/* <h2>
-                    {suggestion.type === "nebu" && suggestion.value.title}
-                    {suggestion.type === "tour" && suggestion.value}
-                    {suggestion.type === "tag" && suggestion.value}
-                    {suggestion.type === "user" && suggestion.value}
-                    {suggestion.type === "place" && suggestion.value.display_name}
-                  </h2> */}
-                  {(suggestion.type === "nebu") ? <h2>{suggestion.value.display_name}</h2> 
-                    : (suggestion.type === "place") ? 
-                    <h2>{suggestion.value.display_name}</h2>: 
-                    <h2>{suggestion.value}</h2>
-                  }
+                  }                  
                 </div>
               </div>
             ))}
