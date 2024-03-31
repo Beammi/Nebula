@@ -259,28 +259,40 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "place") && 
                     <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
                   }
-                  {(suggestion.type === "place") && 
-                    <div>{suggestion.value.display_name}</div>
+                  {/* {(suggestion.type === "place") && 
+                    <h2>{suggestion.value.display_name}</h2>
                   }
                   {(suggestion.type === "nebu") && 
-                    <div>{suggestion.value.title}</div>
+                    <h2>{suggestion.value.title}</h2>
                   }
                   {(suggestion.type === "tour") && 
-                    <div>{suggestion.value}</div>
+                    <h2>{suggestion.value}</h2>
                   }
                   {(suggestion.type === "tag") && 
-                    <div>{suggestion.value}</div>
+                    <h2>{suggestion.value}</h2>
                   }
                   {(suggestion.type === "user") && 
-                    <div>{suggestion.value}</div>
-                  }                  
+                    <h2>{suggestion.value}</h2>
+                  }                   */}
+                  {/* <h2>
+                    {suggestion.type === "nebu" && suggestion.value.title}
+                    {suggestion.type === "tour" && suggestion.value}
+                    {suggestion.type === "tag" && suggestion.value}
+                    {suggestion.type === "user" && suggestion.value}
+                    {suggestion.type === "place" && suggestion.value.display_name}
+                  </h2> */}
+                  {(suggestion.type === "nebu") ? <h2>{suggestion.value.display_name}</h2> 
+                    : (suggestion.type === "place") ? 
+                    <h2>{suggestion.value.display_name}</h2>: 
+                    <h2>{suggestion.value}</h2>
+                  }
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>              
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>               */}
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
