@@ -171,7 +171,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
     <div
       className={`absolute overflow-y-scroll  ${
         mobileInfoPanel ? "top-0" : "top-1/2"
-      } w-full rounded-t-xl lg:top-0 lg:w-[23%] z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out 
+      } w-full rounded-t-xl lg:top-0 lg:w-[25%] z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out 
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
       ref={panelRef}
     >
