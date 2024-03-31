@@ -17,6 +17,7 @@ import Profile from "@/components/Profile"
 import PlaceInfoPanel from "@/components/PlaceInfoPanel"
 import { useRouter } from "next/router"
 import { useLocation } from "@/contexts/LocationContext"
+import debounce from 'lodash/debounce';
 import React from "react"
 
 
@@ -41,6 +42,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [nebu, setNebu] = useState([]);
+  const [api, setApi] = useState<{ value: string; type: string }[]>([]);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
   const {
     currentPlace,
@@ -139,117 +141,80 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     setShowSuggestions(false);
   };
 
-  // Function to handle input change
-  const handleInputChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedData: { value: string, type: string }[] = [];
-    const key = event.target.value;
-    setInputValue(key)
-
-    if (key.trim().length === 0 || key == null) { // Clear suggestions if input is empty
-      setSuggestions([]);
-      setShowSuggestions(false);  
-      return; // Exit early to prevent further execution of the function
-    }
-
-    if(key !== ""){
-      
-      let url = `/api/search/getNebuByKeyword?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        // const data: string[] = await response.json();             
-        const data = await response.json();             
-        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
-        data.forEach(d => formattedData.push({ value: d, type: "nebu" }));
-
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-
-      url = `/api/search/getTagByKeyword?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        const data: string[] = await response.json();             
-        // const formattedData = data.map(name => ({ value: name, type: "tag" }));
-        data.forEach(name => formattedData.push({ value: name, type: "tag" }));
-
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-    
-      url = `/api/search/getUsersByDisplayName?searchKey=${key}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        // const data: string[] = await response.json(); // normal array same as write in api
-        const data: string[] = await response.json(); // normal array same as write in api    
-        data.forEach(d => formattedData.push({ value: d.display_name, type: "user" }));
-        
-        // setAccountData(data)
-
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-
-      // Replace spaces with '+' in the query for URL encoding
-      const formattedQuery = key.replace(/\s/g, "+")
-
-      // Construct the URL for the Nominatim API request
-      url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        formattedQuery
-      )}`
-
-      try {
-        const response = await fetch(url, {
-          method: "GET", // GET request to perform the search
+  // Function to fetch data from API
+  const fetchData = async (key) => {
+    try {
+      // Fetch data from multiple endpoints
+      const [nebuResponse, tagResponse, userResponse, nominatimResponse] = await Promise.all([
+        fetch(`/api/search/getNebuByKeyword?searchKey=${key}`),
+        fetch(`/api/search/getTagByKeyword?searchKey=${key}`),
+        fetch(`/api/search/getUsersByDisplayName?searchKey=${key}`),
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(key.replace(/\s/g, '+'))}`, {
+          method: 'GET',
           headers: {
-            // Set a meaningful User-Agent header
-            "User-Agent": "Nebula/1.0 (63011290@kmitl.ac.th)",
+            'User-Agent': 'Nebula/1.0 (63011290@kmitl.ac.th)',
           },
-        })
-        const data = await response.json()
-        console.log("Search place: ", data)
-  
-        if (data.length > 0) {
-          // Update search results state with fetched data
-          // setSearchResults(data)
-          // data.forEach(d => formattedData.push({ value: d.display_name, type: "user" }));
+        }),
+      ]);
 
-          // data.forEach(formattedData.push({ value: data, type: "place" }));
-          // data.forEach(d => formattedData.push({ value: d.display_name, type: "place" }));
-          data.forEach(d => formattedData.push({ value: d, type: "place" }));
-        } else {
-          console.log("No places found.")
-          // setSearchResults([]) // Clear previous results if no new results found
-        }
-      } catch (error) {
-        console.error("Error searching place:", error)
+      // Parse responses
+      const [nebuData, tagData, userData, nominatimData] = await Promise.all([
+        nebuResponse.json(),
+        tagResponse.json(),
+        userResponse.json(),
+        nominatimResponse.json(),
+      ]);
+
+      console.log('Nebu data:', nebuData);
+      console.log('Tag data:', tagData);
+      console.log('User data:', userData);
+      console.log('Nominatim data:', nominatimData);
+
+      // Process data and update API state
+      // const formattedData = [];
+      const formattedData: { value: string, type: string }[] = [];
+      if (nebuData.length > 0) {
+        nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
       }
+      if (tagData.length > 0) {
+        tagData.map((name) => formattedData.push({ value: name, type: 'tag' }));
+      }
+      if (userData.length > 0) {
+        userData.map((d) => formattedData.push({ value: d.display_name, type: 'user' }));
+      }
+      if (nominatimData.length > 0) {
+        nominatimData.map((d) => formattedData.push({ value: d, type: 'place' }));
+      }
+      
+      setApi(formattedData);
 
-      setSuggestions(formattedData)
-      // setSuggestions([]);        
-      setShowSuggestions(suggestions.length !== 0);
-      console.log(suggestions);  
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    const key = event.target.value
+    setInputValue(key);
+
+    if (key.trim().length === 0 || key == null) {
+      setSuggestions([]); // Clear suggestions if input is empty
+      setShowSuggestions(false);
+      return;
     }
 
-    
+    setShowSuggestions(true)
   };
 
   useEffect(() => {
-    // Check if input is empty after setting suggestions
-    if (inputValue === "") {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      // setSuggestions([]);
-    }
+    console.log("API:", api);
+    setSuggestions(api)
+  }, [api]);
+
+  useEffect(() => {
+    fetchData(inputValue)
   }, [inputValue]);
+  
   
 
   return (
