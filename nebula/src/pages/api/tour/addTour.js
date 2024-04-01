@@ -10,7 +10,6 @@ async function tourCreationHandler(req, res) {
     tour_name,
     description,
     official_tag,
-    images, // Assuming this is a JSON-encoded array of image URLs
     tags, // An array of tag names
     places, // An array of objects with place_name, latitude, and longitude
     waypoints,
@@ -30,27 +29,24 @@ async function tourCreationHandler(req, res) {
 
     // Insert the new tour
     const tourInsertResult = await db.query(`
-      INSERT INTO tour (tour_name, description, official_tag, user_id, images)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO tour (tour_name, description, official_tag, user_id)
+      VALUES ($1, $2, $3, $4)
       RETURNING tour_id;
-    `, [tour_name, description, official_tag, user_id, images]);
+    `, [tour_name, description, official_tag, user_id]);
     const tour_id = tourInsertResult.rows[0].tour_id;
 
-    // Handle each place
     for (const place of places) {
       let place_id;
-
-      // Attempt to find an existing place
       const placeResult = await db.query(
-        "SELECT place_id FROM place WHERE latitude = $1 AND longitude = $2",
-        [place.latitude, place.longitude]
+        "SELECT place_id FROM place WHERE place_name = $1 AND latitude = $2 AND longitude = $3",
+        [place.name,place.latitude, place.longitude]
       );
 
       if (placeResult.rows.length === 0) {
         // No place found; insert a new one
         const insertResult = await db.query(
           "INSERT INTO place (place_name, latitude, longitude) VALUES ($1, $2, $3) RETURNING place_id",
-          [place.place_name, place.latitude, place.longitude]
+          [place.name, place.latitude, place.longitude]
         );
         place_id = insertResult.rows[0].place_id;
       } else {
@@ -59,7 +55,19 @@ async function tourCreationHandler(req, res) {
       }
 
       // Associate the place with the tour
-      await db.query("INSERT INTO tour_place (tour_id, place_id) VALUES ($1, $2)", [tour_id, place_id]);
+      const checkTourPlaceExistence = await db.query(
+        "SELECT 1 FROM tour_place WHERE tour_id = $1 AND place_id = $2",
+        [tour_id, place_id]
+      );
+      
+      if (checkTourPlaceExistence.rows.length === 0) {
+        // Association does not exist, so we can insert it
+        await db.query(
+          "INSERT INTO tour_place (tour_id, place_id) VALUES ($1, $2)",
+          [tour_id, place_id]
+        );
+      }
+      // await db.query("INSERT INTO tour_place (tour_id, place_id) VALUES ($1, $2)", [tour_id, place_id]);
     }
 
     // Handle each tag
@@ -91,7 +99,7 @@ async function tourCreationHandler(req, res) {
       for (const waypoint of waypoints) {
         const insertResult = await db.query(
           "INSERT INTO waypoint (waypoint_name, latitude, longitude, tour_id) VALUES ($1, $2, $3, $4) RETURNING waypoint_id;",
-          [waypoint.waypoint_name, waypoint.latitude, waypoint.longitude, tour_id]
+          [waypoint.name, waypoint.latitude, waypoint.longitude, tour_id]
         );
         // waypoint_id is available if needed: insertResult.rows[0].waypoint_id
       }
