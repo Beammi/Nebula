@@ -13,6 +13,7 @@ async function tourCreationHandler(req, res) {
     images, // Assuming this is a JSON-encoded array of image URLs
     tags, // An array of tag names
     places, // An array of objects with place_name, latitude, and longitude
+    waypoints,
     user_email // Using email to identify the user
   } = req.body;
 
@@ -83,8 +84,18 @@ async function tourCreationHandler(req, res) {
 
       // Associate the tag with the tour
       await db.query("INSERT INTO tour_tag (tour_id, tag_id) VALUES ($1, $2)", [tour_id, tagId]);
-    }
 
+
+    }
+    if (Array.isArray(waypoints)) { // Ensure waypoints is an array
+      for (const waypoint of waypoints) {
+        const insertResult = await db.query(
+          "INSERT INTO waypoint (waypoint_name, latitude, longitude, tour_id) VALUES ($1, $2, $3, $4) RETURNING waypoint_id;",
+          [waypoint.waypoint_name, waypoint.latitude, waypoint.longitude, tour_id]
+        );
+        // waypoint_id is available if needed: insertResult.rows[0].waypoint_id
+      }
+    }
     // Commit the transaction
     await db.query("COMMIT");
 

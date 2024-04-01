@@ -1,13 +1,15 @@
 export interface Place {
   id: number
   name: string
-  location: [number, number]
+  latitude: number
+  longitude: number
 }
 
 export interface Waypoint {
   id: number
   name: string
-  location: [number, number]
+  latitude: number
+  longitude: number
   // You can include additional properties specific to waypoints if they differ from places
 }
 

@@ -14,7 +14,13 @@ export default function AddPlaceModal(props) {
   function navigateMoveablePin(){
     router.push("/SearchOnMap")
   }
-
+  const navigateToAddPlace = () => {
+    router.push("/SearchOnMap?context=place");
+  };
+  
+  const navigateToAddWaypoint = () => {
+    router.push("/SearchOnMap?context=waypoint");
+  };
   return (
       <div
         className={`ease-in duration-300 ${
@@ -28,7 +34,7 @@ export default function AddPlaceModal(props) {
             label="Add place"
             onClick={() => {
               action();
-              navigateMoveablePin();
+              navigateToAddPlace();
             }}
           ></Button>
           <Button
@@ -36,8 +42,8 @@ export default function AddPlaceModal(props) {
             type="button"
             label="Add waypoint"
             onClick={() => {
-              //action();
-              //onAddPlace();
+              action();
+              navigateToAddWaypoint();
             }}
           ></Button>
         </div>
