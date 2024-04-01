@@ -51,12 +51,12 @@ const OtherNebu = ({ originalNebuId, placeName }) => {
           )}
           <div className="ml-4 pr-7">
             <p className="text-sm font-medium text-black -mb-0.5">{nebu.creator_email}</p>
-            <div className="rating flex -mt-2">
+            <div className="rating flex -mt-1">
               {renderStars(nebu.average_rating)} 
             </div>
-            <p className="text-sm -mt-0.5 font-normal text-black">{nebu.description}</p>
+            <p className="text-sm mt-2 font-normal text-black">{nebu.description}</p>
             {nebu.images && nebu.images.length > 0 && (
-              <img src={nebu.images[0]} className="pt-0 my-2 rounded-md" alt="picture" />
+              <img src={nebu.images[0]} className="pt-0 mt-4 mb-2 rounded-md" alt="picture" />
             )}
           </div>
         </div>

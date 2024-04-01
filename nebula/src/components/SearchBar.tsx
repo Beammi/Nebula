@@ -199,12 +199,33 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "user") && 
                     <figure><Image src={smallUser} alt="pic" className="" width={18}/></figure>
                   }
-                  <span>{suggestion.value}</span>
+
+                  {(suggestion.type === "place") && 
+                    <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
+                  }
+                  {(suggestion.type === "place") && 
+                    <h2>{suggestion.value.display_name}</h2>
+                  }
+                  {(suggestion.type === "nebu") && 
+                    <h2>{suggestion.value.title}</h2>
+                  }
+                  {(suggestion.type === "tour") && 
+                    <h2>{suggestion.value}</h2>
+                  }
+                  {(suggestion.type === "tag") && 
+                    <h2>{suggestion.value}</h2>
+                  }
+                  {(suggestion.type === "user") && 
+                    <h2>{suggestion.value}</h2>
+                  }                  
                 </div>
               </div>
             ))}
           </div>
         )}
+
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>               */}
+        <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
         
