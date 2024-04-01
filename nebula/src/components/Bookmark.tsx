@@ -28,40 +28,7 @@ export default function Bookmark(props) {
   const [showDeletePopUp, setShowDeletePopUp] = useState(false)
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
-  const mockHashtagData = [
-    {
-      title: "Markets in London",
-      address: "Borough Market, Southbank Market, Blackfriars Road Food Market",
-      description:
-        "A nice view of Big Ben during the sunset. You can get this view from the Queen’s Walk near Sea Life London. A spectacular view",
-      type: "tour",
-      username: "nat2100",
-    },
-    {
-      title: "Big Ben",
-      address: "London SW1A 0AA, United Kingdom",
-      description:
-        "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-      type: "nebu",
-      username: "beammi4567",
-    },
-    {
-      title: "Markets in London",
-      address: "Borough Market, Southbank Market, Blackfriars Road Food Market",
-      description:
-        "A nice view of Big Ben during the sunset. You can get this view from the Queen’s Walk near Sea Life Lond...",
-      type: "tour",
-      username: "birdie007",
-    },
-    {
-      title: "Big Ben",
-      address: "London SW1A 0AA, United Kingdom",
-      description:
-        "A Landmark of England. One of the most popolar clock tower in the entire world.",
-      type: "nebu",
-      username: "nat2100",
-    },
-  ]
+  const [selectedBookmarkId, setSelectedBookmarkId] = useState(null)
   async function getEmail() {
     console.log("Pass getEmail()")
 
@@ -103,9 +70,32 @@ export default function Bookmark(props) {
       console.error("Fetch error:", error)
     }
   }
+  const deleteBookmark = async (bookmarkId) => {
+    try {
+      const response = await fetch("/api/bookmark/deleteBookmark", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, bookmarkId: bookmarkId }), // Ensure you have the correct user ID and bookmark ID
+      })
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok")
+      }
+
+      const data = await response.json()
+      console.log(data.message) // "Bookmark deleted successfully"
+      alert(data.message)
+      // Optionally, refresh your bookmarks list or update UI accordingly
+    } catch (error) {
+      console.error("Error deleting bookmark:", error)
+    }
+  }
+
   useEffect(() => {
     getEmail()
-  }, [])
+  }, [data])
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
@@ -161,7 +151,6 @@ export default function Bookmark(props) {
                     alt="nebu-picture"
                     className=" lg:h-auto"
                   />
-                  
                 </figure>
               ) : (
                 <figure className="w-full lg:w-[37%] flex-shrink-0 lg:mt-10">
@@ -179,7 +168,13 @@ export default function Bookmark(props) {
                       <p className="w-full text-center lg:text-start">
                         {data.title}
                       </p>
-                      <figure className="lg:w-[10%] lg:ml-auto mt-1.5 cursor-pointer" onClick={() => setShowDeletePopUp(true)}>
+                      <figure
+                        className="lg:w-[10%] lg:ml-auto mt-1.5 cursor-pointer"
+                        onClick={() => {
+                          setShowDeletePopUp(true)
+                          setSelectedBookmarkId(data.bookmark_id)
+                        }}
+                      >
                         <Image src={redCloseIcon} alt="pic" />
                       </figure>
                     </div>
@@ -224,8 +219,6 @@ export default function Bookmark(props) {
                     ) : (
                       <p className="text-xs text-grey">No additional tags</p>
                     )}
-
-                    
                   </div>
                 </div>
               </div>
@@ -248,13 +241,18 @@ export default function Bookmark(props) {
           <div className="flex px-10">
             <button
               className="mr-auto justify-self-start rounded-lg mt-16 py-2 px-4 normal-case font-normal text-black bg-dark-grey"
-              onClick={() => setShowDeletePopUp(!showDeletePopUp)}
+              onClick={() => {
+                setShowDeletePopUp(!showDeletePopUp)
+              }}
             >
               Cancel
             </button>
             <button
               className="ml-auto rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white bg-red"
-              // onClick={() => deleteSelectedNebu()}
+              onClick={() => {
+                deleteBookmark(selectedBookmarkId)
+                setShowDeletePopUp(!showDeletePopUp)
+              }}
             >
               Confirm
             </button>

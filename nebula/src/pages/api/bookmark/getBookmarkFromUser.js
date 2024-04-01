@@ -32,7 +32,6 @@ export default async function handler(req, res) {
                 END AS description,
                 CASE
                     WHEN b.nebu_id IS NOT NULL THEN n.images
-                    WHEN b.tour_id IS NOT NULL THEN t.images
                 END AS images,
                 CASE
                     WHEN b.nebu_id IS NOT NULL THEN n.official_tag
