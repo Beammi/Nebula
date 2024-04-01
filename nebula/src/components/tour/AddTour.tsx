@@ -61,23 +61,25 @@ export default function AddTour({ toggle, action, placeText }) {
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (email===""){
+      alert("Please refresh")
+    }
     const tourDataToSend = {
-      tour_name: tourData.tourName,
-      description: tourData.description,
+      tour_name: tourName,
+      description: description,
       official_tag: tourData.officialTag,
       // Directly use latitude and longitude without extracting from a location array
       places: tourData.routePlaces.map(({ name, latitude, longitude }) => ({
-        place_name: name,
+        name,
         latitude, // Directly using latitude
         longitude, // Directly using longitude
       })),
       waypoints: tourData.waypoints.map(({ name, latitude, longitude }) => ({
-        waypoint_name: name,
+        name,
         latitude, // Directly using latitude
         longitude, // Directly using longitude
       })),
       tags: tourData.additionalTags, // Assuming this is an array of string tags
-      images: [], // Populate this according to your application's requirements
       user_email: email  // Use the actual user email
     };
   
@@ -135,7 +137,7 @@ export default function AddTour({ toggle, action, placeText }) {
 
   useEffect(()=>{
     getEmail()
-  },[])
+  },[email])
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
