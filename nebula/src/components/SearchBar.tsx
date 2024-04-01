@@ -260,19 +260,19 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                     <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
                   }
                   {(suggestion.type === "place") && 
-                    <div>{suggestion.value.display_name}</div>
+                    <h2>{suggestion.value.display_name}</h2>
                   }
                   {(suggestion.type === "nebu") && 
-                    <div>{suggestion.value.title}</div>
+                    <h2>{suggestion.value.title}</h2>
                   }
                   {(suggestion.type === "tour") && 
-                    <div>{suggestion.value}</div>
+                    <h2>{suggestion.value}</h2>
                   }
                   {(suggestion.type === "tag") && 
-                    <div>{suggestion.value}</div>
+                    <h2>{suggestion.value}</h2>
                   }
                   {(suggestion.type === "user") && 
-                    <div>{suggestion.value}</div>
+                    <h2>{suggestion.value}</h2>
                   }                  
                 </div>
               </div>
@@ -280,7 +280,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           </div>
         )}
 
-        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>              
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu}/>               */}
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>

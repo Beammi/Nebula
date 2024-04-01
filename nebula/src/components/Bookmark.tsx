@@ -13,6 +13,7 @@ import altImage from "../../public/images/altImage.png"
 import yellowPin from "../../public/images/yellowPin.png"
 import yellowFlag from "../../public/images/yellowFlag.png"
 import blueBookmark from "../../public/images/blueBookmark.png"
+import redCloseIcon from "../../public/images/redCloseIcon.png"
 import filledoutBlueBookmark from "../../public/images/filledoutBlueBookmark.png"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -160,6 +161,7 @@ export default function Bookmark(props) {
                     alt="nebu-picture"
                     className=" lg:h-auto"
                   />
+                  
                 </figure>
               ) : (
                 <figure className="w-full lg:w-[37%] flex-shrink-0 lg:mt-10">
@@ -170,13 +172,16 @@ export default function Bookmark(props) {
               <div className="card-body flex flex-col justify-between">
                 {data.type === "nebu" && (
                   <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row flex-wrap">
-                    <div className="flex w-full gap-3 flex-col lg:flex-row">
-                      <figure className="lg:w-[10%]">
+                    <div className="flex w-full gap-3 flex-col lg:flex-row lg:place-items-start">
+                      <figure className="lg:w-[10%] mt-1">
                         <Image src={yellowPin} alt="pic" />
                       </figure>
                       <p className="w-full text-center lg:text-start">
                         {data.title}
                       </p>
+                      <figure className="lg:w-[10%] lg:ml-auto mt-1.5 cursor-pointer" onClick={() => setShowDeletePopUp(true)}>
+                        <Image src={redCloseIcon} alt="pic" />
+                      </figure>
                     </div>
                     <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">
                       added by {data.creator_email}
@@ -226,6 +231,34 @@ export default function Bookmark(props) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div
+        className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-opacity ease-in duration-200  ${
+          showDeletePopUp
+            ? "visible opacity-100 shadow-md bg-white border-1 border-black w-[20rem] lg:w-[35rem] border-2"
+            : "rounded-sm invisible opacity-0"
+        } `}
+      >
+        <div className="flex flex-col p-7">
+          <p className="text-lg text-black font-medium">
+            Do you want to confirm to delete your Bookmark?
+          </p>
+          <div className="flex px-10">
+            <button
+              className="mr-auto justify-self-start rounded-lg mt-16 py-2 px-4 normal-case font-normal text-black bg-dark-grey"
+              onClick={() => setShowDeletePopUp(!showDeletePopUp)}
+            >
+              Cancel
+            </button>
+            <button
+              className="ml-auto rounded-lg mt-16 py-2 px-4 normal-case font-normal text-white bg-red"
+              // onClick={() => deleteSelectedNebu()}
+            >
+              Confirm
+            </button>
+          </div>
         </div>
       </div>
     </div>
