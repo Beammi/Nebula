@@ -32,7 +32,7 @@ export default async function getNebuByTagHandler(req, res) {
       LEFT JOIN users ON nebu.user_id = users.user_id
       LEFT JOIN nebu_tag ON nebu.nebu_id = nebu_tag.nebu_id
       LEFT JOIN tag ON nebu_tag.tag_id = tag.tag_id
-      WHERE nebu.official_tag = '${tagName}' OR tag.tag_name LIKE '${tagName}'
+      WHERE nebu.official_tag = '${tagName}' OR tag.tag_name = '${tagName}'
       GROUP BY nebu.nebu_id, users.email;
     `;
 
