@@ -26,20 +26,25 @@ export default function Tag() {
     const [addTourState, setAddTourState] = useState(false)
     const [tagData, setTagData] = useState([])
     const [api, setApi] = useState([])
-    // const [userTag, setUserTag] = useState([])
-    // const [userTag, setUserTag] = useState<{ value: string; type: string }[]>([]);
     const [tagName, setTagName] = useState("");
 
     const tag = Array.isArray(router.query.slug) ? router.query.slug[0] : router.query.slug;
 
     useEffect(() => {
       setTagName(tag);
-      fetchData()
+    }, [tag])
 
-    }, [tagName, tag])
+    useEffect(() => {
+      console.log("tag name: ", tagName);
+      fetchData()
+    }, [tagName])
+
+    useEffect(() => {
+      console.log("API:", api);
+      setTagData(api)
+    }, [api]);
 
     function tagNameClick(tagName) {
-
       router.push(`/tag/${tagName}`)
     }
     
@@ -59,51 +64,6 @@ export default function Tag() {
         console.error("Fetch error:", error)
       }
     
-    }
-
-    useEffect(() => {
-      console.log("API:", api);
-      setTagData(api)
-    }, [api]);
-
-    async function checkSession() {
-
-      const { data: { user } ,error} = await supabase.auth.getUser()
-      // console.log(JSON.stringify(user))
-
-      if (error || user === null) {
-        router.push("/home_unregistered")
-
-      } else {
-        let str = JSON.stringify(user.email)
-        console.log("Session: "+JSON.stringify(user.app_metadata.provider))
-        setProfileName(str.substring(1,3))
-        console.log(profileName)
-      }
-    }
-    
-    async function checkProviderAccount(){
-      const { data: { user } ,error} = await supabase.auth.getUser()
-      if (error || user === null){
-        console.log("Error when call checkProviderAccount function")
-      }else if (user.app_metadata.provider==="email"){
-        console.log("Login via Email")
-      }else{
-        let provider = user.app_metadata.provider
-        let email = user.user_metadata.email
-        console.log(provider+email)
-        const response = await fetch("/api/auth/loginWithProvider", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({provider, email}),
-        })
-        if(response.ok){
-          console.log("Provider")
-        }else{
-          console.log("Error in checkProviderAccount")
-        }
-      }
-
     }
 
     function openAddNebu() {
@@ -237,7 +197,9 @@ export default function Tag() {
                       <div className='flex gap-2 flex-wrap'>
                         {/* <Link className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link> */}
                         <button onClick={() => tagNameClick(data.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</ button>
-                        {data.tags?.map((usertag) => (
+                        { data.tags && data.tags
+                          .filter(tag => tag !== null) 
+                          .map((usertag) => (
                           // usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag.value}</Link>                    
                           <button onClick={() => tagNameClick(usertag)} className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</button>                    
                         ))}
