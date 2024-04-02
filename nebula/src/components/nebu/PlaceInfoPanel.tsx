@@ -24,9 +24,9 @@ import Ratings from "../Ratings"
 import OtherNebu from "./OtherNebu"
 import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
-import ViewTourList from "@/components/ViewTourList"
+import ViewTourList from "@/components/tour/ViewTourList"
 
-export default function PlaceInfoPanel({ toggle, action, nebu }) {
+export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
@@ -35,7 +35,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   const [isSaved, setIsSaved] = useState(false)
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
-  const [userId,setUserId] = useState("")
+  const [userId, setUserId] = useState("")
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const formatDaysOpen = (nebu) => {
@@ -71,11 +71,10 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
         ? user.email
         : user.user_metadata.email
     const userProvider = user.app_metadata.provider || ""
-    
+
     setEmail(userEmail)
     setProvider(userProvider)
     fetchProfile(userEmail, userProvider)
-
   }
   const fetchProfile = async (email, provider) => {
     const url = `/api/users/getUserProfile?email=${encodeURIComponent(
@@ -142,7 +141,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   }
 
   function closeViewTourList() {
-    setShowViewTourList(false);
+    setShowViewTourList(false)
   }
 
   // Placeholder function for saving to the database
@@ -152,20 +151,24 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
   //   // For example: await api.savePlace({ id: nebu.id, saved: isSaved });
   // }
 
-  // // Function to toggle save status and trigger database update
-  // const handleSaveClick = () => {
-  //   const newSavedStatus = !isSaved
-  //   setIsSaved(newSavedStatus)
-  //   saveToDatabase() // This would ideally pass necessary data for the save operation
-  // }
+  // Function to toggle save status and trigger database update
+  const handleSaveClick = () => {
+    const newSavedStatus = !isSaved
+    setIsSaved(newSavedStatus)
+  }
   const handleSaveBookmark = async () => {
     try {
       const result = await saveBookmark(userId, nebu.nebu_id)
       alert("Bookmark saved successfully!")
+      const newSavedStatus = !isSaved
+      setIsSaved(newSavedStatus)
       // Update UI as needed
     } catch (error) {
       alert("Failed to save bookmark.")
     }
+  }
+  const handleRecommendTourClick = () => {
+    setShowViewTourList(true) // Set to true to show the ViewTourList
   }
   return (
     <div
@@ -175,7 +178,6 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
       ref={panelRef}
     >
-
       <div className=" text-black ">
         {nebu ? (
           <div
@@ -262,7 +264,10 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
               </div>
 
               <div className="flex flex-row mt-1 gap-x-1 overflow-x-auto">
-                <button className="btn btn-outline btn-sm text-blue rounded-2xl normal-case hover:bg-light-grey">
+                <button
+                  className="btn btn-outline btn-sm text-blue rounded-2xl normal-case hover:bg-light-grey"
+                  onClick={() => onRecommendTour(nebu)}
+                >
                   <figure>
                     <Image
                       src={recommendIcon}
@@ -544,118 +549,11 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
                   </figure>
                 </div>
                 <div>
-                  <OtherNebu originalNebuId={nebu.nebu_id} placeName={nebu.place_name}></OtherNebu>
+                  <OtherNebu
+                    originalNebuId={nebu.nebu_id}
+                    placeName={nebu.place_name}
+                  ></OtherNebu>
                 </div>
-                {/* <div className="flex flex-col gap-y-7 mt-2">
-                  <div className="px-3 flex items-top bg-white cursor-pointer">
-                    <img
-                      src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-                      className="h-12 w-12 border-2 border-white rounded-full mt-1"
-                      alt=""
-                    />
-                    <div className="ml-4 pr-7">
-                      <p className="text-sm font-medium text-black -mb-0.5">
-                        Beammi_2000
-                      </p>
-                      <div className="rating flex my-1">
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                          checked
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-black-grey h-3 w-5"
-                        />
-                        <label className="text-sm leading-4 text-yellow">
-                          4.0
-                        </label>
-                      </div>
-                      <p className="text-sm -mt-0.5 font-normal text-black ">
-                        When the night comes, the view is fantastic. This is
-                        unbelievable.
-                      </p>
-                      <figure>
-                        <Image
-                          src={otherNebuPic1}
-                          alt="pic"
-                          className="pt-0 my-2 rounded-md"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-
-                  <div className="px-3 flex items-top bg-white cursor-pointer">
-                    <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-                      className="h-12 w-12 border-2 border-white rounded-full mt-1"
-                      alt=""
-                    />
-                    <div className="ml-4 pr-7">
-                      <p className="text-sm font-medium text-black -mb-0.5">
-                        BirdieInwZaa
-                      </p>
-                      <div className="rating flex my-1">
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-yellow h-3 w-5"
-                          checked
-                        />
-                        <input
-                          type="radio"
-                          name="rating-1"
-                          className="mask mask-star bg-black-grey h-3 w-5"
-                        />
-                        <label className="text-sm leading-4 text-yellow">
-                          4.0
-                        </label>
-                      </div>
-                      <p className="text-sm -mt-0.5 font-normal text-black">
-                        Closed-up view with a clear sky is mind blowing.
-                      </p>
-                      <figure>
-                        <Image
-                          src={otherNebuPic2}
-                          alt="pic"
-                          className="pt-0 my-2 rounded-md"
-                        />
-                      </figure>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             )}
 
@@ -664,8 +562,11 @@ export default function PlaceInfoPanel({ toggle, action, nebu }) {
         ) : (
           <p>No place selected</p>
         )}
+        
       </div>
       {/* <ViewTourList action={showViewTourList} toggle={closeViewTourList} name={nebu?.title} /> */}
+      {/* Conditional rendering based on showViewTourList state */}
+      
     </div>
   )
 }

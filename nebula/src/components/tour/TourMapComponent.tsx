@@ -12,7 +12,7 @@ import {
 } from "react-leaflet"
 import L from "leaflet"
 
-import pinIcon from "../../public/images/pin-icon.png"
+import pinIcon from "../../../public/images/pin-icon.png"
 import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
 import UpdateMapView from "@/components/map/UpdateMapView"
 import "leaflet.markercluster"
@@ -25,43 +25,13 @@ import towerBridgePic from "../../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../../public/images/pin_current_location.png"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
-import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
 import ViewTourList from "@/components/tour/ViewTourList"
+import TourInfoPanel from "./TourInfoPanel"
+import { useRouter } from "next/router"
 
-import MoveablePin from "./MoveablePin"
-const MarkerCluster = ({ nebus, onMarkerClick }) => {
-  const map = useMap()
-  const smallNebuPinIcon = new Icon({
-    iconUrl: smallPinIcon.src,
-    iconSize: [20, 20],
-  })
-
-  useEffect(() => {
-    const markerClusterGroup = L.markerClusterGroup()
-
-    nebus.forEach((nebu) => {
-      const marker = L.marker([nebu.latitude, nebu.longitude], {
-        title: nebu.title,
-        icon: smallNebuPinIcon,
-      })
-        .bindPopup(`<b>${nebu.title}</b>`)
-        .on("click", () => onMarkerClick(nebu))
-
-      markerClusterGroup.addLayer(marker)
-    })
-
-    map.addLayer(markerClusterGroup)
-
-    return () => {
-      map.removeLayer(markerClusterGroup)
-    }
-  }, [map, nebus, onMarkerClick]) // Ensure the effect runs when `nebus` or `map` changes
-
-  return null
-}
-const MyMap: React.FC = () => {
+const MyMapTour: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string
     description: string
@@ -69,7 +39,31 @@ const MyMap: React.FC = () => {
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false)
   const [showViewTourList, setShowViewTourList] = useState(false)
   const [recommendedPlace, setRecommendedPlace] = useState(null)
+  const router = useRouter()
+  const { tourId } = router.query
+  const [tourDetails, setTourDetails] = useState(null)
+  const [tourPosition, setTourPosition] = useState([])
+  useEffect(() => {
+    const fetchTourDetails = async () => {
+      try {
+        const response = await fetch(`/api/tour/getTourById?tour_id=${tourId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setTourDetails(data)
+          console.log("Tour", tourDetails)
+        //   setTourPosition([data.places[0].latitude, data.places[0].longitude])
+        //   console.log("Tour position", tourPosition)
+        } else {
+          console.error("Failed to fetch tour details")
+        }
+      } catch (error) {
+        console.error("Error fetching tour details:", error)
+      }
+    }
 
+    fetchTourDetails()
+    // console.log("places ", tourDetails.places)
+  }, [])
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
@@ -151,41 +145,14 @@ const MyMap: React.FC = () => {
     setShowMovablePin(false)
   }, [])
   useEffect(() => {}, [currentPosition])
-  useEffect(() => {
-    async function fetchNebuPosts() {
-      try {
-        const response = await fetch(
-          `/api/nebu/nebuPosts?lat=${mapCenter.lat}&lon=${mapCenter.lng}&radius=100`
-        )
-        if (!response.ok) throw new Error("Failed to fetch")
-        const data = await response.json()
-        setNebus(data)
-        // console.log("Nebu: " + JSON.stringify(nebus))
-      } catch (error) {
-        console.error("Error fetching Nebu posts:", error)
-      }
-    }
-    console.log(showMovablePin)
-
-    fetchNebuPosts()
-  }, [mapCenter])
 
   return (
     <div className="h-screen relative">
-      <PlaceInfoPanel
-        nebu={selectedPlace}
+      <TourInfoPanel
+        tour={tourId}
         toggle={placeInfoPanel}
-        action={closePlaceInfoPanel}
-        onRecommendTour={(selectedPlace) => {
-          setRecommendedPlace(selectedPlace)
-          setShowViewTourList(true)
-        }}
+        // action={closePlaceInfoPanel}
       />
-      {/* <TourInfoPanel
-        tour={selectedPlace}
-        toggle={placeInfoPanel}
-        action={closePlaceInfoPanel}
-      /> */}
 
       <MapContainer
         center={currentPosition}
@@ -199,7 +166,6 @@ const MyMap: React.FC = () => {
       >
         <UpdateMapView position={currentPosition} />
         {/* Use currentPosition.toString() as a key for the Marker */}
-
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -207,8 +173,20 @@ const MyMap: React.FC = () => {
         {/* <Marker position={[51.505, -0.09]} icon={customIcon} alt='Tower Bridges'>        
         </Marker> */}
         <MapCenterEvents onCenterChange={handleCenterChange} />
-        <MarkerCluster nebus={nebus} onMarkerClick={handleMarkerClick} />
-
+        {/* {tourDetails.places && tourDetails.places.length > 0 ? (
+          tourDetails.places.map((place, placeIndex) => (
+            
+            <Marker
+            key={placeIndex}
+            position={[place.latitude,place.longitude]}
+            icon={smallNebuPinIcon}
+          >
+            <Popup>{place.place_name}</Popup>
+          </Marker>
+          ))
+        ) : (
+          <p>Error in loading places...</p>
+        )} */}
         <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
           position={currentPosition}
@@ -216,32 +194,10 @@ const MyMap: React.FC = () => {
         >
           <Popup>Current Location.</Popup>
         </Marker>
-        {/* {nebus.map((nebu, index) => (
-          <Marker
-            key={index}
-            position={[nebu.latitude, nebu.longitude]} // Ensure your nebu objects have latitude and longitude properties
-            icon={smallNebuPinIcon}
-            eventHandlers={{
-              click: () => handleMarkerClick(nebu),
-            }}
-          >
-            <Popup>{nebu.title}</Popup>
-          </Marker>
-        ))} */}
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      {showMovablePin && <MoveablePin />}
-      
 
-      <LocationShowAndSearch text={currentPlace} location={mapCenter} />
-      {showViewTourList && (
-        <ViewTourList
-          toggle={showViewTourList}
-          action={() => setShowViewTourList(false)}
-          nebu={selectedPlace}
-        />
-      )}
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
@@ -264,4 +220,4 @@ const MapClickHandler: React.FC<MapClickHandlerProps> = ({
   return null
 }
 
-export default MyMap
+export default MyMapTour

@@ -1,38 +1,53 @@
 import React, { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 
-import towerBridgePic from "../../public/images/tower-bridge-pic.png"
-import shareIcon from "../../public/images/share-pic.png"
-import directionsIcon from "../../public/images/directions-pic.png"
-import recommendIcon from "../../public/images/recommend-tour-pic.png"
-import bookmarkIcon from "../../public/images/bookmark-pic.png"
-import bookmarkSavedIcon from "../../public/images/bookmarkSaved.png"
-import filterIcon from "../../public/images/filter-icon.png"
-import { saveBookmark } from '@/utils/saveBookmarkAPI'; 
-
-import smallPin from "../../public/images/small-pin.png"
-import smallShop from "../../public/images/small-shop.png"
-import smallClock from "../../public/images/small-clock.png"
-import smallWorld from "../../public/images/small-world.png"
-import smallPhone from "../../public/images/small-phone.png"
-import smallFlag from "../../public/images/flagPurple.png"
-import otherNebuPic1 from "../../public/images/others-nebu-1.png"
-import otherNebuPic2 from "../../public/images/others-nebu-2.png"
-import altImage from "../../public/images/altImage.png"
+import towerBridgePic from "../../../public/images/tower-bridge-pic.png"
+import shareIcon from "../../../public/images/share-pic.png"
+import directionsIcon from "../../../public/images/directions-pic.png"
+import recommendIcon from "../../../public/images/recommend-tour-pic.png"
+import bookmarkIcon from "../../../public/images/bookmark-pic.png"
+import bookmarkSavedIcon from "../../../public/images/bookmarkSaved.png"
+import filterIcon from "../../../public/images/filter-icon.png"
+import { saveBookmark } from "@/utils/saveBookmarkAPI"
+import smallFlag from "../../../public/images/flagPurple.png"
+import otherNebuPic1 from "../../../public/images/others-nebu-1.png"
+import otherNebuPic2 from "../../../public/images/others-nebu-2.png"
+import altImage from "../../../public/images/altImage.png"
 import Link from "next/link"
-import RatingInput from "./RatingInput"
-import Ratings from "./Ratings"
-import Button from "./Button"
+import RatingInput from "../RatingInput"
+import Ratings from "../Ratings"
+import Button from "../Button"
+import { useRouter } from "next/router"
 
-export default function TourInfoPanel({ toggle, action, tour }) {
+export default function TourInfoPanel({ toggle, tour }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
   const [mobileInfoPanel, setMobileInfoPanel] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
+  const router = useRouter() // Add this line to get access to router query
+  const { tourId } = router.query // Retrieve tourId from router query
 
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [tourDetails, setTourDetails] = useState(null)
+  useEffect(() => {
+    const fetchTourDetails = async () => {
+      try {
+        const response = await fetch(`/api/tour/getTourById?tour_id=${tourId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setTourDetails(data)
+        } else {
+          console.error("Failed to fetch tour details")
+        }
+      } catch (error) {
+        console.error("Error fetching tour details:", error)
+      }
+    }
+
+    fetchTourDetails()
+  }, [])
   const formatDaysOpen = (tour) => {
     const days = [
       "Sunday",
@@ -95,7 +110,7 @@ export default function TourInfoPanel({ toggle, action, tour }) {
 
   // Placeholder function for saving to the database
   // const saveToDatabase = async () => {
-    
+
   //   console.log("Saving to database...")
   //   // For example: await api.savePlace({ id: tour.id, saved: isSaved });
   // }
@@ -108,23 +123,22 @@ export default function TourInfoPanel({ toggle, action, tour }) {
   // }
   const handleSaveBookmark = async () => {
     try {
-      const result = await saveBookmark(tour.user_id, tour.nebu_id);
-      alert('Bookmark saved successfully!');
+      const result = await saveBookmark(tour.user_id, tour.nebu_id)
+      alert("Bookmark saved successfully!")
       // Update UI as needed
     } catch (error) {
-      alert('Failed to save bookmark.');
+      alert("Failed to save bookmark.")
     }
-  };
+  }
   return (
     <div
       className={`absolute overflow-y-scroll  ${
         mobileInfoPanel ? "top-0" : "top-1/2"
-      } w-full rounded-t-xl lg:top-0 2xl:w-1/4 lg:w-1/3 z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out 
-      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
+      } w-full rounded-t-xl lg:top-0 2xl:w-1/4 lg:w-1/3 z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out `}
       ref={panelRef}
     >
       <div className=" text-black ">
-        {tour ? (
+        {tourDetails ? (
           <div
             className="rounded-t-full"
             onScroll={() => {
@@ -139,8 +153,8 @@ export default function TourInfoPanel({ toggle, action, tour }) {
               className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer lg:hidden`}
             ></div>
             <div className="carousel flex justify-center">
-              {tour.images && tour.images.length > 0 ? (tour.images.map((imgUrl, imgIndex) =>
-                (
+              {tourDetails.images && tourDetails.images.length > 0 ? (
+                tourDetails.images.map((imgUrl, imgIndex) => (
                   <figure key={imgIndex} className="carousel-item w-full">
                     <img
                       alt={`image-${imgIndex}`}
@@ -148,22 +162,22 @@ export default function TourInfoPanel({ toggle, action, tour }) {
                       className="w-full h-[240px] lg:h-[290px]"
                     />
                   </figure>
-                )                 
-              )) : 
-              <img                      
-                src={altImage.src}
-                className="w-full h-[240px] lg:h-[290px]"
-              /> 
-              }
+                ))
+              ) : (
+                <img
+                  src={altImage.src}
+                  className="w-full h-[240px] lg:h-[290px]"
+                />
+              )}
             </div>
             <div className="-mt-14 mb-2 flex items-center justify-between">
-              <div></div> {/* !! dont delete pls, it make the button go right corner */}
+              <div></div>{" "}
+              {/* !! dont delete pls, it make the button go right corner */}
               <Button
                 buttonStyle=" px-2 py-1 w-fit bg-black-grey opacity-75 text-white rounded-lg normal-case border-0 text-xs cursor-pointer"
                 type="button"
                 label={`slide for more images`}
-              >                  
-              </Button>
+              ></Button>
             </div>
             {/* {tour.images.map((imgUrl, imgIndex) =>
               imgUrl ? (
@@ -190,7 +204,7 @@ export default function TourInfoPanel({ toggle, action, tour }) {
             <div className="flex flex-col pl-4 pt-2 gap-y-1">
               <div className="flex flex-row">
                 <h3 className="font-bold text-xl text-black  bg-white w-fit">
-                  {tour.title}
+                  {tourDetails.tour_name}
                 </h3>
               </div>
 
@@ -225,7 +239,7 @@ export default function TourInfoPanel({ toggle, action, tour }) {
                   <label className="text-sm leading-4 text-yellow">4.0</label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
-                  Added by {tour.email}
+                  Added by {tourDetails.creator_email}
                 </label>
               </div>
 
@@ -279,21 +293,20 @@ export default function TourInfoPanel({ toggle, action, tour }) {
                 <Button
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
-                  label={`#${tour.official_tag}`}
-                >                  
-                </Button>
-                {tour.tags &&
-                    tour.tags.filter((tag) => tag).length > 0 &&
-                    tour.tags
-                      .filter((tag) => tag)
-                      .map((tag, index) => (
-                        <Button
-                          key={index} // Using index as a key, consider a more stable key if possible
-                          type="button"
-                          buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
-                          label={`#${tag}`} // Prepend "#" to each tag name
-                        />
-                ))}                
+                  label={`#${tourDetails.official_tag}`}
+                ></Button>
+                {tourDetails.tags &&
+                  tourDetails.tags.filter((tag) => tag).length > 0 &&
+                  tourDetails.tags
+                    .filter((tag) => tag)
+                    .map((tag, index) => (
+                      <Button
+                        key={index} // Using index as a key, consider a more stable key if possible
+                        type="button"
+                        buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
+                        label={`#${tag}`} // Prepend "#" to each tag name
+                      />
+                    ))}
                 {/* <button
                   className=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
@@ -351,7 +364,7 @@ export default function TourInfoPanel({ toggle, action, tour }) {
                         }`}
                     onClick={openOthersNebuSection}
                   >
-                    Others Nebu
+                    Others Tour
                   </button>
                 </div>
               </div>
@@ -360,7 +373,7 @@ export default function TourInfoPanel({ toggle, action, tour }) {
 
               {overviewSection && (
                 <>
-                  <p className="ml-7 mt-10 pr-6">{tour.description}</p>
+                  <p className="ml-7 mt-10 pr-6">{tourDetails.description}</p>
                   <div className="w-full h-[3px] bg-grey mt-10"></div>
                 </>
               )}
@@ -368,19 +381,25 @@ export default function TourInfoPanel({ toggle, action, tour }) {
 
             {overviewSection && (
               <div className="flex flex-col my-8 ml-7 gap-y-6 transition-all delay-300 ease-in-out">
-                <div className="flex flex-row">
-                  <figure className="">
-                    <Image
-                      src={smallFlag}
-                      alt="pic"
-                      className="mr-4"
-                      width={18}
-                      height={18}
-                    />
-                  </figure>
-                  <p className="leading-5 ml-5">Temple of the Emerald Buddha</p>
-                </div>
-                <div className="flex flex-row">
+                  {tourDetails.places && tourDetails.places.length > 0 ? (
+                    tourDetails.places.map((place, placeIndex) => (
+                      <div className="flex flex-row" key={placeIndex}>
+                        <figure className="">
+                          <Image
+                            src={smallFlag}
+                            alt="pic"
+                            className="mr-4"
+                            width={18}
+                            height={18}
+                          />
+                        </figure>
+                        <p className="leading-5 ml-5">{place.place_name}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Error in loading places...</p>
+                  )}
+                {/* <div className="flex flex-row">
                   <figure className="">
                     <Image
                       src={smallFlag}
@@ -415,15 +434,14 @@ export default function TourInfoPanel({ toggle, action, tour }) {
                     />
                   </figure>
                   <p className="leading-5 ml-5">Saket Temple</p>
-                </div>
-                
+                </div> */}
               </div>
             )}
 
             {rateCommentSection && (
               <div>
-                <RatingInput nebuId={tour.nebu_id} />
-                <Ratings nebuId={tour.nebu_id}></Ratings>
+                <RatingInput nebuId={tourDetails.nebu_id} />
+                <Ratings nebuId={tourDetails.nebu_id}></Ratings>
               </div>
 
               // <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">

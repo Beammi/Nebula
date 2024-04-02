@@ -18,6 +18,7 @@ export default function Home() {
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
   const router = useRouter()
+
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
@@ -89,14 +90,14 @@ export default function Home() {
       <div className="absolute z-10 top-0 left-0 right-0 flex items-center justify-center md:justify-between px-4 pt-2">
         <div className="flex w-full justify-center md:justify-normal">
           <SearchBar text="Search" />
-          <Button
+          {/* <Button
             buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-14 lg:ml-16 border-none text-black normal-case"
             label="Café with wifi"
           ></Button>
           <Button
             buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-6 border-none text-black normal-case"
             label="Restaurant"
-          ></Button>
+          ></Button> */}
         </div>
         <div className="flex">
           <div className="flex">
@@ -108,7 +109,7 @@ export default function Home() {
             <Button
               buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
               label="Add Nebu"
-              onClick={openAddNebuDropDown}
+              onClick={openAddNebu}
             ></Button>
           </div>
           <ProfileButton text={profileName} />
@@ -119,7 +120,7 @@ export default function Home() {
       </div>
       <AddNebu toggle={addNebuState} action={openAddNebu} />
       <AddTour toggle={addTourState} action={toggleAddTour}/>
-      <div
+      {/* <div
         className={`fixed right-24 top-24 text-center text-white bg-blue flex flex-col rounded-lg font-bold items-center overflow-hidden ${
           addNebuDropDown ? "opacity-100" : "hidden"
         }`}
@@ -133,7 +134,7 @@ export default function Home() {
           buttonStyle="btn btn-primary bg-blue w-fit md:block hidden mb-4 border-none px-5"
           label="Search Location"
         ></Button>
-      </div>
+      </div> */}
     </div>
   );
 }
