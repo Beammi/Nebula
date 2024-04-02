@@ -28,7 +28,7 @@ import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
-import ViewTourList from "@/components/ViewTourList"
+import ViewTourList from "@/components/tour/ViewTourList"
 
 import MoveablePin from "./MoveablePin"
 const MarkerCluster = ({ nebus, onMarkerClick }) => {

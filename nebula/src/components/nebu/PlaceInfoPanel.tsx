@@ -24,7 +24,7 @@ import Ratings from "../Ratings"
 import OtherNebu from "./OtherNebu"
 import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
-import ViewTourList from "@/components/ViewTourList"
+import ViewTourList from "@/components/tour/ViewTourList"
 
 export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour }) {
   const [overviewSection, setOverviewSection] = useState(true)
