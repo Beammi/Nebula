@@ -28,6 +28,8 @@ import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import LocationShowAndSearch from "./LocationShowAndSearch"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
+import ViewTourList from "@/components/ViewTourList"
+
 import MoveablePin from "./MoveablePin"
 const MarkerCluster = ({ nebus, onMarkerClick }) => {
   const map = useMap()
@@ -45,7 +47,7 @@ const MarkerCluster = ({ nebus, onMarkerClick }) => {
         icon: smallNebuPinIcon,
       })
         .bindPopup(`<b>${nebu.title}</b>`)
-        .on('click', () => onMarkerClick(nebu));
+        .on("click", () => onMarkerClick(nebu))
 
       markerClusterGroup.addLayer(marker)
     })
@@ -55,7 +57,7 @@ const MarkerCluster = ({ nebus, onMarkerClick }) => {
     return () => {
       map.removeLayer(markerClusterGroup)
     }
-  }, [map, nebus,onMarkerClick]) // Ensure the effect runs when `nebus` or `map` changes
+  }, [map, nebus, onMarkerClick]) // Ensure the effect runs when `nebus` or `map` changes
 
   return null
 }
@@ -65,6 +67,9 @@ const MyMap: React.FC = () => {
     description: string
   } | null>(null)
   const [placeInfoPanel, setPlaceInfoPanel] = useState(false)
+  const [showViewTourList, setShowViewTourList] = useState(false)
+  const [recommendedPlace, setRecommendedPlace] = useState(null)
+
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
@@ -171,6 +176,10 @@ const MyMap: React.FC = () => {
         nebu={selectedPlace}
         toggle={placeInfoPanel}
         action={closePlaceInfoPanel}
+        onRecommendTour={(selectedPlace) => {
+          setRecommendedPlace(selectedPlace)
+          setShowViewTourList(true)
+        }}
       />
       {/* <TourInfoPanel
         tour={selectedPlace}
@@ -200,16 +209,6 @@ const MyMap: React.FC = () => {
         <MapCenterEvents onCenterChange={handleCenterChange} />
         <MarkerCluster nebus={nebus} onMarkerClick={handleMarkerClick} />
 
-        {/* {placesData.map((place, index) => (
-          <Marker
-            key={index}
-            position={[place.lat, place.lon]}
-            icon={customIcon}
-            eventHandlers={{ click: () => handleMarkerClick(place) }}
-          >
-            <Popup>{place.name}</Popup>
-          </Marker>
-        ))} */}
         <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
           position={currentPosition}
@@ -233,8 +232,16 @@ const MyMap: React.FC = () => {
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
       {showMovablePin && <MoveablePin />}
+      
 
       <LocationShowAndSearch text={currentPlace} location={mapCenter} />
+      {showViewTourList && (
+        <ViewTourList
+          toggle={showViewTourList}
+          action={() => setShowViewTourList(false)}
+          nebu={selectedPlace}
+        />
+      )}
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
