@@ -86,6 +86,7 @@ export default function Bookmark(props) {
 
       const data = await response.json()
       console.log(data.message) // "Bookmark deleted successfully"
+      fetchData(email,provider)
       alert(data.message)
       // Optionally, refresh your bookmarks list or update UI accordingly
     } catch (error) {
@@ -95,7 +96,7 @@ export default function Bookmark(props) {
 
   useEffect(() => {
     getEmail()
-  }, [data])
+  }, [])
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
