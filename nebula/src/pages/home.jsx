@@ -90,14 +90,14 @@ export default function Home() {
       <div className="absolute z-10 top-0 left-0 right-0 flex items-center justify-center md:justify-between px-4 pt-2">
         <div className="flex w-full justify-center md:justify-normal">
           <SearchBar text="Search" />
-          <Button
+          {/* <Button
             buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-14 lg:ml-16 border-none text-black normal-case"
             label="Café with wifi"
           ></Button>
           <Button
             buttonStyle="btn bg-yellow hover:bg-dark-grey w-max md:block hidden ml-6 border-none text-black normal-case"
             label="Restaurant"
-          ></Button>
+          ></Button> */}
         </div>
         <div className="flex">
           <div className="flex">
