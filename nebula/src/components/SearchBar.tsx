@@ -15,8 +15,10 @@ import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
 import Profile from "@/components/Profile"
 import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
-import { useRouter } from "next/router"
+// import { useRouter } from "next/router"
+import { useRouter } from 'next/navigation'
 import { useLocation } from "@/contexts/LocationContext"
+
 import React from "react"
 
 
@@ -43,6 +45,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [nebu, setNebu] = useState([]);
   const [api, setApi] = useState<{ value: string; type: string }[]>([]);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+  
   const {
     currentPlace,
     setCurrentPlace,
@@ -112,7 +115,9 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
       // setShowViewTourList(true)
 
-      setTagSuggestValue(suggestion.value)      
+      // setTagSuggestValue(suggestion.value)
+      router.push(`/tag/${suggestion.value}`)
+
 
     }
     else if(suggestion.type === "user"){

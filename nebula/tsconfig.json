@@ -27,7 +27,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx", "src/components/Officialdropdown.jsx" ],
+    "**/*.tsx", "src/components/Officialdropdown.jsx", "src/pages/tag/[slug].jsx" ],
   "exclude": [
     "node_modules"
   ]
