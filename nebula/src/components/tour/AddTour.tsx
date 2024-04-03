@@ -187,6 +187,21 @@ export default function AddTour({ toggle, action, placeText }) {
     setOpenTag(false)
   }
 
+  function truncatePlace(place) {
+    let commaCount = 0;
+    let index = 0;
+    for (let i = 0; i < place.length; i++) {
+      if (place[i] === ',') {
+        commaCount++;
+        if (commaCount === 3) {
+          index = i;
+          break;
+        }
+      }
+    }
+    return place.slice(0, index);
+  }
+
   function openTagModal() {
     setOpenTag(!OpenTag)
   }
@@ -266,16 +281,16 @@ export default function AddTour({ toggle, action, placeText }) {
             </div>
           </div>
           <div className="flex flex-col mt-4">
-            <h3 className="text-lg">Place</h3>
+            <h3 className="text-lg mt-8">Place</h3>
             {tourData.routePlaces.map((place, index) => (
-              <div key={index} className="w-fit text-black">
-                <h3 className="bg-white text-black">- {place.name}</h3>
+              <div key={index} className="w-fit text-black mb-1">
+                <h3 className="bg-white text-black">- {truncatePlace(place.name)}</h3>
               </div>
             ))}
-            <h3 className="text-lg">Waypoint</h3>
+            {tourData.waypoints.length > 0 && <h3 className="text-lg mt-4">Waypoint</h3>}
             {tourData.waypoints.map((place, index) => (
-              <div key={index} className="w-fit text-black">
-                <h3 className="bg-white text-black">- {place.name}</h3>
+              <div key={index} className="w-fit text-black mb-1">
+                <h3 className="bg-white text-black">- {truncatePlace(place.name)}</h3>
               </div>
             ))}
             <div className="flex flex-row items-center">
@@ -285,7 +300,7 @@ export default function AddTour({ toggle, action, placeText }) {
                 label="Add place"
               ></Button> */}
               <Button
-                buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
+                buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2 mb-6"
                 label="+"
                 type="button"
                 onClick={(event) => {

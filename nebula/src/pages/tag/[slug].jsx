@@ -16,6 +16,7 @@ import closeIcon from "../../../public/images/close.png";
 import smallHashtag from "../../../public/images/smallHashtag_blue.png";
 import filterIcon from "../../../public/images/filter-icon.png"
 import yellowPin from "../../../public/images/yellowPin.png"
+import altImage from "../../../public/images/altImage.png"
 
 export default function Tag() {
   
@@ -26,84 +27,71 @@ export default function Tag() {
     const [addTourState, setAddTourState] = useState(false)
     const [tagData, setTagData] = useState([])
     const [api, setApi] = useState([])
-    // const [userTag, setUserTag] = useState([])
-    // const [userTag, setUserTag] = useState<{ value: string; type: string }[]>([]);
     const [tagName, setTagName] = useState("");
 
     const tag = Array.isArray(router.query.slug) ? router.query.slug[0] : router.query.slug;
 
     useEffect(() => {
       setTagName(tag);
+    }, [tag])
+
+    useEffect(() => {
+      console.log("tag name: ", tagName);
       fetchData()
-
-    }, [tagName, tag])
-
-    function tagNameClick(tagName) {
-
-      router.push(`/tag/${tagName}`)
-    }
-    
-
-    async function fetchData() {
-      let url = `/api/search/getNebuByTag?tagName=${tagName}`
-      try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        const data = await response.json();             
-        setApi(data)
-        console.log("data1: ", api);
-
-      } catch (error) {
-        console.error("Fetch error:", error)
-      }
-    
-    }
+    }, [tagName])
 
     useEffect(() => {
       console.log("API:", api);
       setTagData(api)
     }, [api]);
 
-    async function checkSession() {
-
-      const { data: { user } ,error} = await supabase.auth.getUser()
-      // console.log(JSON.stringify(user))
-
-      if (error || user === null) {
-        router.push("/home_unregistered")
-
-      } else {
-        let str = JSON.stringify(user.email)
-        console.log("Session: "+JSON.stringify(user.app_metadata.provider))
-        setProfileName(str.substring(1,3))
-        console.log(profileName)
-      }
+    function tagNameClick(tagName) {
+      router.push(`/tag/${tagName}`)
     }
     
-    async function checkProviderAccount(){
-      const { data: { user } ,error} = await supabase.auth.getUser()
-      if (error || user === null){
-        console.log("Error when call checkProviderAccount function")
-      }else if (user.app_metadata.provider==="email"){
-        console.log("Login via Email")
-      }else{
-        let provider = user.app_metadata.provider
-        let email = user.user_metadata.email
-        console.log(provider+email)
-        const response = await fetch("/api/auth/loginWithProvider", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({provider, email}),
-        })
-        if(response.ok){
-          console.log("Provider")
-        }else{
-          console.log("Error in checkProviderAccount")
-        }
-      }
 
+    async function fetchData() {
+      try {
+        
+        // const data = await response.json();   
+        
+        // const [nebuResponse, tourResponse] = await Promise.all([
+        //   fetch(`/api/search/getNebuByTag?tagName=${tagName}`),
+        //   fetch(`/api/search/getTourByTag?tagName=${tagName}`),
+          
+        // ]);
+
+        const [nebuResponse] = await Promise.all([
+          fetch(`/api/search/getNebuByTag?tagName=${tagName}`)
+          
+        ]);
+  
+        // Parse responses
+        // const [nebuData, tourData] = await Promise.all([
+        //   nebuResponse.json(),
+        //   tourResponse.json(),
+        // ]);
+
+        const [nebuData] = await Promise.all([
+          nebuResponse.json(),
+          // tourResponse.json(),
+        ]);
+
+        const formattedData = [];
+        if (nebuData.length > 0) {
+          nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
+        }
+        // if (tourData.length > 0) {
+        //   tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
+        // }
+
+        setApi(nebuData)
+        console.log("data1: ", api);
+
+      } catch (error) {
+        console.error("Fetch error:", error)
+      }
+    
     }
 
     function openAddNebu() {
@@ -203,9 +191,14 @@ export default function Tag() {
 
             <div className="text-black mt-5 w-fit h-[500px] overflow-y-scroll ">
               
-              {tagData.map((data, index) => (
+              {Array.isArray(tagData) && tagData.map((data, index) =>(
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row">
                   <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.images[0]} alt="pic" className=" lg:h-auto"/></figure>              
+                  {/* {Array.isArray(data.images) && data.images.length > 0 && (
+                    <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0">
+                      <img src={data.images[0]} alt="pic" className="lg:h-auto" />
+                    </figure>
+                  )} */}
                   <div className="card-body flex flex-col justify-between">
                     {
                       // (data.type === "nebu") &&                  
@@ -214,30 +207,17 @@ export default function Tag() {
                         {data.title}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
                       </h2>
-                      // <div className="card-title w-full lg:w-full flex flex-col lg:flex-row">
-                      //   <figure className="lg:w-[8%]"><Image src={yellowPin} alt="pic" /></figure>
-                      //   <div>
-                      //     <h2 className="font-normal text-base text-black">{data.title}</h2>
-                      //     <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
-                      //   </div>
-                      // </div>
                     }
 
-                    {/* {
-                      (data.type === "tour") &&
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
-                        <figure className="lg:w-[3%]"><Image src={yellowFlag} alt="pic"/></figure>
-                        {data.title} 
-                        <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.username}</p>
-                      </h2>
-                    }                 */}
                     <p className="font-medium">{data.address}</p>
                     <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.description}</p>
                     <div className='flex flex-row mt-1'>
                       <div className='flex gap-2 flex-wrap'>
                         {/* <Link className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link> */}
                         <button onClick={() => tagNameClick(data.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</ button>
-                        {data.tags?.map((usertag) => (
+                        { data.tags && data.tags
+                          .filter(tag => tag !== null) 
+                          .map((usertag) => (
                           // usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag.value}</Link>                    
                           <button onClick={() => tagNameClick(usertag)} className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</button>                    
                         ))}
@@ -247,7 +227,8 @@ export default function Tag() {
                     
                   </div>
                 </div>
-              ))}
+              )
+              )}
               
               
             </div>

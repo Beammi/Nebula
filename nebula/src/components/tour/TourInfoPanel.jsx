@@ -142,6 +142,22 @@ export default function TourInfoPanel({ toggle, tour }) {
     setMobileInfoPanel(false)
   }
 
+  function truncatePlace(place) {
+    let commaCount = 0;
+    let index = 0;
+    for (let i = 0; i < place.length; i++) {
+      if (place[i] === ',') {
+        commaCount++;
+        if (commaCount === 3) {
+          index = i;
+          break;
+        }
+      }
+    }
+    return place.slice(0, index);
+  }
+  
+
   // Placeholder function for saving to the database
   // const saveToDatabase = async () => {
 
@@ -423,24 +439,24 @@ export default function TourInfoPanel({ toggle, tour }) {
 
             {overviewSection && (
               <div className="flex flex-col my-8 ml-7 gap-y-6 transition-all delay-300 ease-in-out">
-                {tourDetails.places && tourDetails.places.length > 0 ? (
-                  tourDetails.places.map((place, placeIndex) => (
-                    <div className="flex flex-row" key={placeIndex}>
-                      <figure className="">
-                        <Image
-                          src={smallFlag}
-                          alt="pic"
-                          className="mr-4"
-                          width={18}
-                          height={18}
-                        />
-                      </figure>
-                      <p className="leading-5 ml-5">{place.place_name}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p>Error in loading places...</p>
-                )}
+                  {tourDetails.places && tourDetails.places.length > 0 ? (
+                    tourDetails.places.map((place, placeIndex) => (
+                      <div className="flex flex-row" key={placeIndex}>
+                        <figure className="">
+                          <Image
+                            src={smallFlag}
+                            alt="pic"
+                            className="mr-4"
+                            width={18}
+                            height={18}
+                          />
+                        </figure>
+                        <p className="leading-5 ml-5">{truncatePlace(place.place_name)}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Error in loading places...</p>
+                  )}
                 {/* <div className="flex flex-row">
                   <figure className="">
                     <Image
