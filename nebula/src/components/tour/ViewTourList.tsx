@@ -105,7 +105,7 @@ export default function ViewTourList({ toggle, action, name, nebu }) {
       } `}
     >
       {/* <p>Nebu {nebu}</p> */}
-      <div className="rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[65rem] font-bold text-black p-7 ">
+      <div className="rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[65rem] h-[32rem] lg:h-[40rem] font-bold text-black p-7 ">
         <div className="flex justify-start my-2 items-center">
           <div className="flex gap-x-5 ml-3 items-center">
             <figure className="">
@@ -164,7 +164,7 @@ export default function ViewTourList({ toggle, action, name, nebu }) {
           {tours.map((data, index) => (
             <div
               key={index}
-              className="flex flex-col bg-white rounded-md shadow-md p-3  min-w-[330px] items-center gap-y-1"
+              className="flex flex-col bg-white rounded-lg shadow-md p-3  min-w-[330px] items-center gap-y-1 cursor-pointer"
               onClick={() => handleTourClick(data.tour_id)}
             >
               <div className="text-center text-xl">{data.tour_name}</div>
@@ -202,32 +202,46 @@ export default function ViewTourList({ toggle, action, name, nebu }) {
               <label className="text-sm font-normal text-black-grey ml-3 leading-4">
                 Added by {data.creator_email}
               </label>
-              <div className="flex flex-row gap-x-2 flex-wrap max-w-full justify-center mt-1">
+              <div className="flex flex-row gap-x-2 flex-wrap max-w-full justify-center mt-1 flex-shrink-0">
                 <Button
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
-                  label={data.official_tag}
+                  label={`#${data.official_tag}`}
                 ></Button>
-                {data.tags && data.tags.length > 0 ? (
+                {data.tags && data.tags.length > 0 && (
                   data.tags.map((tag, tagIndex) => (
-                    <button
+                    <Button
                       key={tagIndex}
-                      className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
-                    >
-                      #{tag}
-                    </button>
+                      buttonStyle=" px-2 py-1 w-fit bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
+                      type="button"
+                      label={`#${tag}`}
+                    ></Button>
+                    
                   ))
-                ) : (
-                  <p className="text-xs text-grey">No additional tags</p>
                 )}
               </div>
-              <div className="flex flex-col font-normal text-base mt-8 justify-start">
+              {/* <div className="flex flex-col font-normal text-base mt-8 justify-start">
                 {data.places && data.places.length > 0 ? (
                   data.places.map((place, placeIndex) => (
                     <p key={placeIndex} className="text-xs">
                       - {place.place_name}
                     </p>
                   ))
+                ) : (
+                  <p className="text-xs text-grey">Error getting places</p>
+                )}
+              </div> */}
+              <div className="flex flex-col font-normal text-base mt-8 justify-start h-[150px] overflow-y-auto">
+                {data.places && data.places.length > 0 ? (
+                  data.places.map((place, placeIndex) => {
+                    const firstCommaIndex = place.place_name.indexOf(',');
+                    const truncatedPlace = firstCommaIndex !== -1 ? place.place_name.slice(0, firstCommaIndex) : place.place_name;
+                    return (
+                      <p key={placeIndex} className="text-base">
+                        - {truncatedPlace}
+                      </p>
+                    );
+                  })
                 ) : (
                   <p className="text-xs text-grey">Error getting places</p>
                 )}
