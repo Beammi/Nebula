@@ -10,6 +10,7 @@ import MoveablePin from "@/components/map/MoveablePin"
 import { useTour } from "@/contexts/TourContext" // Adjust the import path as needed
 import { TourContextType } from "../../types/tourContext"
 import { supabase } from "@/lib/supabaseClient"
+import ImageUpload from "@/components/ImageUpload"
 
 export default function AddTour({ toggle, action, placeText }) {
   // console.log("Text prop value:", placeText)
@@ -22,6 +23,21 @@ export default function AddTour({ toggle, action, placeText }) {
   const [routePlaces, setRoutePlaces] = useState([]) // Array to store route places
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
+  const [uploadedImages, setUploadedImages] = useState([])
+
+  const isValidImageExtension = (fileName) => {
+    return /\.(jpg|jpeg|png|gif)$/i.test(fileName)
+  }
+
+  const handleImagesUpload = ({ file, dataURL }) => {
+    // Now, file should correctly be a File object, and dataURL should be its data URL
+    if (!isValidImageExtension(file.name)) {
+      alert("Unsupported file type.")
+      return
+    }
+    setUploadedImages((prevImages) => [...prevImages, { dataURL, file }])
+    console.log(uploadedImages)
+  }
 
   const {
     tourData,
@@ -61,9 +77,51 @@ export default function AddTour({ toggle, action, placeText }) {
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (email===""){
+    if (email === "") {
       alert("Please refresh")
     }
+    let imageUrls = []
+    // Check for required fields or any other validation you have
+    if (tourName === "" || tourData.officialTag === "Official's Tag") {
+      alert(
+        "Please name the nebu title before submitting or select an official's tag."
+      )
+      return // Stop execution if validation fails
+    }
+    // Upload images first if there are any
+    if (uploadedImages.length > 0) {
+      const uploadPromises = uploadedImages.map(async (image) => {
+        const formData = new FormData()
+        formData.append("image", image.file) //'image' is the expected field on the server
+
+        try {
+          const response = await fetch("/api/azure/uploadImages", {
+            method: "POST",
+            body: formData,
+            // Include headers for authentication if necessary
+          })
+
+          if (!response.ok) {
+            throw new Error(`Failed to upload image: ${response.statusText}`)
+          }
+
+          const result = await response.json()
+          return result.imageUrl // Adjust based on your actual API response
+        } catch (error) {
+          console.error("Error uploading image:", error)
+          throw error // Rethrow to handle outside
+        }
+      })
+
+      try {
+        imageUrls = await Promise.all(uploadPromises)
+      } catch (error) {
+        alert("Failed to upload one or more images. Please try again.")
+        return // Stop the submission if image uploads fail
+      }
+    }
+    const imagesArray = Array.isArray(imageUrls) ? imageUrls : []
+    console.log(imagesArray)
     const tourDataToSend = {
       tour_name: tourName,
       description: description,
@@ -80,9 +138,10 @@ export default function AddTour({ toggle, action, placeText }) {
         longitude, // Directly using longitude
       })),
       tags: tourData.additionalTags, // Assuming this is an array of string tags
-      user_email: email  // Use the actual user email
-    };
-  
+      user_email: email, // Use the actual user email
+      images: imageUrls,
+    }
+
     try {
       const response = await fetch("/api/tour/addTour", {
         method: "POST",
@@ -90,22 +149,31 @@ export default function AddTour({ toggle, action, placeText }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(tourDataToSend),
-      });
-  
+      })
+
       if (response.ok) {
         // Handle successful response
-        console.log("Tour added successfully");
+        console.log("Tour added successfully")
         alert("Tour Form add successful")
         // Possibly redirect the user or show a success message
       } else {
         // Handle errors or unsuccessful response
-        console.error("Failed to add tour");
+        console.error("Failed to add tour")
       }
     } catch (error) {
-      console.error("Error submitting tour:", error);
+      console.error("Error submitting tour:", error)
     }
-  };
-  
+  }
+  function getImageSize(numImages) {
+    const maxImagesPerRow = 8
+    const maxImageSize = 100
+
+    const imageSize = Math.min(
+      maxImageSize,
+      100 / Math.min(numImages, maxImagesPerRow)
+    )
+    return `w-${imageSize}px h-${imageSize}px`
+  }
   useEffect(() => {
     const savedTourName = localStorage.getItem("tourName")
     const savedDescription = localStorage.getItem("description")
@@ -135,15 +203,15 @@ export default function AddTour({ toggle, action, placeText }) {
     )
   }, [confirmedAdditionalTags])
 
-  useEffect(()=>{
+  useEffect(() => {
     getEmail()
-  },[email])
+  }, [email])
 
   const handleTagConfirm = (officialTag, additionalTag) => {
     if (additionalTag.length > 0) {
       setConfirmedAdditionalTags((prevTags) => [...prevTags, ...additionalTag])
 
-      additionalTag.forEach((tag) => addAdditionalTag(tag)) 
+      additionalTag.forEach((tag) => addAdditionalTag(tag))
     }
 
     // setOfficialTag(officialTag)
@@ -151,7 +219,6 @@ export default function AddTour({ toggle, action, placeText }) {
 
     toggleOpenTagModal()
     setOpenTag(false)
-
   }
 
   function openTagModal() {
@@ -233,6 +300,28 @@ export default function AddTour({ toggle, action, placeText }) {
             </div>
           </div>
           <div className="flex flex-col mt-4">
+            <h3 className="text-lg mb-4">Image</h3>
+            <div className="flex flex-row-reverse justify-end items-center">
+                  <ImageUpload onImagesUpload={handleImagesUpload} />
+                  {uploadedImages.length > 0 && (
+                    <div className="flex gap-2 overflow-auto">
+                      {uploadedImages.map((image, index) => (
+                        <div
+                          key={index}
+                          className={`image-container ${getImageSize(
+                            uploadedImages.length
+                          )}`}
+                        >
+                          <img
+                            src={image.dataURL}
+                            alt={`Uploaded ${index + 1}`}
+                            className="w-full h-full"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
             <h3 className="text-lg">Place</h3>
             {tourData.routePlaces.map((place, index) => (
               <div key={index} className="w-fit text-black">
@@ -266,12 +355,17 @@ export default function AddTour({ toggle, action, placeText }) {
               />
             </div>
           </div>
-          <button className="btn btn-primary p-2" onClick={(e) => {
-                  handleSubmit(e) // Use prepareSubmit instead
-                  // Correctly invoke the function
+          <button
+            className="btn btn-primary p-2"
+            onClick={(e) => {
+              handleSubmit(e) // Use prepareSubmit instead
+              // Correctly invoke the function
 
-                  action() // Assuming this is correctly invoking another function
-                } }>Confirm</button>
+              action() // Assuming this is correctly invoking another function
+            }}
+          >
+            Confirm
+          </button>
         </div>
       </div>
     </>
