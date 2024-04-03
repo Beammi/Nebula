@@ -115,6 +115,7 @@ export default function AddNebu(props) {
     if (checkbox && checkbox.checked) {
       setWorkHour(true)
     }
+    console.log("work hour: ",workHour)
   }
   const getOpenDays = () => {
     return Object.entries(isChecked)
@@ -155,9 +156,16 @@ export default function AddNebu(props) {
     e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
     console.log("handleSummit is called") // Debugging line
-
+    const allUnchecked = Object.values(isChecked).every(value => value === false);
+    if(workHour===true && (openTime===null||closeTime===null||allUnchecked)){
+      alert("You didn't add work hour!!!, or Do you mean to not include working hour?")
+      return
+    }
     e?.preventDefault()
-
+    if (currentPosition[0] == null || currentPosition[1] == null) {
+      alert("Lat Long are null")
+      return
+    }
     // Initialize an array to hold the URLs of the uploaded images
     let imageUrls = []
 
@@ -227,10 +235,7 @@ export default function AddNebu(props) {
         await currentPosition // This should be a function that updates `currentPosition`.
         return
       }
-      if (currentPosition.lat == null || currentPosition.lng == null) {
-        alert("Lat Long are null")
-        return
-      }
+      
       const response = await fetch("/api/nebu/addNebu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -241,8 +246,8 @@ export default function AddNebu(props) {
           duration: timeLimitType,
           official_tag: officialTag,
           tags: confirmedAdditionalTags,
-          latitude: latitude,
-          longitude: longitude,
+          latitude: currentPosition[0],
+          longitude: currentPosition[1],
           place_name: currentPlace,
           open_sunday,
           open_monday,
