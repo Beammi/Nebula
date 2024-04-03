@@ -108,6 +108,22 @@ export default function TourInfoPanel({ toggle, tour }) {
     setMobileInfoPanel(false)
   }
 
+  function truncatePlace(place) {
+    let commaCount = 0;
+    let index = 0;
+    for (let i = 0; i < place.length; i++) {
+      if (place[i] === ',') {
+        commaCount++;
+        if (commaCount === 3) {
+          index = i;
+          break;
+        }
+      }
+    }
+    return place.slice(0, index);
+  }
+  
+
   // Placeholder function for saving to the database
   // const saveToDatabase = async () => {
 
@@ -393,7 +409,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                             height={18}
                           />
                         </figure>
-                        <p className="leading-5 ml-5">{place.place_name}</p>
+                        <p className="leading-5 ml-5">{truncatePlace(place.place_name)}</p>
                       </div>
                     ))
                   ) : (
