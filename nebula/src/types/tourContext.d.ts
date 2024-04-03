@@ -21,6 +21,7 @@ export interface TourData {
   officialTag: string
   openTagModal: boolean
   additionalTags: string[] // Include additionalTags in your TourData
+  images: string[]
 }
 
 export interface TourContextType {
@@ -33,4 +34,5 @@ export interface TourContextType {
   toggleOpenTagModal: () => void // Method to toggle the openTag modal
   addAdditionalTag: (tag: string) => void // Method to add an additional tag
   updateTags: (officialYag: string, addAdditionalTags: string[]) => void
+  setImages: (image: string) => void
 }

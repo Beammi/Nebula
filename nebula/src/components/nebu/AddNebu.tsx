@@ -25,7 +25,7 @@ export default function AddNebu(props) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [imageNebu, setImageNebu] = useState("")
-  const [workHour, setWorkHour] = useState(false)
+  const [notIncludeWorkHour, setNotIncludeWorkHour] = useState(true)
   const [openTime, setOpenTime] = useState(null)
   const [closeTime, setCloseTime] = useState(null)
   const [timeLimitType, setTimeLimitType] = useState("permanent")
@@ -112,9 +112,12 @@ export default function AddNebu(props) {
 
   function handleWorkHourCheckBox() {
     let checkbox = document.getElementById("workHourCB") as HTMLInputElement
-    if (checkbox && checkbox.checked) {
-      setWorkHour(true)
+    if (checkbox.checked) {
+      setNotIncludeWorkHour(false)
+    }else{
+      setNotIncludeWorkHour(true)
     }
+    console.log("work hour: ",notIncludeWorkHour)
   }
   const getOpenDays = () => {
     return Object.entries(isChecked)
@@ -155,9 +158,16 @@ export default function AddNebu(props) {
     e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
     console.log("handleSummit is called") // Debugging line
-
+    const allUnchecked = Object.values(isChecked).every(value => value === false);
+    if(notIncludeWorkHour===true && (openTime===null||closeTime===null||allUnchecked)){
+      alert("You didn't add work hour!!!, or Do you mean to not include working hour?")
+      return
+    }
     e?.preventDefault()
-
+    if (currentPosition[0] == null || currentPosition[1] == null) {
+      alert("Lat Long are null")
+      return
+    }
     // Initialize an array to hold the URLs of the uploaded images
     let imageUrls = []
 
@@ -227,10 +237,7 @@ export default function AddNebu(props) {
         await currentPosition // This should be a function that updates `currentPosition`.
         return
       }
-      if (currentPosition.lat == null || currentPosition.lng == null) {
-        alert("Lat Long are null")
-        return
-      }
+      
       const response = await fetch("/api/nebu/addNebu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -241,8 +248,8 @@ export default function AddNebu(props) {
           duration: timeLimitType,
           official_tag: officialTag,
           tags: confirmedAdditionalTags,
-          latitude: latitude,
-          longitude: longitude,
+          latitude: currentPosition[0],
+          longitude: currentPosition[1],
           place_name: currentPlace,
           open_sunday,
           open_monday,
@@ -268,6 +275,7 @@ export default function AddNebu(props) {
 
       // Handle successful form submission
       alert("Form submitted successfully!")
+      action()
       // Perform any additional actions like redirecting or clearing the form
     } catch (error) {
       console.error("Error submitting form:", error)
@@ -582,7 +590,7 @@ export default function AddNebu(props) {
                   prepareSubmit(e) // Use prepareSubmit instead
                   // Correctly invoke the function
 
-                  action() // Assuming this is correctly invoking another function
+                  // action() // Assuming this is correctly invoking another function
                 }}
               />
             )}

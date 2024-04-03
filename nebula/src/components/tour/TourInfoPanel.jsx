@@ -18,7 +18,8 @@ import RatingInput from "../RatingInput"
 import Ratings from "../Ratings"
 import Button from "../Button"
 import { useRouter } from "next/router"
-
+import TourRatings from "./TourRatings"
+import TourRatingInput from "./TourRatingInput"
 export default function TourInfoPanel({ toggle, tour }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
@@ -31,6 +32,32 @@ export default function TourInfoPanel({ toggle, tour }) {
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [tourDetails, setTourDetails] = useState(null)
+  const [tourPhotos, setTourPhotos] = useState([])
+  const [api,setApi] = useState([])
+
+  const fetchPhotoFromNebu = async (place_name) => {
+    try {
+      const response = await fetch(
+        `/api/tour/getImagesFromNebus?place_name=${place_name}`
+      )
+      if (response.ok) {
+        const photos = await response.json()
+        setApi(photos)
+        console.log("api photo ", api)
+        api.forEach(item => {
+          console.log("api ",item);
+        });
+      } else {
+        console.error("Failed to fetch image details")
+      }
+    } catch (error) {
+      console.error("Error fetching image details:", error)
+    }
+  }
+  useEffect(()=>{
+    setTourPhotos(api)
+    // console.log("tour photo ",tourPhotos.images[0])
+  },[api])
   useEffect(() => {
     const fetchTourDetails = async () => {
       try {
@@ -38,6 +65,7 @@ export default function TourInfoPanel({ toggle, tour }) {
         if (response.ok) {
           const data = await response.json()
           setTourDetails(data)
+          fetchPhotoFromNebu(data.places[0].place_name)
         } else {
           console.error("Failed to fetch tour details")
         }
@@ -48,6 +76,12 @@ export default function TourInfoPanel({ toggle, tour }) {
 
     fetchTourDetails()
   }, [])
+  // useEffect(() => {
+  //   // Assuming `tourDetails.places[0].place_name` is available and correct
+  //   if (tourDetails && tourDetails.places && tourDetails.places.length > 0) {
+  //     fetchPhotoFromNebu(tourDetails.places[0].place_name)
+  //   }
+  // }, [tourDetails])
   const formatDaysOpen = (tour) => {
     const days = [
       "Sunday",
@@ -169,8 +203,8 @@ export default function TourInfoPanel({ toggle, tour }) {
               className={`w-[60px] h-[3px] bg-black-grey my-3 mx-auto cursor-pointer lg:hidden`}
             ></div>
             <div className="carousel flex justify-center">
-              {tourDetails.images && tourDetails.images.length > 0 ? (
-                tourDetails.images.map((imgUrl, imgIndex) => (
+              {tourPhotos && tourPhotos.images?.length > 0 ? (
+                tourPhotos.images.map((imgUrl, imgIndex) => (
                   <figure key={imgIndex} className="carousel-item w-full">
                     <img
                       alt={`image-${imgIndex}`}
@@ -180,11 +214,19 @@ export default function TourInfoPanel({ toggle, tour }) {
                   </figure>
                 ))
               ) : (
-                <img
-                  src={altImage.src}
-                  className="w-full h-[240px] lg:h-[290px]"
-                />
+                // <img
+                //   src={altImage.src}
+                //   className="w-full h-[240px] lg:h-[290px]"
+                // />
+                <p>no image</p>
               )}
+              {/* {tourPhotos.length > 0 && (
+                <img
+                  src={tourPhotos[0]}
+                  alt="Tour Image"
+                  className="w-full h-auto"
+                />
+              )} */}
             </div>
             <div className="-mt-14 mb-2 flex items-center justify-between">
               <div></div>{" "}
@@ -456,93 +498,9 @@ export default function TourInfoPanel({ toggle, tour }) {
 
             {rateCommentSection && (
               <div>
-                <RatingInput nebuId={tourDetails.nebu_id} />
-                <Ratings nebuId={tourDetails.nebu_id}></Ratings>
+                <TourRatingInput tourId={tourDetails.tour_id} />
+                <TourRatings tourId={tourDetails.tour_id}></TourRatings>
               </div>
-
-              // <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=60&raw_url=true&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnN8ZW58MHwyfDB8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     {/* <Image src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3880&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="pic" className="" width={48} height={48}/>                   */}
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Natlntt
-              //       </p>
-              //       <input
-              //         type="text"
-              //         placeholder="Type your comment..."
-              //         className="input input-bordered bg-white rounded-none border-x-0 border-t-0 border-b-2 focus:outline-0 focus:outline-offset-0 focus:border-black transition-all delay-100 ease-in-out w-full max-w-xs"
-              //       />
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Beammi_2000
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=3276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         BirdieInwZaa
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-
-              //   <div className="px-3 flex items-top bg-white cursor-pointer">
-              //     <img
-              //       src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=3988&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=500"
-              //       className="h-12 w-12 border-2 border-white rounded-full mt-1"
-              //       alt=""
-              //     />
-              //     <div className="ml-4 pr-7">
-              //       <p className="text-sm font-medium text-black mb-1">
-              //         Henry7
-              //       </p>
-              //       <p
-              //         className="text-xs -mt-0.5 font-normal text-black"
-              //         x-text="user.email"
-              //       >
-              //         The full of tourism make an enjoyable environment. Good
-              //         picture with every angle. It remind me to the last trip
-              //         that I come.
-              //       </p>
-              //     </div>
-              //   </div>
-              // </div>
             )}
 
             {othersNebuSection && (
