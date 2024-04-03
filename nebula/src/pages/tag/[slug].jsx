@@ -16,6 +16,7 @@ import closeIcon from "../../../public/images/close.png";
 import smallHashtag from "../../../public/images/smallHashtag_blue.png";
 import filterIcon from "../../../public/images/filter-icon.png"
 import yellowPin from "../../../public/images/yellowPin.png"
+import altImage from "../../../public/images/altImage.png"
 
 export default function Tag() {
   
@@ -50,14 +51,41 @@ export default function Tag() {
     
 
     async function fetchData() {
-      let url = `/api/search/getNebuByTag?tagName=${tagName}`
       try {
-        const response = await fetch(url)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
+        
+        // const data = await response.json();   
+        
+        // const [nebuResponse, tourResponse] = await Promise.all([
+        //   fetch(`/api/search/getNebuByTag?tagName=${tagName}`),
+        //   fetch(`/api/search/getTourByTag?tagName=${tagName}`),
+          
+        // ]);
+
+        const [nebuResponse] = await Promise.all([
+          fetch(`/api/search/getNebuByTag?tagName=${tagName}`)
+          
+        ]);
+  
+        // Parse responses
+        // const [nebuData, tourData] = await Promise.all([
+        //   nebuResponse.json(),
+        //   tourResponse.json(),
+        // ]);
+
+        const [nebuData] = await Promise.all([
+          nebuResponse.json(),
+          // tourResponse.json(),
+        ]);
+
+        const formattedData = [];
+        if (nebuData.length > 0) {
+          nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
         }
-        const data = await response.json();             
-        setApi(data)
+        // if (tourData.length > 0) {
+        //   tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
+        // }
+
+        setApi(nebuData)
         console.log("data1: ", api);
 
       } catch (error) {
@@ -163,9 +191,14 @@ export default function Tag() {
 
             <div className="text-black mt-5 w-fit h-[500px] overflow-y-scroll ">
               
-              {tagData.map((data, index) => (
+              {Array.isArray(tagData) && tagData.map((data, index) =>(
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row">
                   <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.images[0]} alt="pic" className=" lg:h-auto"/></figure>              
+                  {/* {Array.isArray(data.images) && data.images.length > 0 && (
+                    <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0">
+                      <img src={data.images[0]} alt="pic" className="lg:h-auto" />
+                    </figure>
+                  )} */}
                   <div className="card-body flex flex-col justify-between">
                     {
                       // (data.type === "nebu") &&                  
@@ -174,23 +207,8 @@ export default function Tag() {
                         {data.title}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
                       </h2>
-                      // <div className="card-title w-full lg:w-full flex flex-col lg:flex-row">
-                      //   <figure className="lg:w-[8%]"><Image src={yellowPin} alt="pic" /></figure>
-                      //   <div>
-                      //     <h2 className="font-normal text-base text-black">{data.title}</h2>
-                      //     <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
-                      //   </div>
-                      // </div>
                     }
 
-                    {/* {
-                      (data.type === "tour") &&
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
-                        <figure className="lg:w-[3%]"><Image src={yellowFlag} alt="pic"/></figure>
-                        {data.title} 
-                        <p className="font-normal text-base text-black-grey w-fit text-center lg:text-start">added by {data.username}</p>
-                      </h2>
-                    }                 */}
                     <p className="font-medium">{data.address}</p>
                     <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.description}</p>
                     <div className='flex flex-row mt-1'>
@@ -209,7 +227,8 @@ export default function Tag() {
                     
                   </div>
                 </div>
-              ))}
+              )
+              )}
               
               
             </div>
