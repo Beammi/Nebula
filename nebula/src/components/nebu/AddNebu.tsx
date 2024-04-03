@@ -25,7 +25,7 @@ export default function AddNebu(props) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [imageNebu, setImageNebu] = useState("")
-  const [workHour, setWorkHour] = useState(false)
+  const [notIncludeWorkHour, setNotIncludeWorkHour] = useState(true)
   const [openTime, setOpenTime] = useState(null)
   const [closeTime, setCloseTime] = useState(null)
   const [timeLimitType, setTimeLimitType] = useState("permanent")
@@ -112,10 +112,12 @@ export default function AddNebu(props) {
 
   function handleWorkHourCheckBox() {
     let checkbox = document.getElementById("workHourCB") as HTMLInputElement
-    if (checkbox && checkbox.checked) {
-      setWorkHour(true)
+    if (checkbox.checked) {
+      setNotIncludeWorkHour(false)
+    }else{
+      setNotIncludeWorkHour(true)
     }
-    console.log("work hour: ",workHour)
+    console.log("work hour: ",notIncludeWorkHour)
   }
   const getOpenDays = () => {
     return Object.entries(isChecked)
@@ -157,7 +159,7 @@ export default function AddNebu(props) {
   ) => {
     console.log("handleSummit is called") // Debugging line
     const allUnchecked = Object.values(isChecked).every(value => value === false);
-    if(workHour===true && (openTime===null||closeTime===null||allUnchecked)){
+    if(notIncludeWorkHour===true && (openTime===null||closeTime===null||allUnchecked)){
       alert("You didn't add work hour!!!, or Do you mean to not include working hour?")
       return
     }
@@ -273,6 +275,7 @@ export default function AddNebu(props) {
 
       // Handle successful form submission
       alert("Form submitted successfully!")
+      action()
       // Perform any additional actions like redirecting or clearing the form
     } catch (error) {
       console.error("Error submitting form:", error)
@@ -587,7 +590,7 @@ export default function AddNebu(props) {
                   prepareSubmit(e) // Use prepareSubmit instead
                   // Correctly invoke the function
 
-                  action() // Assuming this is correctly invoking another function
+                  // action() // Assuming this is correctly invoking another function
                 }}
               />
             )}
