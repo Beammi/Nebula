@@ -10,7 +10,6 @@ async function tourCreationHandler(req, res) {
     tour_name,
     description,
     official_tag,
-    images,
     tags, // An array of tag names
     places, // An array of objects with place_name, latitude, and longitude
     waypoints,
@@ -30,10 +29,10 @@ async function tourCreationHandler(req, res) {
 
     // Insert the new tour
     const tourInsertResult = await db.query(`
-      INSERT INTO tour (tour_name, description, official_tag, images, user_id)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO tour (tour_name, description, official_tag, user_id)
+      VALUES ($1, $2, $3, $4)
       RETURNING tour_id;
-    `, [tour_name, description, official_tag, images, user_id]);
+    `, [tour_name, description, official_tag, user_id]);
     const tour_id = tourInsertResult.rows[0].tour_id;
 
     for (const place of places) {

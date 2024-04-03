@@ -11,6 +11,7 @@ export const TourProvider = ({ children }) => {
     officialTag: "Official's Tag",
     openTagModal: false,
     additionalTags: [],
+    images: [],
   });
 
   const setOfficialTag = (tag) => {
@@ -19,7 +20,12 @@ export const TourProvider = ({ children }) => {
       officialTag: tag,
     }));
   };
-
+  const setImages = (image) =>{
+    setTourData((prev) =>({
+      ...prev,
+      images: [...prev.images, image]
+    }))
+  }
   const addAdditionalTag = (tag) => {
     setTourData((prev) => ({
       ...prev,
@@ -77,6 +83,7 @@ export const TourProvider = ({ children }) => {
         toggleOpenTagModal,
         addAdditionalTag,
         updateTags,
+        setImages,
       }}
     >
       {children}
