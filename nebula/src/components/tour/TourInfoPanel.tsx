@@ -18,7 +18,8 @@ import RatingInput from "../RatingInput"
 import Ratings from "../Ratings"
 import Button from "../Button"
 import { useRouter } from "next/router"
-
+import TourRatings from "./TourRatings"
+import TourRatingInput from "./TourRatingInput"
 export default function TourInfoPanel({ toggle, tour }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
@@ -440,8 +441,8 @@ export default function TourInfoPanel({ toggle, tour }) {
 
             {rateCommentSection && (
               <div>
-                <RatingInput nebuId={tourDetails.nebu_id} />
-                <Ratings nebuId={tourDetails.nebu_id}></Ratings>
+                <TourRatingInput tourId={tourDetails.tour_id} />
+                <TourRatings tourId={tourDetails.tour_id}></TourRatings>
               </div>
 
               // <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
