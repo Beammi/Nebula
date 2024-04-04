@@ -32,7 +32,7 @@ export default function TourInfoPanel({ toggle, tour }) {
   const router = useRouter() // Add this line to get access to router query
   const { tourId } = router.query // Retrieve tourId from router query
   const [userId, setUserId] = useState("")
-
+  const [avgRating,setAvgRating] = useState(0)
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [tourDetails, setTourDetails] = useState(null)
@@ -86,8 +86,28 @@ export default function TourInfoPanel({ toggle, tour }) {
       console.error("Failed to fetch profile:", error)
     }
   }
+  const fetchAverageRatings = async () => {
+    const url = `/api/tour/rating/getAverageRating?tourId=${encodeURIComponent(
+      tourId
+    )}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const rating = data.averageRating
+        setAvgRating(rating)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the profile"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error)
+    }
+  }
   useEffect(()=>{
     getEmail()
+    fetchAverageRatings()
   },[])
   const fetchPhotoFromNebu = async (place_name) => {
     try {
@@ -254,6 +274,23 @@ export default function TourInfoPanel({ toggle, tour }) {
   useEffect(() => {
     checkBookmark(userId, tourId)
   }, [tourId])
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, index) => (
+          <span
+            key={index}
+            className={`inline-block w-4 h-4 ${
+              index < (rating ?? 0) ? "text-yellow text-lg" : "text-slate-100 text-lg"
+            } `}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    )
+  }
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -341,34 +378,10 @@ export default function TourInfoPanel({ toggle, tour }) {
               </div>
 
               <div className="flex flex-row">
-                <div className="rating">
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4 "
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                    checked
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <label className="text-sm leading-4 text-yellow">4.0</label>
+                <div className="rating rating-md pb-4">
+                  {renderStars(avgRating)}
+
+                  <label className="text-sm leading-4 text-yellow">{avgRating}</label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
                   Added by {tourDetails.creator_email}
