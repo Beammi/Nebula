@@ -27,7 +27,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx", "src/components/Officialdropdown.jsx", "src/pages/tag/[slug].jsx", "src/components/tour/TourInfoPanel.jsx" ],
+    "**/*.tsx", "src/components/Officialdropdown.jsx", "src/pages/tag/[slug].jsx", "src/components/tour/TourInfoPanel.jsx", "src/components/tour/TourMapComponent.jsx" ],
   "exclude": [
     "node_modules"
   ]
