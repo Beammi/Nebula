@@ -164,7 +164,7 @@ export default function AddNebu(props) {
       return
     }
     e?.preventDefault()
-    if (currentPosition[0] == null || currentPosition[1] == null) {
+    if (currentPosition.lat == null || currentPosition.lng == null) {
       alert("Lat Long are null")
       return
     }
@@ -248,8 +248,8 @@ export default function AddNebu(props) {
           duration: timeLimitType,
           official_tag: officialTag,
           tags: confirmedAdditionalTags,
-          latitude: currentPosition[0],
-          longitude: currentPosition[1],
+          latitude: currentPosition.lat,
+          longitude: currentPosition.lng,
           place_name: currentPlace,
           open_sunday,
           open_monday,

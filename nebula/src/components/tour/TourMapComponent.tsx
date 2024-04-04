@@ -25,6 +25,7 @@ import towerBridgePic from "../../../public/images/tower-bridge-pic.png"
 import sherlockPic from "../../../public/images/sherlock-pic.png"
 import currentPinLocation from "../../../public/images/pin_current_location.png"
 import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
+import smallFlag from "../../../public/images/smallFlag.png"
 import { useLocation } from "@/contexts/LocationContext"
 import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTour"
 import ViewTourList from "@/components/tour/ViewTourList"
@@ -103,7 +104,11 @@ const MyMapTour: React.FC = () => {
     iconUrl: largePinIcon.src,
     iconSize: [80, 80],
   })
-
+  const tourPinIcon = new Icon({
+    iconUrl: smallFlag.src,
+    iconSize: [15, 20],
+  })
+  
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
     iconSize: [20, 20],
@@ -173,20 +178,34 @@ const MyMapTour: React.FC = () => {
         {/* <Marker position={[51.505, -0.09]} icon={customIcon} alt='Tower Bridges'>        
         </Marker> */}
         <MapCenterEvents onCenterChange={handleCenterChange} />
-        {/* {tourDetails.places && tourDetails.places.length > 0 ? (
+        {tourDetails?.places && tourDetails?.places.length > 0 ? (
           tourDetails.places.map((place, placeIndex) => (
             
             <Marker
             key={placeIndex}
             position={[place.latitude,place.longitude]}
-            icon={smallNebuPinIcon}
+            icon={tourPinIcon}
           >
             <Popup>{place.place_name}</Popup>
           </Marker>
           ))
         ) : (
           <p>Error in loading places...</p>
-        )} */}
+        )}
+        {tourDetails?.waypoints && tourDetails?.waypoints.length > 0 ? (
+          tourDetails.waypoints.map((waypoint, placeIndex) => (
+            
+            <Marker
+            key={placeIndex}
+            position={[waypoint.latitude,waypoint.longitude]}
+            icon={smallNebuPinIcon}
+          >
+            <Popup>{waypoint.waypoint_name}</Popup>
+          </Marker>
+          ))
+        ) : (
+          <p>Error in loading places...</p>
+        )}
         <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
           position={currentPosition}

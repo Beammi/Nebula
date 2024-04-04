@@ -12,7 +12,7 @@ const MapComponentTour = dynamic<any>(
 
 
 const DynamicMapForSearchLocation: React.FC<{ context: string }> = ({ context }) => {
-  console.log("context in dynamic map ",context)
+  // console.log("context in dynamic map ",context)
   return (
     <div>
       {/* Force re-rendering when context changes */}

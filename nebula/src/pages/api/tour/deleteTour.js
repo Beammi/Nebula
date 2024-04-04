@@ -21,6 +21,7 @@ export default async function handler(req, res) {
       await db.query('DELETE FROM tour_place WHERE tour_id = $1', [tour_id]);
       await db.query('DELETE FROM tour_tag WHERE tour_id = $1', [tour_id]);
       await db.query('DELETE FROM waypoint WHERE tour_id = $1', [tour_id]);
+      await db.query('DELETE FROM rating WHERE tour_id = $1',[tour_id])
       // Delete from other related tables if necessary
 
       // Delete the tour itself

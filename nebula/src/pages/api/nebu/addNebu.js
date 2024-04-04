@@ -94,8 +94,10 @@ async function nebuCreationHandler(req, res) {
         open_friday,
         open_saturday,
         open_time,
-        close_time
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+        close_time,
+        website,
+        phone_number
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19,$20)
       RETURNING nebu_id;`
         // console.log("place id ",place_id)
     const { rows: nebuInsertRows } = await db.query(nebuInsertQuery, [
@@ -117,6 +119,8 @@ async function nebuCreationHandler(req, res) {
       open_saturday,
       open_time,
       close_time,
+      website,
+      phone_number
     ])
 
     const nebuId = nebuInsertRows[0].nebu_id
