@@ -40,7 +40,7 @@ const MyMapForSearch: React.FC<{ context: string }> = ({ context }) => {
   const router = useRouter();
   // const [context, setContext] = useState(""); // Default context
   const queryContext = router.query.context;
-  console.log("Context in Map: ", queryContext)
+  // console.log("Context in Map: ", queryContext)
   // const [currentPosition, setCurrentPosition] = useState<[number, number]>([
   //   14.7563, 100.5018,
   // ]) // Default to Bangkok
@@ -151,7 +151,7 @@ const MyMapForSearch: React.FC<{ context: string }> = ({ context }) => {
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-      <LocationSearchPlaceInTour text={placeName} location={currentPosition} mode={queryContext}/>
+      <LocationSearchPlaceInTour text={placeName} location={mapCenter} mode={queryContext}/>
       <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
     </div>
   )
