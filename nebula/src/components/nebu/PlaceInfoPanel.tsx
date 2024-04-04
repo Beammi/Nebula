@@ -26,7 +26,12 @@ import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/tour/ViewTourList"
 
-export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour }) {
+export default function PlaceInfoPanel({
+  toggle,
+  action,
+  nebu,
+  onRecommendTour,
+}) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
@@ -95,10 +100,26 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       console.error("Failed to fetch profile:", error)
     }
   }
+  const checkBookmark = async (userId, nebuId) => {
+    const url = `/api/bookmark/checkBookmarkNebu?nebuId=${encodeURIComponent(
+      nebu?.nebu_id
+    )}&userId=${encodeURIComponent(userId)}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const newSavedStatus = !isSaved
+        setIsSaved(newSavedStatus)
+      }
+    } catch (error) {
+      console.error("not bookmark this nebu: ", error)
+    }
+    const resetSaved = !isSaved
+    setIsSaved(resetSaved)
+  }
   useEffect(() => {
     getEmail()
     console.log("O: ", panelRef)
-
     const handleScroll = () => {
       setScrollPosition(panelRef.current.scrollTop)
     }
@@ -113,7 +134,9 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       }
     }
   }, [panelRef])
-
+  useEffect(() => {
+    checkBookmark(userId, nebu?.nebu_id)
+  }, [nebu?.nebu_id])
   function openOverviewSection() {
     setOverviewSection(true)
     setRateCommentSection(false)
@@ -164,7 +187,8 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       setIsSaved(newSavedStatus)
       // Update UI as needed
     } catch (error) {
-      alert("Failed to save bookmark.")
+      alert("You already saved this bookmark!!. Failed to save bookmark.")
+      
     }
   }
   const handleRecommendTourClick = () => {
@@ -562,11 +586,9 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
         ) : (
           <p>No place selected</p>
         )}
-        
       </div>
       {/* <ViewTourList action={showViewTourList} toggle={closeViewTourList} name={nebu?.title} /> */}
       {/* Conditional rendering based on showViewTourList state */}
-      
     </div>
   )
 }
