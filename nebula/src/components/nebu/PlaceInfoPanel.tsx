@@ -43,6 +43,8 @@ export default function PlaceInfoPanel({
   const [userId, setUserId] = useState("")
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [avgRating, setAvgRating] = useState(0)
+
   const formatDaysOpen = (nebu) => {
     const days = [
       "Sunday",
@@ -108,14 +110,36 @@ export default function PlaceInfoPanel({
       const response = await fetch(url)
       const data = await response.json()
       if (response.ok) {
-        const newSavedStatus = !isSaved
-        setIsSaved(newSavedStatus)
+        setIsSaved(true)
+      }else{
+        const resetSaved = !isSaved
+        setIsSaved(false)
       }
     } catch (error) {
       console.error("not bookmark this nebu: ", error)
+      
     }
-    const resetSaved = !isSaved
-    setIsSaved(resetSaved)
+    // const resetSaved = !isSaved
+    // setIsSaved(false)
+  }
+  const fetchAverageRatings = async () => {
+    const url = `/api/nebu/rating/getAverageRating?nebuId=${encodeURIComponent(
+      nebu?.nebu_id
+    )}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const rating = data.averageRating
+        setAvgRating(rating)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the nebu rating"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch nebu rating:", error)
+    }
   }
   useEffect(() => {
     getEmail()
@@ -136,7 +160,13 @@ export default function PlaceInfoPanel({
   }, [panelRef])
   useEffect(() => {
     checkBookmark(userId, nebu?.nebu_id)
-  }, [nebu?.nebu_id])
+
+  }, [nebu])
+  useEffect(()=>{
+    setAvgRating(0)
+    fetchAverageRatings()
+
+  },[nebu])
   function openOverviewSection() {
     setOverviewSection(true)
     setRateCommentSection(false)
@@ -188,11 +218,28 @@ export default function PlaceInfoPanel({
       // Update UI as needed
     } catch (error) {
       alert("You already saved this bookmark!!. Failed to save bookmark.")
-      
     }
   }
   const handleRecommendTourClick = () => {
     setShowViewTourList(true) // Set to true to show the ViewTourList
+  }
+  const renderStars = (rating) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, index) => (
+          <span
+            key={index}
+            className={`inline-block w-4 h-4 ${
+              index < (rating ?? 0)
+                ? "text-yellow text-lg"
+                : "text-slate-100 text-lg"
+            } `}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    )
   }
   return (
     <div
@@ -254,33 +301,11 @@ export default function PlaceInfoPanel({
 
               <div className="flex flex-row">
                 <div className="rating">
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4 "
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                    checked
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <label className="text-sm leading-4 text-yellow">4.0</label>
+                  {renderStars(avgRating)}
+
+                  <label className="text-sm leading-4 text-yellow">
+                    {avgRating}
+                  </label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
                   Added by {nebu.email}
