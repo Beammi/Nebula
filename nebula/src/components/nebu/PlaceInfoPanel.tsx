@@ -8,6 +8,7 @@ import recommendIcon from "../../../public/images/recommend-tour-pic.png"
 import bookmarkIcon from "../../../public/images/bookmark-pic.png"
 import bookmarkSavedIcon from "../../../public/images/bookmarkSaved.png"
 import filterIcon from "../../../public/images/filter-icon.png"
+import closeIcon from "../../../public/images/close.png";
 import { saveBookmark } from "@/utils/saveBookmarkAPI"
 
 import smallPin from "../../../public/images/small-pin.png"
@@ -26,7 +27,7 @@ import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/tour/ViewTourList"
 
-export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour }) {
+export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour, panelStyle }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
@@ -172,16 +173,16 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
   }
   return (
     <div
-      className={`absolute overflow-y-scroll  ${
+      className={`fixed overflow-y-scroll  ${
         mobileInfoPanel ? "top-0" : "top-1/2"
-      } w-full rounded-t-xl lg:top-0 lg:w-[25%] z-10 h-screen bg-white text-black transition-all duration-150 ease-in-out 
+      } w-full rounded-t-xl lg:top-0 lg:w-[25%] z-10 ${panelStyle} h-screen bg-white text-black transition-all duration-150 ease-in-out 
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
       ref={panelRef}
     >
       <div className=" text-black ">
         {nebu ? (
           <div
-            className="rounded-t-full"
+            className="rounded-t-full flex flex-col"
             onScroll={() => {
               if (panelRef.current) {
                 scrollPosition > 0
@@ -212,6 +213,7 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
                 />
               )}
             </div>
+            
             <div className="-mt-14 mb-2 flex items-center justify-between">
               <div></div>{" "}
               {/* !! dont delete pls, it make the button go right corner */}
@@ -221,11 +223,20 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
                 label={`slide for more images`}
               ></Button>
             </div>
+            
             <div className="flex flex-col pl-4 pt-2 gap-y-1">
-              <div className="flex flex-row">
+              <div className="flex flex-row justify-between mt-3">
                 <h3 className="font-bold text-xl text-black  bg-white w-fit">
                   {nebu.title}
                 </h3>
+                <button onClick={action}>
+                  <Image
+                    src={closeIcon}
+                    alt="clsbtn"
+                    className="mr-5"
+                    width={18}
+                  />
+                </button>
               </div>
 
               <div className="flex flex-row">
