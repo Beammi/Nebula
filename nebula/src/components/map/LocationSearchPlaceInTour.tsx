@@ -20,11 +20,11 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
 > = ({ text, location, onLocationChange, mode }) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [placeText, setPlaceText] = useState([])
-  const { addPlace, addWaypoint } = useTour() as TourContextType
+  const { addPlace, addWaypoint ,tourData} = useTour() as TourContextType
 
   const [showPopup, setShowPopup] = useState(false) // State to control popup visibility
   const [closeChangeLocation, setCloseChangeLocation] = useState(true)
-
+  console.log("Hereeeeeeeee cryyyyyyy location ",tourData.routePlaces)
   const handleClickChange = () => {
     console.log("Change location to:", searchTerm)
     setShowPopup(true) // Show the popup
@@ -40,11 +40,12 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
     // const location: [number, number] = [0, 0]; // Placeholder for actual location fetching logic
     // const placeName: string = searchTerm; // Placeholder for actual place name fetching logic
     console.log("context in location search ", mode)
+    console.log("location ", location)
     const newPlace = {
       id: Date.now(), // or a better ID generation strategy
       name: text,
-      latitude: location[0],
-      longitude: location[1],
+      latitude: location.lat,
+      longitude: location.lng,
     }
     if (mode === "waypoint") {
       addWaypoint(newPlace)
