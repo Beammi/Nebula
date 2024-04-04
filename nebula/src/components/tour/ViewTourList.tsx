@@ -26,24 +26,6 @@ export default function ViewTourList({ toggle, action, name, nebu }) {
   // const action = props.action;
   // const name = props.name;
 
-  const mockData = [
-    {
-      title: "Markets in London",
-      email: "nat2100",
-    },
-    {
-      title: "Big Ben",
-      email: "beammi4567",
-    },
-    {
-      title: "Markets in London",
-      email: "birdie007",
-    },
-    {
-      title: "Big Ben",
-      email: "nat2100",
-    },
-  ]
   const [tours, setTours] = useState([])
   const [images, setImages] = useState([])
  
