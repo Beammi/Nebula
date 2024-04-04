@@ -16,6 +16,10 @@ import closeIcon from "../../../public/images/close.png";
 import smallHashtag from "../../../public/images/smallHashtag_blue.png";
 import filterIcon from "../../../public/images/filter-icon.png"
 import yellowPin from "../../../public/images/yellowPin.png"
+import purplePin from "../../../public/images/purplePin.png"
+import purpleFlag from "../../../public/images/flagPurple.png"
+import yellowFlag from "../../../public/images/yellowFlag.png"
+import placePinIcon from "../../../public/images/placePinIcon.png"
 import altImage from "../../../public/images/altImage.png"
 
 export default function Tag() {
@@ -28,6 +32,8 @@ export default function Tag() {
     const [tagData, setTagData] = useState([])
     const [api, setApi] = useState([])
     const [tagName, setTagName] = useState("");
+    const [tourPhotos, setTourPhotos] = useState([])
+    const [tourApi, setTourApi] = useState([])
 
     const tag = Array.isArray(router.query.slug) ? router.query.slug[0] : router.query.slug;
 
@@ -55,43 +61,86 @@ export default function Tag() {
         
         // const data = await response.json();   
         
-        // const [nebuResponse, tourResponse] = await Promise.all([
-        //   fetch(`/api/search/getNebuByTag?tagName=${tagName}`),
-        //   fetch(`/api/search/getTourByTag?tagName=${tagName}`),
-          
-        // ]);
-
-        const [nebuResponse] = await Promise.all([
-          fetch(`/api/search/getNebuByTag?tagName=${tagName}`)
+        const [nebuResponse, tourResponse] = await Promise.all([
+          fetch(`/api/search/getNebuByTag?tagName=${tagName}`),
+          fetch(`/api/search/getTourByTag?tagName=${tagName}`),
           
         ]);
+
+        // const [nebuResponse] = await Promise.all([
+        //   fetch(`/api/search/getNebuByTag?tagName=${tagName}`)
+          
+        // ]);
   
         // Parse responses
-        // const [nebuData, tourData] = await Promise.all([
-        //   nebuResponse.json(),
-        //   tourResponse.json(),
-        // ]);
-
-        const [nebuData] = await Promise.all([
+        const [nebuData, tourData] = await Promise.all([
           nebuResponse.json(),
-          // tourResponse.json(),
+          tourResponse.json(),
         ]);
+
+        // const [nebuData] = await Promise.all([
+        //   nebuResponse.json(),          
+        // ]);
 
         const formattedData = [];
         if (nebuData.length > 0) {
           nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
         }
-        // if (tourData.length > 0) {
-        //   tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
-        // }
+        if (tourData.length > 0) {
+          tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
+        }
 
-        setApi(nebuData)
+        setApi(formattedData)
         console.log("data1: ", api);
 
       } catch (error) {
         console.error("Fetch error:", error)
       }
     
+    }
+
+    function formatPlaces(placesArray) {
+        const formattedPlaces = placesArray.map(place => place.split(',')[0]); // Get the first part of each place until the first comma
+        return formattedPlaces.join(', '); // Join the places with commas
+    }
+
+    const fetchPhotoFromNebu = async (place_name) => {
+      try {
+        place_name.map(async (p) => { // bad idea for using map or loop to fetch data
+          const response = await fetch(
+            `/api/tour/getImagesFromNebus?place_name=${p}`
+          )
+          if (response.ok) {
+            const photos = await response.json()
+            setTourApi(photos)
+            console.log("tour api photo ", tourApi)
+            if(tourApi.length > 0){
+              return tourApi[0]
+            }            
+          } 
+          else {
+            console.error("Failed to fetch image details")
+          }
+        })
+
+        // const response = await fetch(
+        //   `/api/tour/getImagesFromNebus?place_name=${place_name}`
+        // )
+        // if (response.ok) {
+        //   const photos = await response.json()
+        //   setTourApi(photos)
+        //   console.log("tour api photo ", tourApi)
+        //   tourApi.forEach(item => {
+        //     console.log("tour api ",item);
+        //   });
+        //   return tourApi[0]
+        // } 
+        // else {
+        //   console.error("Failed to fetch image details")
+        // }
+      } catch (error) {
+        console.error("Error fetching image details:", error)
+      }
     }
 
     function openAddNebu() {
@@ -191,31 +240,33 @@ export default function Tag() {
 
             <div className="text-black mt-5 w-fit h-[500px] overflow-y-scroll ">
               
-              {Array.isArray(tagData) && tagData.map((data, index) =>(
+              {Array.isArray(tagData) && tagData.map((data, index) =>(                
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row">
-                  <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.images[0]} alt="pic" className=" lg:h-auto"/></figure>              
-                  {/* {Array.isArray(data.images) && data.images.length > 0 && (
-                    <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0">
-                      <img src={data.images[0]} alt="pic" className="lg:h-auto" />
-                    </figure>
-                  )} */}
+                  {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto"/></figure>}
+                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={fetchPhotoFromNebu(data.value.places)} alt="There is no image." className=" lg:h-auto"/></figure>}
+                  {/* {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={fetchPhotoFromNebu(data.value.places[0])} alt="There is no image." className=" lg:h-auto"/></figure>} */}
                   <div className="card-body flex flex-col justify-between">
-                    {
-                      // (data.type === "nebu") &&                  
+                    {                      
                       <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
-                        <figure className="lg:w-[3%]"><Image src={yellowPin} alt="pic" /></figure>
-                        {data.title}
-                        <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.email}</p>
+                        {data.type === "nebu" && <figure className="lg:w-[3%]"><Image src={purplePin} alt="pic" /></figure>}
+                        {data.type === "tour" && <figure className="lg:w-[2.1%]"><Image src={purpleFlag} alt="pic" /></figure>}
+                        {data.value.title}
+                        <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.value.email}</p>
                       </h2>
                     }
-
-                    <p className="font-medium">{data.address}</p>
-                    <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.description}</p>
+                    
+                    {data.type === "tour" &&
+                      <div className="flex">
+                        <figure className="lg:w-[3.2%]"><Image src={placePinIcon} alt="pic" /></figure>
+                        <p className="font-normal">Places: {formatPlaces(data.value.places)}</p>
+                      </div>                      
+                    }
+                    <p className="font-normal overflow-hidden lg:h-auto line-clamp-2 lg:line-clamp-3">{data.value.description}</p>
                     <div className='flex flex-row mt-1'>
                       <div className='flex gap-2 flex-wrap'>
                         {/* <Link className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</Link> */}
-                        <button onClick={() => tagNameClick(data.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.official_tag}</ button>
-                        { data.tags && data.tags
+                        <button onClick={() => tagNameClick(data.value.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.value.official_tag}</ button>
+                        { data.value.tags && data.value.tags
                           .filter(tag => tag !== null) 
                           .map((usertag) => (
                           // usertag.type == data.title && <Link href="https://www.google.com/" className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag.value}</Link>                    
@@ -227,8 +278,7 @@ export default function Tag() {
                     
                   </div>
                 </div>
-              )
-              )}
+              ))}
               
               
             </div>
