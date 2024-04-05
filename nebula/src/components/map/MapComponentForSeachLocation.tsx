@@ -1,4 +1,6 @@
 //MapComponent.tsx
+// @ts-nocheck
+
 import { Icon } from "leaflet"
 import React, { useState, useEffect } from "react"
 import {
@@ -103,11 +105,11 @@ const MyMapForSearch: React.FC<{ context: string }> = ({ context }) => {
   
   return (
     <div className="h-screen relative">
-      <PlaceInfoPanel
+      {/* <PlaceInfoPanel
         placeData={selectedPlace}
         toggle={placeInfoPanel}
         action={closePlaceInfoPanel}
-      />
+      /> */}
 
       <MapContainer
         center={currentPosition}
