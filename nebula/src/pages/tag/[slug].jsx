@@ -151,7 +151,7 @@ export default function Tag() {
           console.log("DDD: ", data);
           const response = await fetch(`/api/search/getNebuByKeyword?searchKey=${data.value.title}`)
           const nebuData = await response.json()
-          
+
           setCurrentPosition([parseFloat(nebuData[0].latitude), parseFloat(nebuData[0].longitude)])
       
           setShowPlaceInfoPanel(true)
@@ -290,11 +290,19 @@ export default function Tag() {
                     
                     <div className='flex flex-row mt-1'>
                       <div className='flex gap-2 flex-wrap'>                        
-                        <button onClick={() => tagNameClick(data.value.official_tag)} className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.value.official_tag}</ button>
+                        <button onClick={(event) => {
+                          event.stopPropagation();
+                          tagNameClick(data.value.official_tag)
+                        }} 
+                        className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">#{data.value.official_tag}</ button>
                         { data.value.tags && data.value.tags
                           .filter(tag => tag !== null) 
                           .map((usertag, index) => (                          
-                          <button key={index} onClick={() => tagNameClick(usertag)} className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</button>                    
+                          <button key={index} onClick={(event) => {
+                            event.stopPropagation();
+                            tagNameClick(usertag)
+                          }} 
+                          className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer">#{usertag}</button>                    
                         ))}                        
                       </div>
                     </div>
