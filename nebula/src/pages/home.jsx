@@ -18,7 +18,20 @@ export default function Home() {
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
   const router = useRouter()
+  const [selectedNebuId, setSelectedNebuId] = useState(null);
 
+  // Other states and functions...
+
+  useEffect(() => {
+    // When the component mounts or the URL query changes
+    const { nebuId } = router.query;
+
+    if (nebuId) {
+      // Found a nebuId query parameter, update state to reflect it
+      setSelectedNebuId(nebuId);
+      // Optional: Further actions, like opening the PlaceInfoPanel or fetching Nebu details
+    }
+  }, [router.query]);
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
@@ -99,15 +112,15 @@ export default function Home() {
             label="Restaurant"
           ></Button> */}
         </div>
-        <div className="flex">
+        <div className="flex md:relative absolute md:top-0 md:left-0 sm:left-24 left-0 top-20">
           <div className="flex">
             <Button
-              buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
+              buttonStyle="btn bg-white w-max mx-4 normal-case text-blue border-none md:block md:bg-blue md:text-white"
               label="Create Tour"
               onClick={toggleAddTour}
             ></Button>
             <Button
-              buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
+              buttonStyle="btn bg-blue w-max md:block normal-case text-white border-none"
               label="Add Nebu"
               onClick={openAddNebu}
             ></Button>

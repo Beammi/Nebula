@@ -30,6 +30,8 @@ export interface TourContextType {
   addPlace: (place: Place) => void
   addWaypoint: (waypoint: Waypoint) => void // Method for adding a waypoint
   removeWaypoint: (waypointId: number) => void // Method for removing a waypoint by its id
+  removePlace:(placeId: number)=> void
+  removeTag:(tagToRemove: number)=> void
   setOfficialTag: (tag: string) => void // Method to update the official tag
   toggleOpenTagModal: () => void // Method to toggle the openTag modal
   addAdditionalTag: (tag: string) => void // Method to add an additional tag

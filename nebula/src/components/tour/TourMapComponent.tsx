@@ -52,7 +52,7 @@ const MyMapTour: React.FC = () => {
           const data = await response.json()
           setTourDetails(data)
           console.log("Tour", tourDetails)
-        //   setTourPosition([data.places[0].latitude, data.places[0].longitude])
+          setTourPosition([data.places[0].latitude, data.places[0].longitude])
         //   console.log("Tour position", tourPosition)
         } else {
           console.error("Failed to fetch tour details")

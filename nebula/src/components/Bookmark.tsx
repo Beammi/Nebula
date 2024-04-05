@@ -193,6 +193,15 @@ export default function Bookmark(props) {
                       <p className="w-full text-center lg:text-start">
                         {data.title}
                       </p>
+                      <figure
+                        className="lg:w-[10%] lg:ml-auto mt-1.5 cursor-pointer"
+                        onClick={() => {
+                          setShowDeletePopUp(true)
+                          setSelectedBookmarkId(data.bookmark_id)
+                        }}
+                      >
+                        <Image src={redCloseIcon} alt="pic" />
+                      </figure>
                     </div>
                     <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">
                       added by {data.creator_email}

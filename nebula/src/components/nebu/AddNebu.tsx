@@ -10,8 +10,8 @@ import { getCurrentLocation, getPlaceName } from "@/utils/navigationUtils"
 import { useLocation } from "@/contexts/LocationContext"
 import { supabase } from "@/lib/supabaseClient"
 interface LatLng {
-  lat: number;
-  lng: number;
+  lat: number
+  lng: number
 }
 export default function AddNebu(props) {
   const addNebuState = props.toggle
@@ -38,7 +38,7 @@ export default function AddNebu(props) {
   const [readyToSubmit, setReadyToSubmit] = useState(false)
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
-  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace }=
+  const { currentPosition, setCurrentPosition, currentPlace, setCurrentPlace } =
     useLocation()
   const prepareSubmit = (e) => {
     e.preventDefault() // Prevent default form submission
@@ -54,6 +54,12 @@ export default function AddNebu(props) {
       handleSummit()
     }
   }
+  const handleRemoveTag = (tagToRemove: string) => {
+    setConfirmedAdditionalTags((currentTags) =>
+      currentTags.filter((tag) => tag !== tagToRemove)
+    )
+  }
+
   useEffect(() => {
     if (readyToSubmit && currentPosition) {
       handleSummit()
@@ -114,10 +120,10 @@ export default function AddNebu(props) {
     let checkbox = document.getElementById("workHourCB") as HTMLInputElement
     if (checkbox.checked) {
       setNotIncludeWorkHour(false)
-    }else{
+    } else {
       setNotIncludeWorkHour(true)
     }
-    console.log("work hour: ",notIncludeWorkHour)
+    console.log("work hour: ", notIncludeWorkHour)
   }
   const getOpenDays = () => {
     return Object.entries(isChecked)
@@ -158,14 +164,21 @@ export default function AddNebu(props) {
     e?: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
     console.log("handleSummit is called") // Debugging line
-    const allUnchecked = Object.values(isChecked).every(value => value === false);
-    if(notIncludeWorkHour===true && (openTime===null||closeTime===null||allUnchecked)){
-      alert("You didn't add work hour!!!, or Do you mean to not include working hour?")
+    const allUnchecked = Object.values(isChecked).every(
+      (value) => value === false
+    )
+    if (
+      notIncludeWorkHour === true &&
+      (openTime === null || closeTime === null || allUnchecked)
+    ) {
+      alert(
+        "You didn't add work hour!!!, or Do you mean to not include working hour?"
+      )
       return
     }
     e?.preventDefault()
     if (currentPosition.lat == null || currentPosition.lng == null) {
-      alert("Lat Long are null")
+      alert("Please click confirm your location.")
       return
     }
     // Initialize an array to hold the URLs of the uploaded images
@@ -237,7 +250,7 @@ export default function AddNebu(props) {
         await currentPosition // This should be a function that updates `currentPosition`.
         return
       }
-      
+
       const response = await fetch("/api/nebu/addNebu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -300,14 +313,18 @@ export default function AddNebu(props) {
   // Append the style element to the document head
   useEffect(() => {
     if (currentPosition != null) {
-      setLatitude(currentPosition.lat);
-      setLongitude(currentPosition.lng);
+      setLatitude(currentPosition.lat)
+      setLongitude(currentPosition.lng)
       // Log the values directly from currentPosition
-      console.log("current position,",currentPosition)
-      console.log("lat&long directly", currentPosition.lat, ",", currentPosition.lng);
+      console.log("current position,", currentPosition)
+      console.log(
+        "lat&long directly",
+        currentPosition.lat,
+        ",",
+        currentPosition.lng
+      )
     }
-  }, [currentPosition]);
-  
+  }, [currentPosition])
 
   // Add another useEffect to log the updated values of latitude and longitude
   useEffect(() => {
@@ -437,11 +454,27 @@ export default function AddNebu(props) {
                   </div>
                   <div className="pt-4 flex ml-2 overflow-x-auto">
                     {confirmedAdditionalTags.map((tag, index) => (
+                      // <div
+                      //   key={index}
+                      //   className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
+                      // >
+                      //   {tag}
+                      // </div>
                       <div
                         key={index}
-                        className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
+                        className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit flex justify-between items-center"
                       >
                         {tag}
+                        <button
+                           onClick={(e) => {
+                            e.preventDefault(); // Prevent the default form submission behavior
+                            handleRemoveTag(tag);
+                          }}
+                          className="ml-2 text-white hover:text-red"
+                        >
+                          &#x2715;{" "}
+                          {/* This is a simple "x" symbol you can replace with an icon */}
+                        </button>
                       </div>
                     ))}
                   </div>
