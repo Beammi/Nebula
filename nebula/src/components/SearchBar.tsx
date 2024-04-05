@@ -10,6 +10,8 @@ import smallThinPin from "../../public/images/placePinIcon.png"
 import TagSuggestion  from "@/components/TagSuggestion"
 import AccountProfile from "@/components/AccountProfile"
 import ViewTourList from "@/components/tour/ViewTourList"
+import AddTour from "@/components/tour/AddTour"
+import AddNebu from "@/components/nebu/AddNebu"
 import Bookmark from "@/components/Bookmark"
 import MyNebu from "@/components/MyNebu"
 import MyTour from "@/components/MyTour"
@@ -45,6 +47,8 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [nebu, setNebu] = useState([]);
   const [api, setApi] = useState<{ value: string; type: string }[]>([]);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+  const [addNebuState, setAddnebu] = useState(false)
+  const [addTourState, setAddTourState] = useState(false)
   
   const {
     currentPlace,
@@ -218,6 +222,14 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   useEffect(() => {
     fetchData(inputValue)
   }, [inputValue]);
+
+  function openAddNebu() {
+    setAddnebu(!addNebuState)
+  }
+
+  function toggleAddTour() {
+    setAddTourState(!addTourState)
+  }
   
   
 
@@ -295,6 +307,21 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
         <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
         <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
+
+        <div className="flex">
+          <Button
+            buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
+            label="Create Tour"
+            onClick={() => toggleAddTour}
+          ></Button>
+          <Button
+            buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
+            label="Add Nebu"
+            onClick={() => openAddNebu}
+          ></Button>
+        </div>
+        <AddNebu toggle={addNebuState} action={openAddNebu} />
+        <AddTour toggle={addTourState} action={toggleAddTour}/>
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
