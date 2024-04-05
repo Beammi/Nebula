@@ -1,4 +1,3 @@
-// pages/api/ratings/getRatings.js
 import db from "../../../../lib/db";
 
 export default async function getRatings(req, res) {
@@ -16,7 +15,8 @@ export default async function getRatings(req, res) {
     const ratingsQuery = `
       SELECT r.*, u.email, u.profile_picture_url FROM rating r
       JOIN users u ON r.user_id = u.user_id
-      WHERE r.tour_id = $1;
+      WHERE r.tour_id = $1
+      ORDER BY r.created_time DESC;
     `;
     const ratingsValues = [tourId];
 
