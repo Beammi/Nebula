@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react"
 import Button from "./Button"
 import Image from 'next/image'

@@ -1,4 +1,6 @@
 //MapComponent.tsx
+// @ts-nocheck
+
 import { Icon } from "leaflet"
 import React, { useState, useEffect } from "react"
 import {

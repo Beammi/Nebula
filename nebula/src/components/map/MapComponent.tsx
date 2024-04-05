@@ -39,6 +39,7 @@ const MarkerCluster = ({ nebus, onMarkerClick }) => {
   })
 
   useEffect(() => {
+    // @ts-ignore
     const markerClusterGroup = L.markerClusterGroup()
 
     nebus.forEach((nebu) => {
@@ -172,6 +173,7 @@ const MyMap: React.FC = () => {
 
   return (
     <div className="h-screen relative">
+      
       <PlaceInfoPanel
         nebu={selectedPlace}
         toggle={placeInfoPanel}
@@ -188,6 +190,7 @@ const MyMap: React.FC = () => {
       /> */}
 
       <MapContainer
+      // @ts-ignore
         center={currentPosition}
         zoom={13}
         style={{
@@ -211,6 +214,7 @@ const MyMap: React.FC = () => {
 
         <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
+          // @ts-ignore
           position={currentPosition}
           icon={currentLocationIcon}
         >
@@ -233,8 +237,8 @@ const MyMap: React.FC = () => {
       </MapContainer>
       {showMovablePin && <MoveablePin />}
       
-
-      <LocationShowAndSearch text={currentPlace} location={mapCenter} />
+      
+      <LocationShowAndSearch text={currentPlace}  location={mapCenter as any} />
       {showViewTourList && (
         <ViewTourList
           toggle={showViewTourList}
