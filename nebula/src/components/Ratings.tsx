@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { format } from "date-fns"
 
 interface Rating {
   rating_id: number
@@ -8,6 +9,7 @@ interface Rating {
   nebu_id: number
   email: string
   profile_picture_url: string | null
+  created_time: string | null
 }
 
 const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
@@ -38,7 +40,9 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
       </div>
     )
   }
-
+  const formatDate = (dateString: string | null) => {
+    return dateString ? format(new Date(dateString), "PPPp") : "";
+  }
   return (
     <div className="flex flex-col my-8 ml-7 gap-y-8 transition-all delay-300 ease-in-out">
       {ratings.length > 0 ? (
@@ -54,7 +58,7 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
                 alt=""
               />
             ) : (
-              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue text-black text-sm">
                 {getInitials(rating.email)}
               </div>
             )}
@@ -62,6 +66,8 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
               <p className="text-sm font-medium text-black mb-1">
                 {rating.email}
               </p>
+              <p className="text-xs text-black-grey">{formatDate(rating.created_time)}</p>
+              
               <div className="flex flex-col">
                 <div className="rating rating-xs flex -mt-2">
                   {renderStars(rating.rate)}
