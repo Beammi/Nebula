@@ -99,15 +99,15 @@ export default function Home() {
             label="Restaurant"
           ></Button> */}
         </div>
-        <div className="flex">
+        <div className="flex md:relative absolute md:top-0 md:left-0 sm:left-24 left-0 top-20">
           <div className="flex">
             <Button
-              buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
+              buttonStyle="btn bg-white w-max mx-4 normal-case text-blue border-none md:block md:bg-blue md:text-white"
               label="Create Tour"
               onClick={toggleAddTour}
             ></Button>
             <Button
-              buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
+              buttonStyle="btn bg-blue w-max md:block normal-case text-white border-none"
               label="Add Nebu"
               onClick={openAddNebu}
             ></Button>
