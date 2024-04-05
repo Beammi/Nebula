@@ -245,15 +245,17 @@ export default function TourInfoPanel({ toggle, tour }) {
   //   saveToDatabase() // This would ideally pass necessary data for the save operation
   // }
   const checkBookmark = async (userId, tourId) => {
-    const url = `/api/bookmark/checkBookmarkNebu?tourId=${encodeURIComponent(
+    const url = `/api/bookmark/checkBookmarkTour?userId=${encodeURIComponent(userId)}&tourId=${encodeURIComponent(
       tourId
-    )}&userId=${encodeURIComponent(userId)}`
+    )}`
     try {
       const response = await fetch(url)
       const data = await response.json()
       if (response.ok) {
-        const newSavedStatus = !isSaved
-        setIsSaved(newSavedStatus)
+        setIsSaved(true)
+      }else{
+        const resetSaved = !isSaved
+        setIsSaved(false)
       }
     } catch (error) {
       console.error("not bookmark this nebu: ", error)
@@ -272,6 +274,7 @@ export default function TourInfoPanel({ toggle, tour }) {
     }
   }
   useEffect(() => {
+    // setIsSaved(false)
     checkBookmark(userId, tourId)
   }, [tourId])
 
