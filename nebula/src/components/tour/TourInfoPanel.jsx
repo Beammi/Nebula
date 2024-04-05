@@ -567,8 +567,8 @@ export default function TourInfoPanel({ toggle, tour }) {
 
             {rateCommentSection && (
               <div>
-                <TourRatingInput tourId={tourDetails.tour_id} />
-                <TourRatings tourId={tourDetails.tour_id}></TourRatings>
+                <TourRatingInput tourId={tourId} />
+                <TourRatings tourId={tourId}></TourRatings>
               </div>
             )}
 
