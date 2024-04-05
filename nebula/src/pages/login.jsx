@@ -185,7 +185,7 @@ export default function Login() {
                         <label className="cursor-pointer">Facebook</label>
                       </button>
 
-                      <button
+                      {/* <button
                         onClick={() =>
                           window.open("https://www.twitter.com/", "_blank")
                         }
@@ -200,7 +200,7 @@ export default function Login() {
                           />
                         </figure>
                         <label className="cursor-pointer">Twitter</label>
-                      </button>
+                      </button> */}
                     </div>
                     {/* </label> */}
                   </div>
