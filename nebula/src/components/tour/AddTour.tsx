@@ -289,7 +289,7 @@ export default function AddTour({ toggle, action, placeText }) {
                 {tourData.additionalTags.map((tag, index) => (
                   <div
                     key={index}
-                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
+                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit cursor-pointer"
                     onClick={() => handleDeleteClick("tag",-1,tag)}>
                     {tag}
                   </div>
@@ -316,7 +316,7 @@ export default function AddTour({ toggle, action, placeText }) {
             {tourData.routePlaces.map((place, index) => (
               <div
                 key={place.id}
-                className="w-fit text-black mb-1"
+                className="w-fit text-black mb-1 cursor-pointer"
                 onClick={() => handleDeleteClick("place", place.id, place.name)}
               >
                 <h3 className="bg-white text-black">
@@ -330,7 +330,7 @@ export default function AddTour({ toggle, action, placeText }) {
             {tourData.waypoints.map((place, index) => (
               <div
                 key={place.id}
-                className="w-fit text-black mb-1"
+                className="w-fit text-black mb-1 cursor-pointer"
                 onClick={() =>
                   handleDeleteClick("waypoint", place.id, place.name)
                 }

@@ -22,10 +22,10 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         <h2>Delete Confirmation</h2>
         <p>Are you sure you want to delete "{itemName}"?</p>
         <div className="space-x-4">
-          <button onClick={onConfirm} className="btn btn-danger ">
+          <button onClick={onConfirm} className="btn bg-red ">
             Delete
           </button>
-          <button onClick={onClose} className="btn bg-red ">
+          <button onClick={onClose} className="btn bg-grey ">
             Cancel
           </button>
         </div>
