@@ -20,6 +20,7 @@ import purpleFlag from "../../../public/images/flagPurple.png"
 import yellowFlag from "../../../public/images/yellowFlag.png"
 import placePinIcon from "../../../public/images/placePinIcon.png"
 import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "../../lib/supabaseClient"
 
 // import smallHashtag from "../../public/images/smallHashtag_blue.png"
 // import filterIcon from "../../public/images/filter-icon.png"
@@ -65,6 +66,8 @@ export default function UserProfile(props) {
   console.log("User Acc name: ", accountName);
 
   useEffect(() => {
+    checkSession()
+    checkProviderAccount()
     fetchAccountProfile()
   }, [accountName])
 
@@ -155,6 +158,46 @@ export default function UserProfile(props) {
     setShowPlaceInfoPanel(false);
   }
   
+
+  async function checkSession() {
+
+    const { data: { user } ,error} = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      router.push("/home_unregistered")
+
+    } else {
+      let str = JSON.stringify(user.email)
+      console.log("Session: "+JSON.stringify(user.app_metadata.provider))
+      setProfileName(str.substring(1,3))
+      console.log(profileName)
+    }
+  }
+  
+  async function checkProviderAccount(){
+    const { data: { user } ,error} = await supabase.auth.getUser()
+    if (error || user === null){
+      console.log("Error when call checkProviderAccount function")
+    }else if (user.app_metadata.provider==="email"){
+      console.log("Login via Email")
+    }else{
+      let provider = user.app_metadata.provider
+      let email = user.user_metadata.email
+      console.log(provider+email)
+      const response = await fetch("/api/auth/loginWithProvider", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({provider, email}),
+      })
+      if(response.ok){
+        console.log("Provider")
+      }else{
+        console.log("Error in checkProviderAccount")
+      }
+    }
+
+  }
 
   return (
       <div className="relative h-screen">

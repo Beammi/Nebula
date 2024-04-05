@@ -50,6 +50,8 @@ export default function Tag() {
     const tag = Array.isArray(router.query.slug) ? router.query.slug[0] : router.query.slug;
 
     useEffect(() => {
+      checkSession()
+      checkProviderAccount()
       setTagName(tag);
     }, [tag])
 
@@ -166,6 +168,46 @@ export default function Tag() {
       // }
       
       
+    }
+
+    async function checkSession() {
+
+      const { data: { user } ,error} = await supabase.auth.getUser()
+      // console.log(JSON.stringify(user))
+  
+      if (error || user === null) {
+        router.push("/home_unregistered")
+  
+      } else {
+        let str = JSON.stringify(user.email)
+        console.log("Session: "+JSON.stringify(user.app_metadata.provider))
+        setProfileName(str.substring(1,3))
+        console.log(profileName)
+      }
+    }
+    
+    async function checkProviderAccount(){
+      const { data: { user } ,error} = await supabase.auth.getUser()
+      if (error || user === null){
+        console.log("Error when call checkProviderAccount function")
+      }else if (user.app_metadata.provider==="email"){
+        console.log("Login via Email")
+      }else{
+        let provider = user.app_metadata.provider
+        let email = user.user_metadata.email
+        console.log(provider+email)
+        const response = await fetch("/api/auth/loginWithProvider", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({provider, email}),
+        })
+        if(response.ok){
+          console.log("Provider")
+        }else{
+          console.log("Error in checkProviderAccount")
+        }
+      }
+  
     }
     
     return (
