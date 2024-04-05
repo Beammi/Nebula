@@ -107,6 +107,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   }
 
   function closePlaceInfoPanel() {
+    setInputValue("")
     setShowPlaceInfoPanel(false);
   }
 
@@ -142,9 +143,6 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       setCurrentPlace(suggestion.value.display_name)
 
       try{
-        // const url = `/api/tour/getToursByPlaceName/${suggestion.value.display_name}`
-        // const url = `/api/nebu/getNebuFromGeoSpatial?latitude=${parseFloat(suggestion.value.lat)}?longitude=${parseFloat(suggestion.value.lon)}?radius=100`
-        // const url = `/api/nebu/nebuPosts?lat=${suggestion.value.lat}&lon=${suggestion.value.lon}&radius=0`
         const url = `/api/search/getNebuByPlace?placeName=${suggestion.value.display_name}`
         const response = await fetch(url)
         const data = await response.json();
@@ -179,7 +177,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const fetchData = async (key) => {
     try {
       // Fetch data from multiple endpoints
-      const [nebuResponse, tagResponse, userResponse, nominatimResponse] = await Promise.all([
+      const [nebuResponse, tagResponse, userResponse, nominatimResponse, tourResponse] = await Promise.all([
         fetch(`/api/search/getNebuByKeyword?searchKey=${key}`),
         fetch(`/api/search/getTagByKeyword?searchKey=${key}`),
         fetch(`/api/search/getUsersByDisplayName?searchKey=${key}`),
@@ -189,19 +187,22 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
             'User-Agent': 'Nebula/1.0 (63011290@kmitl.ac.th)',
           },
         }),
+        fetch(`/api/search/getTourByTourName?tour_name=${key}`),
       ]);
 
       // Parse responses
-      const [nebuData, tagData, userData, nominatimData] = await Promise.all([
+      const [nebuData, tagData, userData, nominatimData, tourData] = await Promise.all([
         nebuResponse.json(),
         tagResponse.json(),
         userResponse.json(),
         nominatimResponse.json(),
+        tourResponse.json(),
       ]);
 
       console.log('Nebu data:', nebuData);
       console.log('Tag data:', tagData);
       console.log('User data:', userData);
+      console.log('Tour data:', tourData);
       // console.log('Nominatim data:', nominatimData);
 
       // Process data and update API state
@@ -218,6 +219,9 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       }
       if (nominatimData.length > 0) {
         nominatimData.map((d) => formattedData.push({ value: d, type: 'place' }));
+      }
+      if (tourData.length > 0) {
+        tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
       }
       
       setApi(formattedData);
@@ -302,6 +306,9 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "place") && 
                     <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
                   }
+                  {(suggestion.type === "tour") && 
+                    <figure><Image src={smallFlag} alt="pic" className="" width={20}/></figure>
+                  }
                   {(suggestion.type === "place") && 
                     <h2>{suggestion.value.display_name}</h2>
                   }
@@ -309,14 +316,14 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                     <h2>{suggestion.value.title}</h2>
                   }
                   {(suggestion.type === "tour") && 
-                    <h2>{suggestion.value}</h2>
+                    <h2>{suggestion.value.tour_name}</h2>
                   }
                   {(suggestion.type === "tag") && 
                     <h2>{suggestion.value}</h2>
                   }
                   {(suggestion.type === "user") && 
                     <h2>{suggestion.value}</h2>
-                  }                  
+                  }             
                 </div>
               </div>
             ))}
