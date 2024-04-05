@@ -2,29 +2,44 @@ import React, { useState } from "react"
 import Link from "next/link"
 export default function Navbar() {
   const [menu, setMenu] = useState(false)
+
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById("features-section");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const scrollToAbout = () => {
+    const featuresSection = document.getElementById("about-section");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth", block: 'center' });
+    }
+  };
+
   return (
     <>
       <nav className="w-full bg-white p-4 flex items-center justify-between md:flex md:justify-between md:items-center border-b-2 border-black">
-        <span className="text-black text-2xl md:text-3xl font-black">
+        <a href="/Intro" className="text-black text-2xl md:text-3xl font-black">
           Nebula
-        </span>
+        </a>
         <ul
           className={`md:flex md:items-center z-[1] md:z-auto md:static rounded-b-lg absolute bg-white md:bg-white w-full shadow-xl md:shadow-none left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 opacity-0 top-[-400px] transition-all ease-in duration-300 ${
             menu ? "top-[74px] opacity-100" : "top-[-400px]"
           }`}
         >
           <li className="mx-2 my-6 md:my-0">
-            <a className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer">
+            <a href="/Intro" className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer">
               Home
             </a>
           </li>
           <li className="mx-2 my-6 md:my-0">
-            <a className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer">
+            <a id="features-section" className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer"  onClick={scrollToFeatures}>
               Features
             </a>
           </li>
           <li className="mx-2 my-6 md:my-0">
-            <a className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer">
+            <a id="about-section" className="text-black font-black mx-4 hover:text-blue duration-500 cursor-pointer" onClick={scrollToAbout}>
               About
             </a>
           </li>

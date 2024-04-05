@@ -17,6 +17,7 @@ export default async function getTagByKeywordHandler(req, res) {
         SELECT DISTINCT tag_name FROM tag
         WHERE LOWER(tag_name) LIKE LOWER('%' || $1 || '%');
     `
+    
     const resultUserTag = await db.query(queryUserTag, [searchKey])
 
     const queryOfficialTag = `
@@ -24,11 +25,18 @@ export default async function getTagByKeywordHandler(req, res) {
         WHERE LOWER(official_tag) LIKE LOWER('%' || $1 || '%');
     `
     const resultOfficialTag = await db.query(queryOfficialTag, [searchKey])
+
+    const queryTourOfficialTag = `
+        SELECT DISTINCT official_tag FROM tour
+        WHERE LOWER(official_tag) LIKE LOWER('%' || $1 || '%');
+    `
+    const resultTourOfficialTag = await db.query(queryTourOfficialTag, [searchKey])
     
     // Extracting values from the rows
     const extractValue = [
       ...resultUserTag.rows.map(row => row.tag_name),
-      ...resultOfficialTag.rows.map(row => row.official_tag)
+      ...resultOfficialTag.rows.map(row => row.official_tag),
+      ...resultTourOfficialTag.rows.map(row => row.official_tag)
     ];
 
     res.status(200).json(extractValue)

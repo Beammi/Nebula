@@ -13,20 +13,17 @@ export default async function getUsersByDisplayHandler(req, res) {
   }
 
   try {
+
     // const nameQuery = `
-    //     SELECT display_name, email FROM users
+    //     SELECT * FROM users
     //     WHERE display_name LIKE LOWER('%' || $1 || '%');
     // `
-
     const nameQuery = `
-        SELECT * FROM users
+        SELECT users.*
+        FROM users
         WHERE display_name LIKE LOWER('%' || $1 || '%');
     `
 
-    // const nameQuery = `
-    //     SELECT display_name FROM users
-    //     WHERE display_name LIKE LOWER('%' || $1 || '%');
-    // `
 
     const nameResult = await db.query(nameQuery, [searchKey])
     
