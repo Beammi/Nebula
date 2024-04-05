@@ -13,7 +13,13 @@ export const TourProvider = ({ children }) => {
     additionalTags: [],
     images: [],
   });
-
+  const removeTag = (tagToRemove) => {
+    setTourData((prevData) => ({
+      ...prevData,
+      additionalTags: prevData.additionalTags.filter(tag => tag !== tagToRemove),
+    }));
+  };
+  
   const setOfficialTag = (tag) => {
     setTourData((prevData) => ({
       ...prevData,
@@ -47,7 +53,12 @@ export const TourProvider = ({ children }) => {
       routePlaces: [...prevData.routePlaces, place],
     }));
   };
-
+  const removePlace = (placeId) =>{
+    setTourData((prevData)=>({
+      ...prevData,
+      routePlaces:prevData.routePlaces.filter((rp)=>rp.id!==placeId)
+    }))
+  }
   const addWaypoint = (waypoint) => {
     // Assume waypoint is an object { name, latitude, longitude }
     setTourData((prevData) => ({
@@ -77,6 +88,7 @@ export const TourProvider = ({ children }) => {
         tourData,
         setTourData,
         addPlace,
+        removePlace,
         addWaypoint,
         removeWaypoint,
         setOfficialTag,
@@ -84,6 +96,7 @@ export const TourProvider = ({ children }) => {
         addAdditionalTag,
         updateTags,
         setImages,
+        removeTag
       }}
     >
       {children}
