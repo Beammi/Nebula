@@ -51,8 +51,10 @@ const TourRatingInput = ({ tourId }) => {
     }
   }
   const postRating = async () => {
-    if (!userId) return console.error("User not found.")
-
+    if (!userId) {
+      alert("Please Login")
+      return console.error("User not found.")
+    }
     const response = await fetch("/api/tour/rating/postRatingOfTour", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -107,7 +109,7 @@ const TourRatingInput = ({ tourId }) => {
             alt=""
           />
         ) : (
-          <div className="ml-8 flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
+          <div className="ml-8 flex items-center justify-center h-12 w-12 rounded-full bg-blue text-white text-sm">
             {getInitials(email)}
           </div>
         )}{" "}

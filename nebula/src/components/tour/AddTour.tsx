@@ -11,6 +11,8 @@ import { useTour } from "@/contexts/TourContext" // Adjust the import path as ne
 import { TourContextType } from "../../types/tourContext"
 import { supabase } from "@/lib/supabaseClient"
 import ImageUpload from "@/components/ImageUpload"
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"
+import { Place } from "../../types/tourContext" // Adjust import path as necessary
 
 export default function AddTour({ toggle, action, placeText }) {
   // console.log("Text prop value:", placeText)
@@ -24,21 +26,47 @@ export default function AddTour({ toggle, action, placeText }) {
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
   const [uploadedImagesTour, setUploadedImagesTour] = useState([])
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [itemToDelete, setItemToDelete] = useState<{
+    type: 'place' | 'waypoint' | 'tag';
+    id: number; // For places and waypoints
+    name: string; // For tags, name will be the tag text
+  }>({ type: 'place', id: -1, name: '' });
+  
 
-  const isValidImageExtension = (fileName) => {
-    return /\.(jpg|jpeg|png|gif)$/i.test(fileName)
-  }
+  const handleDeleteClick = (
+    type: 'place' | 'waypoint' | 'tag',
+    id: number,
+    name: string
+  ): void => {
+    setItemToDelete({ type, id, name });
+    setModalOpen(true);
+  };
+  
 
-  const handleImagesUploadTour = ({ file, dataURL }) => {
-    // Now, file should correctly be a File object, and dataURL should be its data URL
-    if (!isValidImageExtension(file.name)) {
-      alert("Unsupported file type.")
-      return
+  const confirmDelete = (): void => {
+    switch (itemToDelete.type) {
+      case 'place':
+        removePlace(itemToDelete.id);
+        break;
+      case 'waypoint':
+        removeWaypoint(itemToDelete.id);
+        break;
+      case 'tag':
+        removeTag(itemToDelete.name);
+        break;
+      default:
+        console.warn('Unknown item type for deletion');
     }
-    setUploadedImagesTour((prevImages) => [...prevImages, { dataURL, file }])
-    console.log("Tour Image", uploadedImagesTour)
-  }
-
+    setModalOpen(false);
+  };
+  
+  const handleDeleteTagClick = (tagName) => {
+    // Assuming you already have logic to show a confirmation modal
+    // Once deletion is confirmed in the modal:
+    removeTag(tagName);
+    setModalOpen(false)
+  };
   const {
     tourData,
     addPlace,
@@ -46,6 +74,9 @@ export default function AddTour({ toggle, action, placeText }) {
     toggleOpenTagModal,
     addAdditionalTag,
     updateTags,
+    removePlace,
+    removeWaypoint,
+    removeTag,
   } = useTour() as TourContextType
   async function getEmail() {
     console.log("Pass getEmail()")
@@ -188,18 +219,18 @@ export default function AddTour({ toggle, action, placeText }) {
   }
 
   function truncatePlace(place) {
-    let commaCount = 0;
-    let index = 0;
+    let commaCount = 0
+    let index = 0
     for (let i = 0; i < place.length; i++) {
-      if (place[i] === ',') {
-        commaCount++;
+      if (place[i] === ",") {
+        commaCount++
         if (commaCount === 3) {
-          index = i;
-          break;
+          index = i
+          break
         }
       }
     }
-    return place.slice(0, index);
+    return place.slice(0, index)
   }
 
   function openTagModal() {
@@ -258,8 +289,8 @@ export default function AddTour({ toggle, action, placeText }) {
                 {tourData.additionalTags.map((tag, index) => (
                   <div
                     key={index}
-                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit"
-                  >
+                    className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit cursor-pointer"
+                    onClick={() => handleDeleteClick("tag",-1,tag)}>
                     {tag}
                   </div>
                 ))}
@@ -283,16 +314,38 @@ export default function AddTour({ toggle, action, placeText }) {
           <div className="flex flex-col mt-4">
             <h3 className="text-lg mt-8">Place</h3>
             {tourData.routePlaces.map((place, index) => (
-              <div key={index} className="w-fit text-black mb-1">
-                <h3 className="bg-white text-black">- {truncatePlace(place.name)}</h3>
+              <div
+                key={place.id}
+                className="w-fit text-black mb-1 cursor-pointer"
+                onClick={() => handleDeleteClick("place", place.id, place.name)}
+              >
+                <h3 className="bg-white text-black">
+                  - {truncatePlace(place.name)}
+                </h3>
               </div>
             ))}
-            {tourData.waypoints.length > 0 && <h3 className="text-lg mt-4">Waypoint</h3>}
+            {tourData.waypoints.length > 0 && (
+              <h3 className="text-lg mt-4">Waypoint</h3>
+            )}
             {tourData.waypoints.map((place, index) => (
-              <div key={index} className="w-fit text-black mb-1">
-                <h3 className="bg-white text-black">- {truncatePlace(place.name)}</h3>
+              <div
+                key={place.id}
+                className="w-fit text-black mb-1 cursor-pointer"
+                onClick={() =>
+                  handleDeleteClick("waypoint", place.id, place.name)
+                }
+              >
+                <h3 className="bg-white text-black">
+                  - {truncatePlace(place.name)}
+                </h3>
               </div>
             ))}
+            <DeleteConfirmationModal
+              isOpen={modalOpen}
+              onClose={() => setModalOpen(false)}
+              onConfirm={confirmDelete}
+              itemName={itemToDelete.name}
+            />
             <div className="flex flex-row items-center">
               {/* <Button
                 type="button"

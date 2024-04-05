@@ -26,7 +26,12 @@ import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/tour/ViewTourList"
 
-export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour }) {
+export default function PlaceInfoPanel({
+  toggle,
+  action,
+  nebu,
+  onRecommendTour,
+}) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
@@ -38,6 +43,73 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
   const [userId, setUserId] = useState("")
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [avgRating, setAvgRating] = useState(0)
+  // const handleShare = () => {
+  //   if (navigator.share) {
+  //     navigator.share({
+  //       title: document.title,
+  //       url: window.location.href,
+  //     }).then(() => {
+  //       console.log('Successfully shared');
+  //     }).catch((error) => {
+  //       console.error('Something went wrong sharing the blog', error);
+  //     });
+  //   } else {
+  //     // Fallback for browsers that do not support the Web Share API
+  //     const currentPageUrl = window.location.href;
+  //     navigator.clipboard.writeText(currentPageUrl).then(() => {
+  //       alert('Link copied to clipboard!');
+  //     }, (err) => {
+  //       console.error('Could not copy link: ', err);
+  //       alert('Failed to copy link.');
+  //     });
+  //   }
+  // };
+  // const handleShare = () => {
+  //   const currentPageUrl = window.location.href;
+  //   navigator.clipboard.writeText(currentPageUrl).then(() => {
+  //     alert('Link copied to clipboard!');
+  //   }, (err) => {
+  //     console.error('Could not copy link: ', err);
+  //     alert('Failed to copy link.');
+  //   });
+  // };
+  // const handleShare = () => {
+  //   const state = {
+  //     filter: 'recent',
+  //     viewMode: 'grid'
+  //   };
+  
+  //   // Convert state object to URL search parameters
+  //   const params = new URLSearchParams(state).toString();
+  //   const urlWithState = `${window.location.origin}${window.location.pathname}?${params}`;
+    
+  //   navigator.clipboard.writeText(urlWithState).then(() => {
+  //     alert('Link with state copied to clipboard!');
+  //   }, (err) => {
+  //     console.error('Could not copy link: ', err);
+  //     alert('Failed to copy link.');
+  //   });
+  // };
+// In PlaceInfoPanel component
+const handleShare = () => {
+  const nebuId = nebu?.nebu_id; // Assuming `nebu` is the prop for the current nebula being displayed
+
+  if (!nebuId) {
+    alert("No Nebu selected to share.");
+    return;
+  }
+
+  const shareUrl = `${window.location.origin}/home?nebuId=${nebuId}`;
+
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    alert('Link copied to clipboard!');
+  }).catch((error) => {
+    console.error('Failed to copy link:', error);
+  });
+};
+
+  
   const formatDaysOpen = (nebu) => {
     const days = [
       "Sunday",
@@ -95,10 +167,48 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       console.error("Failed to fetch profile:", error)
     }
   }
+  const checkBookmark = async (userId, nebuId) => {
+    const url = `/api/bookmark/checkBookmarkNebu?nebuId=${encodeURIComponent(
+      nebu?.nebu_id
+    )}&userId=${encodeURIComponent(userId)}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        setIsSaved(true)
+      }else{
+        const resetSaved = !isSaved
+        setIsSaved(false)
+      }
+    } catch (error) {
+      console.error("not bookmark this nebu: ", error)
+      
+    }
+    // const resetSaved = !isSaved
+    // setIsSaved(false)
+  }
+  const fetchAverageRatings = async () => {
+    const url = `/api/nebu/rating/getAverageRating?nebuId=${encodeURIComponent(
+      nebu?.nebu_id
+    )}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const rating = data.averageRating
+        setAvgRating(rating)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the nebu rating"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch nebu rating:", error)
+    }
+  }
   useEffect(() => {
     getEmail()
     console.log("O: ", panelRef)
-
     const handleScroll = () => {
       setScrollPosition(panelRef.current.scrollTop)
     }
@@ -113,7 +223,15 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       }
     }
   }, [panelRef])
+  useEffect(() => {
+    checkBookmark(userId, nebu?.nebu_id)
 
+  }, [nebu])
+  useEffect(()=>{
+    setAvgRating(0)
+    fetchAverageRatings()
+
+  },[nebu])
   function openOverviewSection() {
     setOverviewSection(true)
     setRateCommentSection(false)
@@ -164,11 +282,29 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
       setIsSaved(newSavedStatus)
       // Update UI as needed
     } catch (error) {
-      alert("Failed to save bookmark.")
+      alert("You already saved this bookmark!!. Failed to save bookmark.")
     }
   }
   const handleRecommendTourClick = () => {
     setShowViewTourList(true) // Set to true to show the ViewTourList
+  }
+  const renderStars = (rating) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, index) => (
+          <span
+            key={index}
+            className={`inline-block w-4 h-4 ${
+              index < (rating ?? 0)
+                ? "text-yellow text-lg"
+                : "text-slate-100 text-lg"
+            } `}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    )
   }
   return (
     <div
@@ -230,33 +366,11 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
 
               <div className="flex flex-row">
                 <div className="rating">
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4 "
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                    checked
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <label className="text-sm leading-4 text-yellow">4.0</label>
+                  {renderStars(avgRating)}
+
+                  <label className="text-sm leading-4 text-yellow">
+                    {avgRating}
+                  </label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
                   Added by {nebu.email}
@@ -304,7 +418,8 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
                   Save
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey ">
+                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
+                onClick={handleShare}>
                   <figure>
                     <Image src={shareIcon} alt="pic" className="" width={23} />
                   </figure>
@@ -562,11 +677,9 @@ export default function PlaceInfoPanel({ toggle, action, nebu,onRecommendTour })
         ) : (
           <p>No place selected</p>
         )}
-        
       </div>
       {/* <ViewTourList action={showViewTourList} toggle={closeViewTourList} name={nebu?.title} /> */}
       {/* Conditional rendering based on showViewTourList state */}
-      
     </div>
   )
 }

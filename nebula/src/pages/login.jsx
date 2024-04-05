@@ -50,7 +50,7 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       })
       if (error || !response.ok) {
-        if(error=="AuthApiError: Invalid login credentials"){
+        if (error == "AuthApiError: Invalid login credentials") {
           alert("Wrong Password or Wrong Email")
         }
         // console.log("Error: "+error+"Error from local: "+JSON.stringify(response))
@@ -139,6 +139,14 @@ export default function Login() {
                       </a>
                     </label>
                   </div>
+                  <div className="flex justify-center">
+                    <a
+                      href="/submit_email_for_change_password"
+                      className="label-text-alt link link-hover indent-1 text-blue text-sm"
+                    >
+                      Forgot Password?
+                    </a>
+                  </div>
 
                   <div className="divider before:bg-grey after:bg-grey"></div>
                   <div className="flex flex-col justify-center text-center">
@@ -177,7 +185,7 @@ export default function Login() {
                         <label className="cursor-pointer">Facebook</label>
                       </button>
 
-                      <button
+                      {/* <button
                         onClick={() =>
                           window.open("https://www.twitter.com/", "_blank")
                         }
@@ -192,7 +200,7 @@ export default function Login() {
                           />
                         </figure>
                         <label className="cursor-pointer">Twitter</label>
-                      </button>
+                      </button> */}
                     </div>
                     {/* </label> */}
                   </div>

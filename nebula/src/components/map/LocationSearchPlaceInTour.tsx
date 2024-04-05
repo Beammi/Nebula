@@ -25,9 +25,11 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
   const [showPopup, setShowPopup] = useState(false) // State to control popup visibility
   const [closeChangeLocation, setCloseChangeLocation] = useState(true)
   console.log("Hereeeeeeeee cryyyyyyy location ",tourData.routePlaces)
-  const handleClickChange = () => {
+  const handleClickCancel = () => {
     console.log("Change location to:", searchTerm)
     setShowPopup(true) // Show the popup
+    router.push("/home?addTour=true")
+
   }
   const handleClosePopup = () => {
     setShowPopup(false) // Hide the popup
@@ -69,9 +71,9 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
                 <div>
                   <button
                     className="btn btn-sm btn-primary text-blue bg-white border-none hover:bg-dark-grey"
-                    onClick={handleClickChange}
+                    onClick={handleClickCancel}
                   >
-                    Change location
+                    Cancel
                   </button>
                 </div>
                 <div>

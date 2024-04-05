@@ -20,6 +20,9 @@ import Button from "../Button"
 import { useRouter } from "next/router"
 import TourRatings from "./TourRatings"
 import TourRatingInput from "./TourRatingInput"
+import { saveBookmarkTour } from "@/utils/saveBookmarkTourAPI"
+import { supabase } from "@/lib/supabaseClient"
+
 export default function TourInfoPanel({ toggle, tour }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
@@ -28,13 +31,84 @@ export default function TourInfoPanel({ toggle, tour }) {
   const [isSaved, setIsSaved] = useState(false)
   const router = useRouter() // Add this line to get access to router query
   const { tourId } = router.query // Retrieve tourId from router query
-
+  const [userId, setUserId] = useState("")
+  const [avgRating,setAvgRating] = useState(0)
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [tourDetails, setTourDetails] = useState(null)
   const [tourPhotos, setTourPhotos] = useState([])
-  const [api,setApi] = useState([])
+  const [api, setApi] = useState([])
+  const [showViewTourList, setShowViewTourList] = useState(false)
+  const [email, setEmail] = useState("")
+  const [provider, setProvider] = useState("")
+  const toggleViewTourList = () => {
+    setShowViewTourList(!showViewTourList)
+  }
+  async function getEmail() {
+    console.log("Pass getEmail()")
 
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      console.log("Error in getUser")
+      return
+    }
+    const userEmail =
+      user.app_metadata.provider === "email"
+        ? user.email
+        : user.user_metadata.email
+    const userProvider = user.app_metadata.provider || ""
+
+    setEmail(userEmail)
+    setProvider(userProvider)
+    fetchProfile(userEmail, userProvider)
+  }
+  const fetchProfile = async (email, provider) => {
+    const url = `/api/users/getUserProfile?email=${encodeURIComponent(
+      email
+    )}&provider=${encodeURIComponent(provider)}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const userIdForFetch = data.user_id
+        setUserId(userIdForFetch)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the profile"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error)
+    }
+  }
+  const fetchAverageRatings = async () => {
+    const url = `/api/tour/rating/getAverageRating?tourId=${encodeURIComponent(
+      tourId
+    )}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        const rating = data.averageRating
+        setAvgRating(rating)
+      } else {
+        throw new Error(
+          data.message || "An error occurred while fetching the tour rating"
+        )
+      }
+    } catch (error) {
+      console.error("Failed to fetch tour rating:", error)
+    }
+  }
+  useEffect(()=>{
+    getEmail()
+    fetchAverageRatings()
+  },[])
   const fetchPhotoFromNebu = async (place_name) => {
     try {
       const response = await fetch(
@@ -44,9 +118,9 @@ export default function TourInfoPanel({ toggle, tour }) {
         const photos = await response.json()
         setApi(photos)
         console.log("api photo ", api)
-        api.forEach(item => {
-          console.log("api ",item);
-        });
+        api.forEach((item) => {
+          console.log("api ", item)
+        })
       } else {
         console.error("Failed to fetch image details")
       }
@@ -54,10 +128,10 @@ export default function TourInfoPanel({ toggle, tour }) {
       console.error("Error fetching image details:", error)
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     setTourPhotos(api)
     // console.log("tour photo ",tourPhotos.images[0])
-  },[api])
+  }, [api])
   useEffect(() => {
     const fetchTourDetails = async () => {
       try {
@@ -143,20 +217,19 @@ export default function TourInfoPanel({ toggle, tour }) {
   }
 
   function truncatePlace(place) {
-    let commaCount = 0;
-    let index = 0;
+    let commaCount = 0
+    let index = 0
     for (let i = 0; i < place.length; i++) {
-      if (place[i] === ',') {
-        commaCount++;
+      if (place[i] === ",") {
+        commaCount++
         if (commaCount === 3) {
-          index = i;
-          break;
+          index = i
+          break
         }
       }
     }
-    return place.slice(0, index);
+    return place.slice(0, index)
   }
-  
 
   // Placeholder function for saving to the database
   // const saveToDatabase = async () => {
@@ -171,14 +244,64 @@ export default function TourInfoPanel({ toggle, tour }) {
   //   setIsSaved(newSavedStatus)
   //   saveToDatabase() // This would ideally pass necessary data for the save operation
   // }
+  const handleShare = () => {
+    const currentPageUrl = window.location.href;
+    navigator.clipboard.writeText(currentPageUrl).then(() => {
+      alert('Link copied to clipboard!');
+    }, (err) => {
+      console.error('Could not copy link: ', err);
+      alert('Failed to copy link.');
+    });
+  };
+  const checkBookmark = async (userId, tourId) => {
+    const url = `/api/bookmark/checkBookmarkTour?userId=${encodeURIComponent(userId)}&tourId=${encodeURIComponent(
+      tourId
+    )}`
+    try {
+      const response = await fetch(url)
+      const data = await response.json()
+      if (response.ok) {
+        setIsSaved(true)
+      }else{
+        const resetSaved = !isSaved
+        setIsSaved(false)
+      }
+    } catch (error) {
+      console.error("not bookmark this nebu: ", error)
+    }
+    const resetSaved = !isSaved
+    setIsSaved(resetSaved)
+  }
   const handleSaveBookmark = async () => {
     try {
-      const result = await saveBookmark(tour.user_id, tour.nebu_id)
+      const result = await saveBookmarkTour(userId, tourDetails.tour_id)
       alert("Bookmark saved successfully!")
-      // Update UI as needed
+      const newSavedStatus = !isSaved
+      setIsSaved(newSavedStatus)
     } catch (error) {
       alert("Failed to save bookmark.")
     }
+  }
+  useEffect(() => {
+    // setIsSaved(false)
+    checkBookmark(userId, tourId)
+  }, [tourId])
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, index) => (
+          <span
+            key={index}
+            className={`inline-block w-4 h-4 ${
+              index < (rating ?? 0) ? "text-yellow text-lg" : "text-slate-100 text-lg"
+            } `}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    )
   }
   return (
     <div
@@ -267,34 +390,10 @@ export default function TourInfoPanel({ toggle, tour }) {
               </div>
 
               <div className="flex flex-row">
-                <div className="rating">
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4 "
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                    checked
-                  />
-                  <input
-                    type="radio"
-                    name="rating-1"
-                    className="mask mask-star bg-yellow h-4"
-                  />
-                  <label className="text-sm leading-4 text-yellow">4.0</label>
+                <div className="rating rating-md pb-4">
+                  {renderStars(avgRating)}
+
+                  <label className="text-sm leading-4 text-yellow">{avgRating}</label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
                   Added by {tourDetails.creator_email}
@@ -302,7 +401,10 @@ export default function TourInfoPanel({ toggle, tour }) {
               </div>
 
               <div className="flex flex-row mt-1 gap-x-1 overflow-x-auto">
-                <button className="btn btn-outline btn-sm text-blue rounded-2xl normal-case hover:bg-light-grey">
+                <button
+                  className="btn btn-outline btn-sm text-blue rounded-2xl normal-case hover:bg-light-grey"
+                  onClick={toggleViewTourList}
+                >
                   <figure>
                     <Image
                       src={recommendIcon}
@@ -312,7 +414,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                       height={21}
                     />
                   </figure>
-                  Recommend Tour
+                  Other Tour
                 </button>
 
                 <button
@@ -339,7 +441,8 @@ export default function TourInfoPanel({ toggle, tour }) {
                   Save
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey ">
+                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
+                onClick={handleShare}>
                   <figure>
                     <Image src={shareIcon} alt="pic" className="" width={23} />
                   </figure>
@@ -412,7 +515,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                   </button>
                 </div>
 
-                <div className="flex flex-col items-center justify-end">
+                {/* <div className="flex flex-col items-center justify-end">
                   <button
                     className={`btn transition-all duration-150 ease-in-out normal-case bg-transparent hover:bg-transparent text-black  active:text-blue hover:text-black-grey border-x-0 border-t-0 border-b-4 hover:border-b-4 hover:border-grey  font-medium rounded-none
                         ${
@@ -424,7 +527,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                   >
                     Others Tour
                   </button>
-                </div>
+                </div> */}
               </div>
 
               <div className="w-full h-[3px] bg-grey "></div>
@@ -439,67 +542,33 @@ export default function TourInfoPanel({ toggle, tour }) {
 
             {overviewSection && (
               <div className="flex flex-col my-8 ml-7 gap-y-6 transition-all delay-300 ease-in-out">
-                  {tourDetails.places && tourDetails.places.length > 0 ? (
-                    tourDetails.places.map((place, placeIndex) => (
-                      <div className="flex flex-row" key={placeIndex}>
-                        <figure className="">
-                          <Image
-                            src={smallFlag}
-                            alt="pic"
-                            className="mr-4"
-                            width={18}
-                            height={18}
-                          />
-                        </figure>
-                        <p className="leading-5 ml-5">{truncatePlace(place.place_name)}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>Error in loading places...</p>
-                  )}
-                {/* <div className="flex flex-row">
-                  <figure className="">
-                    <Image
-                      src={smallFlag}
-                      alt="pic"
-                      className="mr-4"
-                      width={18}
-                      height={18}
-                    />
-                  </figure>
-                  <p className="leading-5 ml-5">Wat Arun</p>
-                </div>
-                <div className="flex flex-row">
-                  <figure className="">
-                    <Image
-                      src={smallFlag}
-                      alt="pic"
-                      className="mr-4"
-                      width={18}
-                      height={18}
-                    />
-                  </figure>
-                  <p className="leading-5 ml-5">Wat Phra Chetuphon</p>
-                </div>
-                <div className="flex flex-row">
-                  <figure className="">
-                    <Image
-                      src={smallFlag}
-                      alt="pic"
-                      className="mr-4"
-                      width={18}
-                      height={18}
-                    />
-                  </figure>
-                  <p className="leading-5 ml-5">Saket Temple</p>
-                </div> */}
+                {tourDetails.places && tourDetails.places.length > 0 ? (
+                  tourDetails.places.map((place, placeIndex) => (
+                    <div className="flex flex-row" key={placeIndex}>
+                      <figure className="">
+                        <Image
+                          src={smallFlag}
+                          alt="pic"
+                          className="mr-4"
+                          width={18}
+                          height={18}
+                        />
+                      </figure>
+                      <p className="leading-5 ml-5">
+                        {truncatePlace(place.place_name)}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>Error in loading places...</p>
+                )}
               </div>
             )}
 
             {rateCommentSection && (
               <div>
-                <TourRatingInput tourId={tourDetails.tour_id} />
-                <TourRatings tourId={tourDetails.tour_id}></TourRatings>
+                <TourRatingInput tourId={tourId} />
+                <TourRatings tourId={tourId}></TourRatings>
               </div>
             )}
 

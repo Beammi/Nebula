@@ -18,7 +18,20 @@ export default function Home() {
   const [profileName,setProfileName] = useState("")
   const [addTourState, setAddTourState] = useState(false)
   const router = useRouter()
+  const [selectedNebuId, setSelectedNebuId] = useState(null);
 
+  // Other states and functions...
+
+  useEffect(() => {
+    // When the component mounts or the URL query changes
+    const { nebuId } = router.query;
+
+    if (nebuId) {
+      // Found a nebuId query parameter, update state to reflect it
+      setSelectedNebuId(nebuId);
+      // Optional: Further actions, like opening the PlaceInfoPanel or fetching Nebu details
+    }
+  }, [router.query]);
   async function checkSession() {
 
     const { data: { user } ,error} = await supabase.auth.getUser()
