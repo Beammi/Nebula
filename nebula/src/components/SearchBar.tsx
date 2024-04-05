@@ -128,8 +128,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       setInputValue(suggestion.value);
       // const fullPath = `/${suggestion.value}`
       // router.push(fullPath)
-      setShowAccountProfile(true)
-      setAccountNameValue(suggestion.value)
+
+      // setShowAccountProfile(true)
+      // setAccountNameValue(suggestion.value)
+
+      router.push(`/userprofile/${suggestion.value}`)
 
     }
     else if(suggestion.type === "place"){
@@ -308,7 +311,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
         <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
 
-        <div className="flex">
+        {/* <div className="flex">
           <Button
             buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
             label="Create Tour"
@@ -321,7 +324,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           ></Button>
         </div>
         <AddNebu toggle={addNebuState} action={openAddNebu} />
-        <AddTour toggle={addTourState} action={toggleAddTour}/>
+        <AddTour toggle={addTourState} action={toggleAddTour}/> */}
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">
