@@ -44,7 +44,72 @@ export default function PlaceInfoPanel({
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [avgRating, setAvgRating] = useState(0)
+  // const handleShare = () => {
+  //   if (navigator.share) {
+  //     navigator.share({
+  //       title: document.title,
+  //       url: window.location.href,
+  //     }).then(() => {
+  //       console.log('Successfully shared');
+  //     }).catch((error) => {
+  //       console.error('Something went wrong sharing the blog', error);
+  //     });
+  //   } else {
+  //     // Fallback for browsers that do not support the Web Share API
+  //     const currentPageUrl = window.location.href;
+  //     navigator.clipboard.writeText(currentPageUrl).then(() => {
+  //       alert('Link copied to clipboard!');
+  //     }, (err) => {
+  //       console.error('Could not copy link: ', err);
+  //       alert('Failed to copy link.');
+  //     });
+  //   }
+  // };
+  // const handleShare = () => {
+  //   const currentPageUrl = window.location.href;
+  //   navigator.clipboard.writeText(currentPageUrl).then(() => {
+  //     alert('Link copied to clipboard!');
+  //   }, (err) => {
+  //     console.error('Could not copy link: ', err);
+  //     alert('Failed to copy link.');
+  //   });
+  // };
+  // const handleShare = () => {
+  //   const state = {
+  //     filter: 'recent',
+  //     viewMode: 'grid'
+  //   };
+  
+  //   // Convert state object to URL search parameters
+  //   const params = new URLSearchParams(state).toString();
+  //   const urlWithState = `${window.location.origin}${window.location.pathname}?${params}`;
+    
+  //   navigator.clipboard.writeText(urlWithState).then(() => {
+  //     alert('Link with state copied to clipboard!');
+  //   }, (err) => {
+  //     console.error('Could not copy link: ', err);
+  //     alert('Failed to copy link.');
+  //   });
+  // };
+// In PlaceInfoPanel component
+const handleShare = () => {
+  const nebuId = nebu?.nebu_id; // Assuming `nebu` is the prop for the current nebula being displayed
 
+  if (!nebuId) {
+    alert("No Nebu selected to share.");
+    return;
+  }
+
+  const shareUrl = `${window.location.origin}/home?nebuId=${nebuId}`;
+
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    alert('Link copied to clipboard!');
+  }).catch((error) => {
+    console.error('Failed to copy link:', error);
+  });
+};
+
+  
   const formatDaysOpen = (nebu) => {
     const days = [
       "Sunday",
@@ -353,7 +418,8 @@ export default function PlaceInfoPanel({
                   Save
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey ">
+                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
+                onClick={handleShare}>
                   <figure>
                     <Image src={shareIcon} alt="pic" className="" width={23} />
                   </figure>
