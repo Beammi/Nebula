@@ -45,6 +45,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [tagSuggestValue, setTagSuggestValue] = useState("");
   const [accountNameValue, setAccountNameValue] = useState("");
   const [nebu, setNebu] = useState([]);
+  // const [tour, setTour]
   const [api, setApi] = useState<{ value: string; type: string }[]>([]);
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
   const [addNebuState, setAddnebu] = useState(false)
@@ -139,6 +140,28 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       setInputValue(suggestion.value.display_name);
       setCurrentPosition([parseFloat(suggestion.value.lat), parseFloat(suggestion.value.lon)])
       setCurrentPlace(suggestion.value.display_name)
+
+      try{
+        // const url = `/api/tour/getToursByPlaceName/${suggestion.value.display_name}`
+        // const url = `/api/nebu/getNebuFromGeoSpatial?latitude=${parseFloat(suggestion.value.lat)}?longitude=${parseFloat(suggestion.value.lon)}?radius=100`
+        // const url = `/api/nebu/nebuPosts?lat=${suggestion.value.lat}&lon=${suggestion.value.lon}&radius=0`
+        const url = `/api/search/getNebuByPlace?placeName=${suggestion.value.display_name}`
+        const response = await fetch(url)
+        const data = await response.json();
+        console.log("geo spatial data: ", data[0]);
+        
+        if(data.length > 0){
+          setShowPlaceInfoPanel(true)
+          setNebu(data[0]) 
+        }
+        else{
+          console.log("No nebu at this place.");          
+        }
+        
+
+      } catch(error){
+        console.error("Fetch error:", error)
+      }
     }
     else if(suggestion.type === "nebu"){
       setInputValue(suggestion.value.title);
@@ -301,7 +324,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         )}
 
 
-        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"/>     */}
+        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"/>    
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
