@@ -267,14 +267,15 @@ export default function UserProfile(props) {
               </div>
               <div className="text-base font-medium">
                 <p className="font-semibold text-lg">Tour</p>
-                <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden">
+                <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden mb-10">
                   {Array.isArray(tourData) && tourData.map((data, index) => (                     
-                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0">
+                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0 flex flex-col ">
                       {/* <img src={data.images[0] || data.images.length > 0 ? data.images[0] : altImage} alt="No images" className="h-full text-black text-center" /> */}
-                      <div className="h-[50px]">
-                        
-                      </div>
-                      <div className="text-black w-full">
+                      {/* <div className="h-[50px]">
+                        <img src={altImage}/>
+                      </div> */}
+                      <img src={altImage.src} className="h-[100px]"/>
+                      <div className="text-black w-full text-center">
                         {data.tour_name}
                       </div>
                     </div>

@@ -71,7 +71,7 @@ const ProfileButton: React.FunctionComponent<IProfileButton> = ({ text }) => {
   return (
     <div className="p-4 hidden md:block">
       <button
-        className={`btn btn-circle text-white ${randomColor} p-4`}
+        className={`btn btn-circle text-white bg-black-grey border-0 p-4`}
         onClick={() => setIsOpen(!IsOpen)}
       >
         {text}
