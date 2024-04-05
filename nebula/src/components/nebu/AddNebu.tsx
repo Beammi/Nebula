@@ -178,7 +178,7 @@ export default function AddNebu(props) {
     }
     e?.preventDefault()
     if (currentPosition.lat == null || currentPosition.lng == null) {
-      alert("Lat Long are null")
+      alert("Please click confirm your location.")
       return
     }
     // Initialize an array to hold the URLs of the uploaded images
