@@ -109,7 +109,7 @@ const TourRatingInput = ({ tourId }) => {
             alt=""
           />
         ) : (
-          <div className="ml-8 flex items-center justify-center h-12 w-12 rounded-full bg-gray-500 text-white text-sm">
+          <div className="ml-8 flex items-center justify-center h-12 w-12 rounded-full bg-blue text-white text-sm">
             {getInitials(email)}
           </div>
         )}{" "}
