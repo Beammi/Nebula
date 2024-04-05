@@ -244,6 +244,15 @@ export default function TourInfoPanel({ toggle, tour }) {
   //   setIsSaved(newSavedStatus)
   //   saveToDatabase() // This would ideally pass necessary data for the save operation
   // }
+  const handleShare = () => {
+    const currentPageUrl = window.location.href;
+    navigator.clipboard.writeText(currentPageUrl).then(() => {
+      alert('Link copied to clipboard!');
+    }, (err) => {
+      console.error('Could not copy link: ', err);
+      alert('Failed to copy link.');
+    });
+  };
   const checkBookmark = async (userId, tourId) => {
     const url = `/api/bookmark/checkBookmarkTour?userId=${encodeURIComponent(userId)}&tourId=${encodeURIComponent(
       tourId
@@ -432,7 +441,8 @@ export default function TourInfoPanel({ toggle, tour }) {
                   Save
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey ">
+                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
+                onClick={handleShare}>
                   <figure>
                     <Image src={shareIcon} alt="pic" className="" width={23} />
                   </figure>
