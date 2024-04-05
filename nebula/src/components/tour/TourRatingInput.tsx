@@ -51,8 +51,10 @@ const TourRatingInput = ({ tourId }) => {
     }
   }
   const postRating = async () => {
-    if (!userId) return console.error("User not found.")
-
+    if (!userId) {
+      alert("Please Login")
+      return console.error("User not found.")
+    }
     const response = await fetch("/api/tour/rating/postRatingOfTour", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
