@@ -18,19 +18,19 @@ export default function ChangePassword() {
   const [message, setMessage] = useState(null)
   const [areEqual, setAreEqual] = useState(false)
   const token = router.query.access_token // Adjust based on how Supabase structures the reset link
-  async function getSessionUser() {
-    const { data, error } = await supabase.auth.getSession()
-    console.log("data ", JSON.stringify(data))
-    console.log("error ", error)
-  }
-  useEffect(() => {
-    alert(`token: ${token}`);
-    if (!token) {
-      alert("Token is required.")
-      return
-    }
-    getSessionUser()
-  }, [])
+  // async function getSessionUser() {
+  //   const { data, error } = await supabase.auth.getSession()
+  //   console.log("data ", JSON.stringify(data))
+  //   console.log("error ", error)
+  // }
+  // useEffect(() => {
+  //   alert(`token: ${token}`);
+  //   if (!token) {
+  //     alert("Token is required.")
+  //     return
+  //   }
+  //   getSessionUser()
+  // }, [])
 
   useEffect(() => {
     setAreEqual(
