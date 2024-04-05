@@ -390,8 +390,8 @@ export default function TourInfoPanel({ toggle, tour }) {
               </div>
 
               <div className="flex flex-row">
-                <div className="rating rating-md pb-4">
-                  {renderStars(avgRating)}
+                <div className="rating rating-md mb-2">                  
+                  <div className="-mt-2 mr-2">{renderStars(avgRating)}</div>                  
 
                   <label className="text-sm leading-4 text-yellow">{avgRating}</label>
                 </div>

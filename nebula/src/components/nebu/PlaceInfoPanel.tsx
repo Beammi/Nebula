@@ -376,15 +376,14 @@ const handleShare = () => {
                 </button>
               </div>
 
-              <div className="flex flex-row">
+              <div className="flex flex-row mb-2">
                 <div className="rating">
-                  {renderStars(avgRating)}
-
+                  <div className="-mt-2 mr-2">{renderStars(avgRating)}</div>                  
                   <label className="text-sm leading-4 text-yellow">
                     {avgRating}
                   </label>
                 </div>
-                <label className="text-sm text-black-grey ml-3 leading-4">
+                <label className="text-sm text-black-grey ml-3 leading-4 ">
                   Added by {nebu.email}
                 </label>
               </div>
