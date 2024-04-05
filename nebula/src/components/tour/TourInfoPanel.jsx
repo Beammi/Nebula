@@ -98,11 +98,11 @@ export default function TourInfoPanel({ toggle, tour }) {
         setAvgRating(rating)
       } else {
         throw new Error(
-          data.message || "An error occurred while fetching the profile"
+          data.message || "An error occurred while fetching the tour rating"
         )
       }
     } catch (error) {
-      console.error("Failed to fetch profile:", error)
+      console.error("Failed to fetch tour rating:", error)
     }
   }
   useEffect(()=>{
