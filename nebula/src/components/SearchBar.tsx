@@ -21,6 +21,7 @@ import PlaceInfoPanel from "@/components/nebu/PlaceInfoPanel"
 // import { useRouter } from "next/router"
 import { useRouter } from 'next/navigation'
 import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "../lib/supabaseClient"
 
 import React from "react"
 
@@ -262,7 +263,15 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
     setAddTourState(!addTourState)
   }
   
-  
+  async function handleLogOut() {
+    let { error } = await supabase.auth.signOut()
+    if(error){
+      console.log("Can't Log out")
+    }else{
+      console.log("Log Out Successfully!")
+      router.push("/login")
+    }
+  }
 
   return (
     
@@ -363,7 +372,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                 <li className="cursor-pointer" onClick={() => handleMyNebuClick()}>My Nebu</li>
                 <li className="cursor-pointer" onClick={() => handleMyTourClick()}>My Tour</li>
                 <li className="cursor-pointer" onClick={() => handleBookmarkClick()}>Bookmark</li>                
-                <li>Log Out</li>
+                <li className="cursor-pointer" onClick={() => handleLogOut()}>Log Out</li>
               </ul>
         </div>
       </div>
