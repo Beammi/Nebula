@@ -332,11 +332,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         )}
 
 
-        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-20 -ml-[32px]"
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-20 -ml-[32px]"
         onRecommendTour={(selectedPlace) => {
           setRecommendedPlace(selectedPlace)
           setShowViewTourList(true)
-        }}/>    
+        }}/>     */}
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
