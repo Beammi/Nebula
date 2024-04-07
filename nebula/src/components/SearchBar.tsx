@@ -50,6 +50,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
   const [addNebuState, setAddnebu] = useState(false)
   const [addTourState, setAddTourState] = useState(false)
+  const [recommendedPlace, setRecommendedPlace] = useState(null)
   
   const {
     currentPlace,
@@ -280,7 +281,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6"
         />
         <div className="absolute right-8 top-8 transform -translate-y-1/2">
-          <Button buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
+          <Button buttonStyle="text-black bg-grey border-0 rounded-full btn-circle btn block md:hidden" label="TH" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
         {showSuggestions && (          
@@ -331,7 +332,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         )}
 
 
-        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"/>     */}
+        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-20 -ml-[32px]"
+        onRecommendTour={(selectedPlace) => {
+          setRecommendedPlace(selectedPlace)
+          setShowViewTourList(true)
+        }}/>    
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>

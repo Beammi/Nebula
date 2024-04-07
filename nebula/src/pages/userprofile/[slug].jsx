@@ -317,7 +317,7 @@ export default function UserProfile(props) {
                       {/* <div className="h-[50px]">
                         <img src={altImage}/>
                       </div> */}
-                      <img src={altImage.src} className="h-[100px]"/>
+                      <img src={altImage.src} className="h-[100px] rounded-md"/>
                       <div className="text-black w-full text-center">
                         {data.tour_name}
                       </div>

@@ -304,7 +304,7 @@ export default function Tag() {
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row cursor-pointer"
                   onClick={() => openPlaceInfoPanel(data)}>
                   {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto text-center"/></figure>}
-                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto"/></figure>}                  
+                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto rounded-md"/></figure>}                  
                   <div className="card-body flex flex-col justify-between">
                     { data.type === "nebu" &&                  
                       <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
