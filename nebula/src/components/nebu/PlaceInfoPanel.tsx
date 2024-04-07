@@ -308,12 +308,18 @@ const handleShare = () => {
       </div>
     )
   }
+
+  useEffect(() => {
+    console.log("Mobile Info Panel:", mobileInfoPanel);
+  }, [mobileInfoPanel]);
+
   return (
     <div
-      className={`fixed overflow-y-scroll  ${
-        mobileInfoPanel ? "top-0" : "top-1/2"
-      } w-full rounded-t-xl lg:top-0 lg:w-[25%] z-10 ${panelStyle} h-screen bg-white text-black transition-all duration-150 ease-in-out 
-      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
+      className={`fixed overflow-y-scroll w-full rounded-t-xl lg:top-0 lg:w-[25%] ${panelStyle ? panelStyle : "z-10"} h-screen bg-white text-black transition-all duration-150 ease-in-out 
+      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}
+      ${mobileInfoPanel ? "absolute top-0" : "absolute top-1/2"}
+      `}
+      
       ref={panelRef}
     >
       <div className=" text-black ">
@@ -321,7 +327,7 @@ const handleShare = () => {
           <div
             className="rounded-t-full flex flex-col"
             onScroll={() => {
-              if (panelRef.current) {
+              if (panelRef.current) {                
                 scrollPosition > 0
                   ? minimizePlaceInfoPanel()
                   : expandPlaceInfoPanel()
