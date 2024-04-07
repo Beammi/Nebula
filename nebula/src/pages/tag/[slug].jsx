@@ -147,7 +147,7 @@ export default function Tag() {
       setShowPlaceInfoPanel(false);
     }
 
-    async function openPlaceInfoPanel(data){
+    async function handleClickCard(data){
       if(data.type === "nebu"){
         try{
           console.log("DDD: ", data);
@@ -162,11 +162,10 @@ export default function Tag() {
         }catch (error) {
           console.error("Error fetching image details:", error)
         }
-      } 
-      // else if(data.type === "tour"){
-
-      // }
-      
+      }
+      else if(data.type === "tour"){
+        router.push(`/TourMapPage/${data.value.tour_id}`)
+      }
       
     }
 
@@ -302,7 +301,7 @@ export default function Tag() {
               
               {Array.isArray(tagData) && tagData.map((data, index) =>(                
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row cursor-pointer"
-                  onClick={() => openPlaceInfoPanel(data)}>
+                  onClick={() => handleClickCard(data)}>
                   {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto text-center"/></figure>}
                   {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto rounded-md"/></figure>}                  
                   <div className="card-body flex flex-col justify-between">
