@@ -322,7 +322,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         )}
 
 
-        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-20 -ml-[32px]"
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"
         onRecommendTour={(selectedPlace) => {
           setRecommendedPlace(selectedPlace)
           setShowViewTourList(true)
