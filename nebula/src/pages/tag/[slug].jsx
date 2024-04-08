@@ -306,14 +306,14 @@ export default function Tag() {
                   {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto rounded-md"/></figure>}                  
                   <div className="card-body flex flex-col justify-between">
                     { data.type === "nebu" &&                  
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
+                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row lg:flex-wrap">
                         {data.type === "nebu" && <figure className="lg:w-[3%]"><Image src={purplePin} alt="pic" /></figure>}                        
                         {data.value.title}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.value.email}</p>
                       </h2>
                     }
                     { data.type === "tour" &&                  
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">                        
+                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row lg:flex-wrap">                        
                         {data.type === "tour" && <figure className="lg:w-[3%]"><Image src={purpleFlag} alt="pic" /></figure>}
                         {data.value.tour_name}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.value.email}</p>
