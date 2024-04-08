@@ -46,6 +46,7 @@ export default function PlaceInfoPanel({
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [avgRating, setAvgRating] = useState(0)
+  const [sortOption, setSortOption] = useState("Newest")
   // const handleShare = () => {
   //   if (navigator.share) {
   //     navigator.share({
@@ -670,7 +671,10 @@ const handleShare = () => {
             {othersNebuSection && (
               <div className="flex flex-col my-4 mx-7 transition-all delay-300 ease-in-out">
                 <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
-                  <select className="select bg-grey rounded-lg select-sm">
+                  <select className="select bg-grey rounded-lg select-sm"
+                    onChange={(e) => {
+                      setSortOption(e.target.value)
+                    }}>
                     {/* <option disabled selected>Filter</option> */}
                     <option>Newest</option>
                     <option>High Rated</option>
@@ -684,6 +688,7 @@ const handleShare = () => {
                   <OtherNebu
                     originalNebuId={nebu.nebu_id}
                     placeName={nebu.place_name}
+                    sortOption={sortOption}
                   ></OtherNebu>
                 </div>
               </div>
