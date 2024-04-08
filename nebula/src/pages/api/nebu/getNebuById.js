@@ -1,20 +1,24 @@
-// Assumes db is already set up to connect to your PostgreSQL database
 import db from "../../../lib/db";
 
-/**
- * Fetches a single Nebu post by its ID.
- * 
- * @param {number} nebuId ID of the Nebu post to fetch.
- * @returns {Promise<Object|null>} A promise that resolves to the Nebu post or null if not found.
- */
-async function getNebuById(nebuId) {
+async function getNebuById(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const { nebuId } = req.query;
+
+  if (!nebuId) {
+    return res.status(400).json({ message: "Nebu ID is required" });
+  }
+
+  try {
     const queryText = `
       SELECT 
         nebu.*,
         place.latitude,
         place.longitude,
         array_agg(DISTINCT tag.tag_name) FILTER (WHERE tag.tag_name IS NOT NULL) AS tags,
-        AVG(rating.rate) AS average_rating,
+        AVG(rating.rate) FILTER (WHERE rating.rate IS NOT NULL) AS average_rating,
         users.email,
         place.place_name
       FROM 
@@ -29,14 +33,16 @@ async function getNebuById(nebuId) {
       GROUP BY 
         nebu.nebu_id, place.latitude, place.longitude, users.email, place.place_name;
     `;
-  
-    try {
-      const res = await db.query(queryText, [nebuId]);
-      return res.rows.length > 0 ? res.rows[0] : null;
-    } catch (err) {
-      console.error('Error executing query to fetch Nebu by ID:', err);
-      throw err;
+    const queryResult = await db.query(queryText, [nebuId]);
+    if (queryResult.rows.length === 0) {
+      return res.status(404).json({ message: "Nebu not found" });
+    } else {
+      return res.status(200).json(queryResult.rows[0]);
     }
+  } catch (error) {
+    console.error("Database error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 export default getNebuById;
