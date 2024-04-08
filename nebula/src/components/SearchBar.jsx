@@ -25,11 +25,12 @@ import { useLocation } from "@/contexts/LocationContext"
 import React from "react"
 
 
-interface ISearchBar {
-  text?: string
-}
+// interface ISearchBar {
+//   text?: string
+// }
 
-const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
+// const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
+const SearchBar = ({ text }) => {
 
   const router = useRouter()
   const [IsOpen, setIsOpen] = useState(false)
@@ -47,8 +48,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [accountNameValue, setAccountNameValue] = useState("");
   const [nebu, setNebu] = useState([]);
   // const [tour, setTour]
-  const [api, setApi] = useState<{ value: string; type: string }[]>([]);
-  const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+  // const [api, setApi] = useState<{ value: string; type: string }[]>([]);
+  // const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
+  const [api, setApi] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [addNebuState, setAddnebu] = useState(false)
   const [addTourState, setAddTourState] = useState(false)
   const [recommendedPlace, setRecommendedPlace] = useState(null)
@@ -201,7 +204,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
 
       // Process data and update API state
       // const formattedData = [];
-      const formattedData: { value: string, type: string }[] = [];
+      const formattedData = [];
       if (nebuData.length > 0) {
         nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
       }
