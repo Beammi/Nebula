@@ -157,12 +157,16 @@ const SearchBar = ({ text }) => {
       }
     }
     else if(suggestion.type === "nebu"){
-      setInputValue(suggestion.value.title);
+      // use component
+      // setInputValue(suggestion.value.title);
 
-      setCurrentPosition([parseFloat(suggestion.value.latitude), parseFloat(suggestion.value.longitude)])
+      // setCurrentPosition([parseFloat(suggestion.value.latitude), parseFloat(suggestion.value.longitude)])
       
-      setShowPlaceInfoPanel(true)
-      setNebu(suggestion.value)    
+      // setShowPlaceInfoPanel(true)
+      // setNebu(suggestion.value)
+
+      // use pages
+      router.push(`/NebuMapPage/${suggestion.value.nebu_id}`)
     }
     else if(suggestion.type === "tour"){
       router.push(`/TourMapPage/${suggestion.value.tour_id}`)  
