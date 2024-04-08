@@ -70,6 +70,9 @@ const MyMapNebu: React.FC = () => {
     }
 
     fetchNebuDetails()
+    if(nebuDetails?.latitude && nebuDetails.longitude){
+      setCurrentPosition([nebuDetails?.latitude,nebuDetails?.longitude])
+    }
     // setCurrentPosition([nebuDetails?.latitude,nebuDetails?.longitude])
   }, [])
   const MapCenterEvents = ({ onCenterChange }) => {
