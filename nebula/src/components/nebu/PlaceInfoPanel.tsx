@@ -26,6 +26,7 @@ import OtherNebu from "./OtherNebu"
 import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/tour/ViewTourList"
+import { useRouter } from "next/router"
 
 export default function PlaceInfoPanel({
   toggle,
@@ -46,6 +47,8 @@ export default function PlaceInfoPanel({
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [avgRating, setAvgRating] = useState(0)
+  const [sortOption, setSortOption] = useState("Newest")
+  const router = useRouter()
   // const handleShare = () => {
   //   if (navigator.share) {
   //     navigator.share({
@@ -308,12 +311,47 @@ const handleShare = () => {
       </div>
     )
   }
+
+  useEffect(() => {
+    console.log("Mobile Info Panel:", mobileInfoPanel);
+  }, [mobileInfoPanel]);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 450); // Adjust this threshold according to your design
+    }
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize); // Listen for window resize events
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener
+    };
+  }, []);
+
+  // async function handleClickEmail(email){
+  //   const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
+  //   const data = await response.json()
+
+  //   if (data.display_name) { // when data is only one (= Object), not Array
+  //     // setCurrentPosition([parseFloat(data.places[0].latitude), parseFloat(data.places[0].longitude)]);
+  //     // router.push
+  //   } else {
+  //     console.error("No places found in the tour data.");
+  //   }
+
+  // }
+
   return (
     <div
-      className={`fixed overflow-y-scroll  ${
-        mobileInfoPanel ? "top-0" : "top-1/2"
-      } w-full rounded-t-xl lg:top-0 lg:w-[25%] z-10 ${panelStyle} h-screen bg-white text-black transition-all duration-150 ease-in-out 
-      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}`}
+      className={`fixed overflow-y-scroll w-full rounded-t-xl lg:top-0 lg:w-[25%] ${panelStyle ? panelStyle : "z-10"} h-screen bg-white text-black transition-all duration-150 ease-in-out 
+      ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}
+      ${mobileInfoPanel ? "absolute top-0" : "top-1/2"}
+      ${isMobile ? "absolute" : "fixed"}
+      `}
+      
       ref={panelRef}
     >
       <div className=" text-black ">
@@ -321,7 +359,7 @@ const handleShare = () => {
           <div
             className="rounded-t-full flex flex-col"
             onScroll={() => {
-              if (panelRef.current) {
+              if (panelRef.current) {                
                 scrollPosition > 0
                   ? minimizePlaceInfoPanel()
                   : expandPlaceInfoPanel()
@@ -383,7 +421,9 @@ const handleShare = () => {
                     {avgRating}
                   </label>
                 </div>
-                <label className="text-sm text-black-grey ml-3 leading-4 ">
+                <label className="text-sm text-black-grey ml-3 leading-4 cursor-pointer hover:underline"
+                  // onClick={() => handleClickEmail()}
+                  >
                   Added by {nebu.email}
                 </label>
               </div>
@@ -443,6 +483,7 @@ const handleShare = () => {
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
                   label={`#${nebu.official_tag}`}
+                  onClick={() => router.push(`/tag/${nebu.official_tag}`)}
                 ></Button>
                 {nebu.tags &&
                   nebu.tags.filter((tag) => tag).length > 0 &&
@@ -454,6 +495,7 @@ const handleShare = () => {
                         type="button"
                         buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
                         label={`#${tag}`} // Prepend "#" to each tag name
+                        onClick={() => router.push(`/tag/${tag}`)}
                       />
                     ))}
                 {/* <button
@@ -664,7 +706,10 @@ const handleShare = () => {
             {othersNebuSection && (
               <div className="flex flex-col my-4 mx-7 transition-all delay-300 ease-in-out">
                 <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
-                  <select className="select bg-grey rounded-lg select-sm">
+                  <select className="select bg-grey rounded-lg select-sm"
+                    onChange={(e) => {
+                      setSortOption(e.target.value)
+                    }}>
                     {/* <option disabled selected>Filter</option> */}
                     <option>Newest</option>
                     <option>High Rated</option>
@@ -678,6 +723,7 @@ const handleShare = () => {
                   <OtherNebu
                     originalNebuId={nebu.nebu_id}
                     placeName={nebu.place_name}
+                    sortOption={sortOption}
                   ></OtherNebu>
                 </div>
               </div>

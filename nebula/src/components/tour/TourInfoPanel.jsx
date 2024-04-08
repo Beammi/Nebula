@@ -450,7 +450,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                 </button>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-x-2 flex-wrap max-w-full">
+              <div className="flex flex-row gap-x-2 flex-wrap max-w-full">
                 <Button
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"

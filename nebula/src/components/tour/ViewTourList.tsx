@@ -147,7 +147,7 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
 
         <div className="w-full h-[3px] bg-grey "></div>
 
-        <div className="text-black mt-5 w-fit lg:w-[970px] h-[520px] flex flex-col overflow-y-auto lg:flex-row lg:overflow-x-auto gap-4  ">
+        <div className="text-black mt-5 w-fit lg:w-[970px] h-[390px] lg:h-[520px] flex flex-col overflow-y-auto lg:flex-row lg:overflow-x-auto gap-4  ">
           {tours.map((data, index) => (
             <div
               key={index}

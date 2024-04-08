@@ -51,6 +51,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
   const [suggestions, setSuggestions] = useState<{ value: string; type: string }[]>([]);
   const [addNebuState, setAddnebu] = useState(false)
   const [addTourState, setAddTourState] = useState(false)
+  const [recommendedPlace, setRecommendedPlace] = useState(null)
   
   const {
     currentPlace,
@@ -120,21 +121,10 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       setInputValue(suggestion.value);
       setShowTagSuggestion(true);
 
-      // setShowViewTourList(true)
-
-      // setTagSuggestValue(suggestion.value)
       router.push(`/tag/${suggestion.value}`)
-
-
     }
     else if(suggestion.type === "user"){
       setInputValue(suggestion.value);
-      // const fullPath = `/${suggestion.value}`
-      // router.push(fullPath)
-
-      // setShowAccountProfile(true)
-      // setAccountNameValue(suggestion.value)
-
       router.push(`/userprofile/${suggestion.value}`)
 
     }
@@ -169,6 +159,9 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       
       setShowPlaceInfoPanel(true)
       setNebu(suggestion.value)    
+    }
+    else if(suggestion.type === "tour"){
+      router.push(`/TourMapPage/${suggestion.value.tour_id}`)  
     }
 
     setShowSuggestions(false);
@@ -215,15 +208,15 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
       if (tagData.length > 0) {
         tagData.map((name) => formattedData.push({ value: name, type: 'tag' }));
       }
+      if (tourData.length > 0) {
+        tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
+      }
       if (userData.length > 0) {
         userData.map((d) => formattedData.push({ value: d.display_name, type: 'user' }));
       }
       if (nominatimData.length > 0) {
         nominatimData.map((d) => formattedData.push({ value: d, type: 'place' }));
-      }
-      if (tourData.length > 0) {
-        tourData.map((d) => formattedData.push({ value: d, type: 'tour' }));
-      }
+      }      
       
       setApi(formattedData);
 
@@ -281,7 +274,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
           className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6"
         />
         <div className="absolute right-8 top-8 transform -translate-y-1/2">
-          <Button buttonStyle="bg-white text-black rounded-full btn-circle btn block md:hidden" label="NL" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
+          <Button buttonStyle="text-black bg-grey border-0 rounded-full btn-circle btn block md:hidden" label="TH" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
         {showSuggestions && (          
@@ -307,9 +300,7 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
                   {(suggestion.type === "place") && 
                     <figure><Image src={smallThinPin} alt="pic" className="-ml-0.5" width={24}/></figure>
                   }
-                  {(suggestion.type === "tour") && 
-                    <figure><Image src={smallFlag} alt="pic" className="" width={20}/></figure>
-                  }
+                  
                   {(suggestion.type === "place") && 
                     <h2>{suggestion.value.display_name}</h2>
                   }
@@ -332,7 +323,11 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         )}
 
 
-        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"/>     */}
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="-z-10 -ml-[32px]"
+        onRecommendTour={(selectedPlace) => {
+          setRecommendedPlace(selectedPlace)
+          setShowViewTourList(true)
+        }}/>     */}
         <ViewTourList toggle={showViewTourList} action={closeViewTourList} name={tagSuggestValue}/>
         <TagSuggestion toggle={showTagSuggestion} action={closeTagSuggestion} tagName={tagSuggestValue}/>
         <AccountProfile toggle={showAccountProfile} action={closeAccountProfile} accountName={accountNameValue}/>
@@ -341,21 +336,6 @@ const SearchBar: React.FunctionComponent<ISearchBar> = ({ text }) => {
         <MyTour toggle={showMyTour} action={closeMyTour} accountName={accountNameValue}/>
         <Bookmark toggle={showBookmark} action={closeBookmark} accountName={accountNameValue}/>
         <Profile toggle={showMyProfile} action={closeMyProfile} accountName={accountNameValue}/>
-
-        {/* <div className="flex">
-          <Button
-            buttonStyle="btn bg-blue w-max md:block hidden mx-4 normal-case text-white border-none"
-            label="Create Tour"
-            onClick={() => toggleAddTour}
-          ></Button>
-          <Button
-            buttonStyle="btn bg-blue w-max md:block hidden normal-case text-white border-none"
-            label="Add Nebu"
-            onClick={() => openAddNebu}
-          ></Button>
-        </div>
-        <AddNebu toggle={addNebuState} action={openAddNebu} />
-        <AddTour toggle={addTourState} action={toggleAddTour}/> */}
 
         <div className={`flex flex-col bg-white fixed right-12 p-8 shadow-lg rounded-lg opacity-0 top-24 transition-all ease-in duration-200 ${IsOpen ? 'opacity-100' : 'right-[-200px]'}`}>
               <ul className="flex flex-col gap-4 text-[black]">

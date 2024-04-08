@@ -50,6 +50,8 @@ export default function Tag() {
     const tag = Array.isArray(router.query.slug) ? router.query.slug[0] : router.query.slug;
 
     useEffect(() => {
+      checkSession()
+      checkProviderAccount()
       setTagName(tag);
     }, [tag])
 
@@ -145,7 +147,7 @@ export default function Tag() {
       setShowPlaceInfoPanel(false);
     }
 
-    async function openPlaceInfoPanel(data){
+    async function handleClickCard(data){
       if(data.type === "nebu"){
         try{
           console.log("DDD: ", data);
@@ -160,12 +162,51 @@ export default function Tag() {
         }catch (error) {
           console.error("Error fetching image details:", error)
         }
-      } 
-      // else if(data.type === "tour"){
+      }
+      else if(data.type === "tour"){
+        router.push(`/TourMapPage/${data.value.tour_id}`)
+      }
+      
+    }
 
-      // }
-      
-      
+    async function checkSession() {
+
+      const { data: { user } ,error} = await supabase.auth.getUser()
+      // console.log(JSON.stringify(user))
+  
+      if (error || user === null) {
+        router.push("/home_unregistered")
+  
+      } else {
+        let str = JSON.stringify(user.email)
+        console.log("Session: "+JSON.stringify(user.app_metadata.provider))
+        setProfileName(str.substring(1,3))
+        console.log(profileName)
+      }
+    }
+    
+    async function checkProviderAccount(){
+      const { data: { user } ,error} = await supabase.auth.getUser()
+      if (error || user === null){
+        console.log("Error when call checkProviderAccount function")
+      }else if (user.app_metadata.provider==="email"){
+        console.log("Login via Email")
+      }else{
+        let provider = user.app_metadata.provider
+        let email = user.user_metadata.email
+        console.log(provider+email)
+        const response = await fetch("/api/auth/loginWithProvider", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({provider, email}),
+        })
+        if(response.ok){
+          console.log("Provider")
+        }else{
+          console.log("Error in checkProviderAccount")
+        }
+      }
+  
     }
     
     return (
@@ -260,9 +301,9 @@ export default function Tag() {
               
               {Array.isArray(tagData) && tagData.map((data, index) =>(                
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row cursor-pointer"
-                  onClick={() => openPlaceInfoPanel(data)}>
+                  onClick={() => handleClickCard(data)}>
                   {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto text-center"/></figure>}
-                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto"/></figure>}                  
+                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto rounded-md"/></figure>}                  
                   <div className="card-body flex flex-col justify-between">
                     { data.type === "nebu" &&                  
                       <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
