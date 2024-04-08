@@ -20,8 +20,13 @@ import { useRouter } from 'next/router';
 import Link from "next/link"
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "../NebuTag"
-
-export default function ViewTourList({ toggle, action, name, nebu }) {
+interface IViewTourListProps {
+  toggle: any; // Consider using more specific types here
+  action: any;
+  name?: any; // Marking name as optional
+  nebu?: any;
+}
+const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu }) =>  {
   // const state = props.toggle;
   // const action = props.action;
   // const name = props.name;
@@ -277,3 +282,4 @@ export default function ViewTourList({ toggle, action, name, nebu }) {
     </div>
   )
 }
+export default ViewTourList

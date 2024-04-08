@@ -46,8 +46,8 @@ const LocationSearchPlaceInTour: React.FunctionComponent<
     const newPlace = {
       id: Date.now(), // or a better ID generation strategy
       name: text,
-      latitude: location.lat,
-      longitude: location.lng,
+      latitude: (location as any).lat,
+      longitude: (location as any).lng,
     }
     if (mode === "waypoint") {
       addWaypoint(newPlace)

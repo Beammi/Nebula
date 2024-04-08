@@ -33,7 +33,7 @@ export default function PlaceInfoPanel({
   action,
   nebu,
   onRecommendTour,
-  panelStyle
+  panelStyle = {}
 }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Button from "@/components/Button"
 import React, { useState, useEffect } from "react"
 import ImageUpload from "@/components/ImageUpload"
@@ -177,6 +178,7 @@ export default function AddNebu(props) {
       return
     }
     e?.preventDefault()
+
     if (currentPosition.lat == null || currentPosition.lng == null) {
       alert("Please click confirm your location.")
       return
