@@ -20,6 +20,7 @@ export default async function handler(req, res) {
                 nebu.images,
                 nebu.official_tag,
                 pl.place_name,
+                nebu.created_time,
                 (SELECT email FROM users WHERE users.user_id = nebu.user_id) AS creator_email,
                 (SELECT profile_picture_url FROM users WHERE users.user_id = nebu.user_id) AS creator_profile_picture,
                 (SELECT array_agg(tag_name) FROM tag JOIN nebu_tag ON tag.tag_id = nebu_tag.tag_id WHERE nebu_tag.nebu_id = nebu.nebu_id) AS tags,
