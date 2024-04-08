@@ -94,7 +94,8 @@ const TourRatingInput = ({ tourId }) => {
       key={i}
       type="radio"
       name="rating-5"
-      className="mask mask-star-2 bg-yellow"
+      // className="mask mask-star-2 bg-yellow"
+      className={`mask ${rating >= i + 1 ? 'mask-star-2 bg-yellow' : 'mask-star-2 bg-dark-grey hover:bg-yellow'}`}
       checked={rating === i + 1}
       onChange={() => handleRating(i + 1)}
     />
