@@ -33,6 +33,7 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
 
   const [tours, setTours] = useState([])
   const [images, setImages] = useState([])
+  const [sortOption, setSortOption] = useState("Newest")
  
   const router = useRouter();
 
@@ -49,9 +50,12 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
     const fetchTours = async () => {
       const response = await fetch(
         `/api/tour/getToursByPlaceName?place_name=${encodeURIComponent(
-          nebu?.place_name
-        )}`
+          nebu?.place_name)}&sortOption=${sortOption}`
       )
+      // const response = await fetch(
+      //   `/api/tour/getToursByPlaceName?place_name=${encodeURIComponent(
+      //     nebu?.place_name)}`
+      // )
       if (response.ok) {
         const data = await response.json()
         setTours(data)
@@ -63,7 +67,7 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
     }
     
     fetchTours()
-  }, [])
+  }, [sortOption])
   useEffect(() => {
     const fetchImages = async () => {
       const response = await fetch(
@@ -104,36 +108,20 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
             </h3>
           </div>
           <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-sm m-1 normal-case bg-white drop-shadow-md text-black border-none hover:border-none hover:bg-grey flex flex-nowrap"
-            >
-              Filter{" "}
-              <figure className="">
+            <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
+              <select className="select bg-grey rounded-lg select-sm"
+                onChange={(e) => {
+                  setSortOption(e.target.value)
+                }}>
+                {/* <option disabled selected>Filter</option> */}
+                <option>Newest</option>
+                <option>High Rated</option>
+                <option>Oldest</option>
+              </select>
+              <figure className="select-icon absolute right-3 top-1/2 transform -translate-y-1/2">
                 <Image src={filterIcon} alt="pic" className="" />
-              </figure>{" "}
+              </figure>
             </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content z-[1] menu p-1 bg-grey text-black border-none hover:border-none hover:bg-grey rounded-box w-max"
-            >
-              <li>
-                <a href="https://www.google.com/" className="hover:text-black">
-                  High Rated
-                </a>
-              </li>
-              <li>
-                <a href="https://www.google.com/" className="hover:text-black">
-                  Newest
-                </a>
-              </li>
-              <li>
-                <a href="https://www.google.com/" className="hover:text-black">
-                  Oldest
-                </a>
-              </li>
-            </ul>
           </div>
           <button onClick={action}>
             <Image
