@@ -5,14 +5,14 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { place_name } = req.query;
+    const { place_name, sortOption } = req.query;
 
     if (!place_name) {
         return res.status(400).json({ message: 'Place name is required' });
     }
 
     try {
-        const query = `
+        let query = `
             SELECT
                 nebu.nebu_id,
                 nebu.title,
@@ -30,9 +30,18 @@ export default async function handler(req, res) {
             JOIN place pl ON nebu.place_id = pl.place_id
             WHERE
                 pl.place_name = $1
-            GROUP BY nebu.nebu_id, pl.place_name;
+            GROUP BY nebu.nebu_id, pl.place_name
         `;
         const values = [place_name];
+
+        // Add sorting based on the selected option
+        if (sortOption === 'Newest') {
+            query += ' ORDER BY nebu.created_time DESC;';
+        } else if (sortOption === 'Oldest') {
+            query += ' ORDER BY nebu.created_time ASC;';
+        } else if (sortOption === 'High Rated') {
+            query += ' ORDER BY average_rating DESC;';
+        }
 
         const { rows } = await db.query(query, values);
         if (rows.length > 0) {

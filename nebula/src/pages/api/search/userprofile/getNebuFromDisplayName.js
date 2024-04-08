@@ -25,26 +25,46 @@ export default async function handler(req, res) {
     const userId = userResult.rows[0].user_id
 
     // Now, query the database for Nebu posts associated with the user ID
+    // const nebuQuery = `
+    //   SELECT n.*, array_agg(t.tag_name) AS tags
+    //   FROM nebu n
+    //   LEFT JOIN nebu_tag nt ON n.nebu_id = nt.nebu_id
+    //   LEFT JOIN tag t ON nt.tag_id = t.tag_id
+    //   WHERE n.user_id = $1
+    //   GROUP BY n.nebu_id
+    //   ORDER BY n.created_time DESC; -- Correct SQL-style single-line comment
+    // `;
+
     const nebuQuery = `
-      SELECT n.*, array_agg(t.tag_name) AS tags
-      FROM nebu n
-      LEFT JOIN nebu_tag nt ON n.nebu_id = nt.nebu_id
-      LEFT JOIN tag t ON nt.tag_id = t.tag_id
-      WHERE n.user_id = $1
-      GROUP BY n.nebu_id
-      ORDER BY n.created_time DESC; -- Correct SQL-style single-line comment
-    `;
-    const nebuValues = [userId]
+      SELECT
+        nebu.*,
+        place.latitude,
+        place.longitude,
+        array_agg(DISTINCT tag.tag_name) FILTER (WHERE tag.tag_name IS NOT NULL) AS tags,
+        AVG(rating.rate) AS average_rating,
+        users.email,
+        place.place_name      
+      FROM 
+        nebu      
+        LEFT JOIN place ON nebu.place_id = place.place_id
+        LEFT JOIN nebu_tag ON nebu.nebu_id = nebu_tag.nebu_id
+        LEFT JOIN tag ON nebu_tag.tag_id = tag.tag_id
+        LEFT JOIN rating ON nebu.nebu_id = rating.nebu_id
+        LEFT JOIN users ON nebu.user_id = users.user_id
+      WHERE nebu.user_id = $1
+      GROUP BY 
+        nebu.nebu_id, place.latitude, place.longitude, users.email, place.place_name
+      ORDER BY 
+        nebu.created_time DESC;
+    `
+    
 
-    const { rows } = await db.query(nebuQuery, nebuValues)
+    // const { rows } = await db.query(nebuQuery, [userId])
+    const result = await db.query(nebuQuery, [userId])
+    const extractValue = result.rows.map(row => row);
 
-    if (rows.length > 0) {
-      // Send back all matching Nebu posts along with their tags
-      res.status(200).json(rows)
-    } else {
-      // No Nebu posts found for this user
-      res.status(404).json({ message: "No Nebu posts found for this user" })
-    }
+    res.status(200).json(extractValue)
+    
   } catch (error) {
     console.error("Database error:", error)
     res.status(500).json({ message: "Internal server error" })

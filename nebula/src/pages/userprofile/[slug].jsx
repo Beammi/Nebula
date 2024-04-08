@@ -20,6 +20,7 @@ import purpleFlag from "../../../public/images/flagPurple.png"
 import yellowFlag from "../../../public/images/yellowFlag.png"
 import placePinIcon from "../../../public/images/placePinIcon.png"
 import { useLocation } from "@/contexts/LocationContext"
+import { supabase } from "../../lib/supabaseClient"
 
 // import smallHashtag from "../../public/images/smallHashtag_blue.png"
 // import filterIcon from "../../public/images/filter-icon.png"
@@ -34,10 +35,7 @@ import Link from "next/link"
 // import smallHashtag from "../../public/images/smallHashtag.png";
 
 export default function UserProfile(props) {
-  // const accountProfileState = props.toggle
-  const action = props.action
-  // const accountName = props.accountName
-  
+
   const [addNebuState, setAddnebu] = useState(false)
   const [addTourState, setAddTourState] = useState(false)
   const [addNebuDropDown, setaddNebuDropdown] = useState(false)
@@ -51,7 +49,6 @@ export default function UserProfile(props) {
   const [userAccApi, setUserAccApi] = useState([])
   const [showPlaceInfoPanel, setShowPlaceInfoPanel] = useState(false)
   const [showViewTourList, setShowViewTourList] = useState(false)
-  const [accountProfileState, setAccountProfileState] = useState(true)
   const router = useRouter()
   const {
     currentPlace,
@@ -65,6 +62,8 @@ export default function UserProfile(props) {
   console.log("User Acc name: ", accountName);
 
   useEffect(() => {
+    checkSession()
+    checkProviderAccount()
     fetchAccountProfile()
   }, [accountName])
 
@@ -102,19 +101,13 @@ export default function UserProfile(props) {
         userTourResponse.json(),
       ]);
 
-      const formattedData = [];
-      if (userAccountData.length > 0) {
-        // nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
+      if (userAccountData.length > 0) {      
         setAccountData(userAccountData)
       }
       if (userNebuData.length > 0) {
-        // nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
-        // setNebuData(userNebuData)
         setNebuApi(userNebuData)
       }
-      if (userTourData.length > 0) {
-        // nebuData.map((d) => formattedData.push({ value: d, type: 'nebu' }));
-        // setTourData(userTourData)
+      if (userTourData.length > 0) {        
         setTourApi(userTourData)
       }
 
@@ -155,6 +148,55 @@ export default function UserProfile(props) {
     setShowPlaceInfoPanel(false);
   }
   
+
+  async function checkSession() {
+
+    const { data: { user } ,error} = await supabase.auth.getUser()    
+
+    if (error || user === null) {
+      router.push("/home_unregistered")
+
+    } else {
+      let str = JSON.stringify(user.email)
+      console.log("Session: "+JSON.stringify(user.app_metadata.provider))
+      setProfileName(str.substring(1,3))
+      console.log(profileName)
+    }
+  }
+  
+  async function checkProviderAccount(){
+    const { data: { user } ,error} = await supabase.auth.getUser()
+    if (error || user === null){
+      console.log("Error when call checkProviderAccount function")
+    }else if (user.app_metadata.provider==="email"){
+      console.log("Login via Email")
+    }else{
+      let provider = user.app_metadata.provider
+      let email = user.user_metadata.email
+      console.log(provider+email)
+      const response = await fetch("/api/auth/loginWithProvider", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({provider, email}),
+      })
+      if(response.ok){
+        console.log("Provider")
+      }else{
+        console.log("Error in checkProviderAccount")
+      }
+    }
+
+  }
+
+  function handleNebuClick(data){
+    setCurrentPosition([parseFloat(data.latitude), parseFloat(data.longitude)])      
+    setShowPlaceInfoPanel(true)
+    setNebu(data)
+  }
+
+  function handleTourClick(data){
+    router.push(`/TourMapPage/${data.tour_id}`)
+  }
 
   return (
       <div className="relative h-screen">
@@ -200,7 +242,7 @@ export default function UserProfile(props) {
           ></Button>
         </div>
 
-        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
+        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
           onRecommendTour={(selectedPlace) => {
             setRecommendedPlace(selectedPlace)
             setShowViewTourList(true)
@@ -212,15 +254,12 @@ export default function UserProfile(props) {
             action={() => setShowViewTourList(false)}
             nebu={nebu}
           />
-        )} */}
+        )}
 
 
         <div
-          className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
-            accountProfileState
-              ? "visible opacity-100 drop-shadow-2xl"
-              : "rounded-sm invisible opacity-0"
-          } `}
+          className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 
+          ${showPlaceInfoPanel ? "hidden" : "visible"} `}
         >
           <div className="relative flex flex-col rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] font-bold text-black h-auto lg:h-[40rem] overflow-y-scroll">
             <div className="flex flex-col justify-start flex-shrink-0">
@@ -251,7 +290,8 @@ export default function UserProfile(props) {
                 <div className="flex w-[20rem] lg:w-[30rem] overflow-x-auto h-full">
                   {Array.isArray(nebuData) && nebuData.map((data, index) => (
                     ((data.images[0] || data.images.length > 0) && 
-                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0">
+                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0 cursor-pointer"
+                      onClick={() => handleNebuClick(data)}>
                       <img src={data.images[0] || data.images.length > 0 ? data.images[0] : altImage} alt="No images" className="h-[110px] text-black text-center rounded-md" />
                       {/* <figcaption className="text-white -mt-10 w-full text-right lg:-ml-3 -ml-1">
                         {data.title}
@@ -267,14 +307,13 @@ export default function UserProfile(props) {
               </div>
               <div className="text-base font-medium">
                 <p className="font-semibold text-lg">Tour</p>
-                <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden">
+                {/* <div className="flex w-[20rem] lg:w-[30rem] h-[7rem] lg:h-[8rem] overflow-x-auto overflow-y-hidden mb-10"> */}
+                <div className="flex w-[20rem] lg:w-[30rem] overflow-x-auto h-full">
                   {Array.isArray(tourData) && tourData.map((data, index) => (                     
-                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0">
-                      {/* <img src={data.images[0] || data.images.length > 0 ? data.images[0] : altImage} alt="No images" className="h-full text-black text-center" /> */}
-                      <div className="h-[50px]">
-                        
-                      </div>
-                      <div className="text-black w-full">
+                    <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0 flex flex-col cursor-pointer"
+                      onClick={() => handleTourClick(data)}>                      
+                      <img src={altImage.src} className="h-[100px] rounded-md"/>
+                      <div className="text-black w-full text-center">
                         {data.tour_name}
                       </div>
                     </div>

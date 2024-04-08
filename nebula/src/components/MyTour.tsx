@@ -385,6 +385,7 @@ import ferryWheelPic from "../../public/images/ferryWheelPic.png"
 // import closeIcon from "../../public/images/close.png"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
+import placePinIcon from "../../public/images/placePinIcon.png"
 
 export default function MyTour(props) {
   const mockData = [
@@ -491,6 +492,11 @@ export default function MyTour(props) {
     }
   }
 
+  function formatPlaces(placesArray) {
+      const formattedPlaces = placesArray.map(place => place.split(',')[0]); // Get the first part of each place until the first comma
+      return formattedPlaces.join(', '); // Join the places with commas
+  }
+
   useEffect(() => {
     getEmail()
   }, [])
@@ -567,7 +573,7 @@ export default function MyTour(props) {
                           ))}
                     </div>
                     <p className="font-normal">{data.description}</p>
-                    <div className="flex flex-row flex-wrap">
+                    {/* <div className="flex flex-row flex-wrap">
                       <p className="font-normal">Places:&nbsp;</p>
                       {data.places &&
                         data.places.filter((place) => place).length > 0 &&
@@ -576,6 +582,18 @@ export default function MyTour(props) {
                           .map((place, index) => (
                             <p className="font-normal">{place}</p>
                           ))}
+                    </div> */}
+                    <div className="flex flex-row">
+                      {/* <p className="font-normal">Places:&nbsp;</p>
+                      {data.places &&
+                        data.places.filter((place) => place).length > 0 &&
+                        data.places
+                          .filter((place) => place)
+                          .map((place, index) => (
+                            <p className="font-normal">{place}</p>
+                          ))} */}
+                      <figure className="lg:w-[5%]"><Image src={placePinIcon} alt="pic" /></figure>
+                      <p className="font-normal flex-wrap">Places: {formatPlaces(data.places)}</p>
                     </div>
                     <div className="flex gap-x-2 w-2/3 overflow-x-scroll">
                       <figure>

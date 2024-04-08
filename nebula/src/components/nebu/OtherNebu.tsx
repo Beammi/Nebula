@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react"
 
-const OtherNebu = ({ originalNebuId, placeName }) => {
+const OtherNebu = ({ originalNebuId, placeName, sortOption }) => {
   const [nebus, setNebus] = useState([]);
 
   useEffect(() => {
     const fetchOtherNebu = async () => {
       const response = await fetch(
-        `/api/nebu/getOtherNebu?place_name=${encodeURIComponent(placeName)}`
+        `/api/nebu/getOtherNebu?place_name=${encodeURIComponent(placeName)}&sortOption=${sortOption}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -24,7 +24,7 @@ const OtherNebu = ({ originalNebuId, placeName }) => {
     if (placeName) {
       fetchOtherNebu();
     }
-  }, [placeName, originalNebuId]); // Add originalNebuId as a dependency
+  }, [placeName, originalNebuId, sortOption]); // Add originalNebuId as a dependency
 
   const renderStars = (rating) => {
     return (
