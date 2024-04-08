@@ -314,11 +314,27 @@ const handleShare = () => {
     console.log("Mobile Info Panel:", mobileInfoPanel);
   }, [mobileInfoPanel]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 450); // Adjust this threshold according to your design
+    }
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize); // Listen for window resize events
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener
+    };
+  }, []);
+
   return (
     <div
       className={`fixed overflow-y-scroll w-full rounded-t-xl lg:top-0 lg:w-[25%] ${panelStyle ? panelStyle : "z-10"} h-screen bg-white text-black transition-all duration-150 ease-in-out 
       ${toggle ? "opacity-100 drop-shadow-2xl" : "hidden"}
-      ${mobileInfoPanel ? "absolute top-0" : "absolute top-1/2"}
+      ${mobileInfoPanel ? "absolute top-0" : "top-1/2"}
+      ${isMobile ? "absolute" : "fixed"}
       `}
       
       ref={panelRef}
