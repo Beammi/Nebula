@@ -67,6 +67,11 @@ const MyMapTour: React.FC = () => {
     fetchTourDetails()
     // console.log("places ", tourDetails.places)
   }, [])
+  useEffect(()=>{
+    if(tourDetails?.places[0]?.latitude && tourDetails?.places[0]?.longitude){
+      setCurrentPosition([tourDetails?.places[0]?.latitude,tourDetails?.places[0]?.longitude])
+    }
+  },[tourDetails?.places[0]?.latitude])
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
