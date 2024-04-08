@@ -19,6 +19,10 @@ export default async function handler(req, res) {
                 u.email,
                 u.provider,
                 CASE 
+                    WHEN b.nebu_id IS NOT NULL THEN b.nebu_id
+                    WHEN b.tour_id IS NOT NULL THEN b.tour_id
+                END AS normal_id,
+                CASE 
                     WHEN b.nebu_id IS NOT NULL THEN 'nebu'
                     WHEN b.tour_id IS NOT NULL THEN 'tour'
                 END AS type,

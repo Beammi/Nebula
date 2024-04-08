@@ -911,18 +911,17 @@ const handleShare = () => {
     };
   }, []);
 
-  // async function handleClickEmail(email){
-  //   const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
-  //   const data = await response.json()
+  async function handleClickEmail(email){
+    const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
+    const data = await response.json()
+    
+    if (data[0]) { 
+      router.push(`/userprofile/${data[0]}`)
+    } else {
+      console.error("No display name");
+    }
 
-  //   if (data.display_name) { // when data is only one (= Object), not Array
-  //     // setCurrentPosition([parseFloat(data.places[0].latitude), parseFloat(data.places[0].longitude)]);
-  //     // router.push
-  //   } else {
-  //     console.error("No places found in the tour data.");
-  //   }
-
-  // }
+  }
 
   return (
     <div
@@ -1002,8 +1001,7 @@ const handleShare = () => {
                   </label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4 cursor-pointer hover:underline"
-                  // onClick={() => handleClickEmail()}
-                  >
+                  onClick={() => handleClickEmail(nebu.email)}>
                   Added by {nebu.email}
                 </label>
               </div>

@@ -16,6 +16,7 @@ import blueBookmark from "../../public/images/blueBookmark.png"
 import redCloseIcon from "../../public/images/redCloseIcon.png"
 import filledoutBlueBookmark from "../../public/images/filledoutBlueBookmark.png"
 import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/router"
 
 import Link from "next/link"
 
@@ -29,6 +30,7 @@ export default function Bookmark(props) {
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
   const [selectedBookmarkId, setSelectedBookmarkId] = useState(null)
+  const router = useRouter()
   async function getEmail() {
     console.log("Pass getEmail()")
 
@@ -97,6 +99,29 @@ export default function Bookmark(props) {
   useEffect(() => {
     getEmail()
   }, [])
+
+  async function handleClickEmail(email){
+    const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
+    const data = await response.json()
+    
+    if (data[0]) { 
+      router.push(`/userprofile/${data[0]}`)
+    } else {
+      console.error("No display name");
+    }
+
+  }
+
+  async function handleClickCard(data){
+    if(data.type === "nebu"){
+      router.push(`/NebuMapPage/${data.normal_id}`)
+    }
+    else if(data.type === "tour"){
+      router.push(`/TourMapPage/${data.normal_id}`)
+    }
+    
+  }
+
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
@@ -143,8 +168,8 @@ export default function Bookmark(props) {
           {data.map((data, index) => (
             <div
               key={index}
-              className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row lg:items-start"
-            >
+              className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row lg:items-start cursor-pointer"
+              onClick={() => handleClickCard(data)}>
               {data.images && data.images.length > 0 ? (
                 <figure className="w-full lg:w-[37%] flex-shrink-0 lg:mt-10">
                   <img
@@ -179,7 +204,11 @@ export default function Bookmark(props) {
                         <Image src={redCloseIcon} alt="pic" />
                       </figure>
                     </div>
-                    <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">
+                    <p className="font-normal text-base text-black-grey w-full text-center lg:text-start cursor-pointer hover:underline"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleClickEmail(data.creator_email)
+                      }}>
                       added by {data.creator_email}
                     </p>
                   </h2>
@@ -203,7 +232,10 @@ export default function Bookmark(props) {
                         <Image src={redCloseIcon} alt="pic" />
                       </figure>
                     </div>
-                    <p className="font-normal text-base text-black-grey w-full text-center lg:text-start">
+                    <p className="font-normal text-base text-black-grey w-full text-center lg:text-start cursor-pointer hover:underline"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleClickEmail(data.creator_email)}}>
                       added by {data.creator_email}
                     </p>
                   </h2>
@@ -214,7 +246,10 @@ export default function Bookmark(props) {
                 </p>
                 <div className="flex flex-row mt-1">
                   <div className="flex gap-2 flex-wrap">
-                    <button className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer">
+                    <button className="px-2 py-1 bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        router.push(`/tag/${data.official_tag}`)}}>
                       #{data.official_tag}
                     </button>
                     {data.tags && data.tags.length > 0 ? (
@@ -222,6 +257,9 @@ export default function Bookmark(props) {
                         <button
                           key={tagIndex}
                           className="px-2 py-1 bg-grey text-black rounded-lg normal-case border-0 text-sm cursor-pointer"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            router.push(`/tag/${tag}`)}}
                         >
                           #{tag}
                         </button>
