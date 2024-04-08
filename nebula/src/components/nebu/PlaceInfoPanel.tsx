@@ -26,6 +26,7 @@ import OtherNebu from "./OtherNebu"
 import Button from "../Button"
 import { supabase } from "@/lib/supabaseClient"
 import ViewTourList from "@/components/tour/ViewTourList"
+import { useRouter } from "next/router"
 
 export default function PlaceInfoPanel({
   toggle,
@@ -47,6 +48,7 @@ export default function PlaceInfoPanel({
   const [scrollPosition, setScrollPosition] = useState(0)
   const [avgRating, setAvgRating] = useState(0)
   const [sortOption, setSortOption] = useState("Newest")
+  const router = useRouter()
   // const handleShare = () => {
   //   if (navigator.share) {
   //     navigator.share({
@@ -329,6 +331,19 @@ const handleShare = () => {
     };
   }, []);
 
+  async function handleClickEmail(email){
+    const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
+    const data = await response.json()
+
+    if (data.display_name) { // when data is only one (= Object), not Array
+      // setCurrentPosition([parseFloat(data.places[0].latitude), parseFloat(data.places[0].longitude)]);
+      // router.push
+    } else {
+      console.error("No places found in the tour data.");
+    }
+
+  }
+
   return (
     <div
       className={`fixed overflow-y-scroll w-full rounded-t-xl lg:top-0 lg:w-[25%] ${panelStyle ? panelStyle : "z-10"} h-screen bg-white text-black transition-all duration-150 ease-in-out 
@@ -406,7 +421,8 @@ const handleShare = () => {
                     {avgRating}
                   </label>
                 </div>
-                <label className="text-sm text-black-grey ml-3 leading-4 ">
+                <label className="text-sm text-black-grey ml-3 leading-4 cursor-pointer hover:underline"
+                  onClick={() => handleClickEmail()}>
                   Added by {nebu.email}
                 </label>
               </div>
@@ -466,6 +482,7 @@ const handleShare = () => {
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
                   label={`#${nebu.official_tag}`}
+                  onClick={() => router.push(`/tag/${nebu.official_tag}`)}
                 ></Button>
                 {nebu.tags &&
                   nebu.tags.filter((tag) => tag).length > 0 &&
@@ -477,6 +494,7 @@ const handleShare = () => {
                         type="button"
                         buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
                         label={`#${tag}`} // Prepend "#" to each tag name
+                        onClick={() => router.push(`/tag/${tag}`)}
                       />
                     ))}
                 {/* <button
