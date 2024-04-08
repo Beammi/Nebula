@@ -303,6 +303,20 @@ export default function TourInfoPanel({ toggle, tour }) {
       </div>
     )
   }
+
+  async function handleClickEmail(email){
+    const response = await fetch(`/api/search/userprofile/getDisplayNameFromEmail?email=${email}`)
+    const data = await response.json()
+    
+    if (data[0]) { 
+      router.push(`/userprofile/${data[0]}`)
+    } else {
+      console.error("No display name");
+    }
+
+  }
+
+
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -395,7 +409,8 @@ export default function TourInfoPanel({ toggle, tour }) {
 
                   <label className="text-sm leading-4 text-yellow">{avgRating}</label>
                 </div>
-                <label className="text-sm text-black-grey ml-3 leading-4">
+                <label className="text-sm text-black-grey ml-3 leading-4 cursor-pointer hover:underline"
+                onClick={() => handleClickEmail(tourDetails.creator_email)}>
                   Added by {tourDetails.creator_email}
                 </label>
               </div>
@@ -455,6 +470,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                   buttonStyle=" px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm cursor-pointer"
                   type="button"
                   label={`#${tourDetails.official_tag}`}
+                  onClick={() => router.push(`/tag/${tourDetails.official_tag}`)}
                 ></Button>
                 {tourDetails.tags &&
                   tourDetails.tags.filter((tag) => tag).length > 0 &&
@@ -466,6 +482,7 @@ export default function TourInfoPanel({ toggle, tour }) {
                         type="button"
                         buttonStyle="px-1 lg:px-2 py-1 w-fit whitespace-nowrap bg-grey text-black rounded-lg normal-case border-0 text-sm font-normal"
                         label={`#${tag}`} // Prepend "#" to each tag name
+                        onClick={() => router.push(`/tag/${tag}`)}
                       />
                     ))}
                 {/* <button
