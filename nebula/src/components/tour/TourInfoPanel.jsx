@@ -594,9 +594,11 @@ export default function TourInfoPanel({ toggle, tour, toggleViewOtherTours }) {
                           className="mr-4"
                           width={18}
                           height={18}
+                          
                         />
                       </figure>
-                      <p className="leading-5 ml-5">
+                      <p className="leading-5 ml-5 mr-1" style={{ flex: '1', flexShrink: '1', flexBasis: '0', overflow: 'hidden' }}>
+                      {/* <p className="leading-5 ml-5 mr-1 "> */}
                         {truncatePlace(place.place_name)}
                       </p>
                     </div>
