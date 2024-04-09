@@ -99,9 +99,9 @@ export default function MyTour(props) {
       case 'waypoint':
         removeWaypoint(itemToDelete.id);
         break;
-      case 'tag':
-        removeTag(itemToDelete.name);
-        break;
+      // case 'tag':
+      //   removeTag(itemToDelete.name);
+      //   break;
       default:
         console.warn('Unknown item type for deletion');
     }
