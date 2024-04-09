@@ -49,6 +49,7 @@ export default function UserProfile(props) {
   const [userAccApi, setUserAccApi] = useState([])
   const [showPlaceInfoPanel, setShowPlaceInfoPanel] = useState(false)
   const [showViewTourList, setShowViewTourList] = useState(false)
+  const [images, setImages] = useState([])
   const router = useRouter()
   const {
     currentPlace,
@@ -65,6 +66,7 @@ export default function UserProfile(props) {
     checkSession()
     checkProviderAccount()
     fetchAccountProfile()
+    fetchImages()
   }, [accountName])
 
   async function fetchAccountProfile(){
@@ -189,14 +191,28 @@ export default function UserProfile(props) {
   }
 
   function handleNebuClick(data){
-    setCurrentPosition([parseFloat(data.latitude), parseFloat(data.longitude)])      
-    setShowPlaceInfoPanel(true)
-    setNebu(data)
+    // setCurrentPosition([parseFloat(data.latitude), parseFloat(data.longitude)])      
+    // setShowPlaceInfoPanel(true)
+    // setNebu(data)
+    router.push(`/NebuMapPage/${data.nebu_id}`)
   }
 
   function handleTourClick(data){
     router.push(`/TourMapPage/${data.tour_id}`)
   }
+
+  const fetchImages = async () => {
+    const response = await fetch(
+      `/api/tour/image/getImagesFromDisplayName?display_name=${accountName}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      setImages(data.images);
+      console.log("Fetched images: ", images);
+    } else {
+      console.error("Failed to fetch images");
+    }
+  };
 
   return (
       <div className="relative h-screen">
@@ -242,19 +258,19 @@ export default function UserProfile(props) {
           ></Button>
         </div>
 
-        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
           onRecommendTour={(selectedPlace) => {
             setRecommendedPlace(selectedPlace)
             setShowViewTourList(true)
           }}
-        />
-        {showViewTourList && (
+        /> */}
+        {/* {showViewTourList && (
           <ViewTourList
             toggle={showViewTourList}
             action={() => setShowViewTourList(false)}
             nebu={nebu}
           />
-        )}
+        )} */}
 
 
         <div
@@ -312,7 +328,8 @@ export default function UserProfile(props) {
                   {Array.isArray(tourData) && tourData.map((data, index) => (                     
                     <div key={index} className="lg:w-1/3 w-5/12 mt-2 mr-2 shrink-0 flex flex-col cursor-pointer"
                       onClick={() => handleTourClick(data)}>                      
-                      <img src={altImage.src} className="h-[100px] rounded-md"/>
+                      {/* <img src={altImage.src} className="h-[100px] rounded-md"/> */}
+                      <img src={images} className="h-[100px] rounded-md"/>
                       <div className="text-black w-full text-center">
                         {data.tour_name}
                       </div>
