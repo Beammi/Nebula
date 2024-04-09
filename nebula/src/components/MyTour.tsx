@@ -11,6 +11,7 @@ import skyPic from "../../public/images/skyPic.png"
 import profilePic from "../../public/images/lionelPic.png"
 import holmesPic from "../../public/images/holmesPic.png"
 import ferryWheelPic from "../../public/images/ferryWheelPic.png"
+import altImage from "../../public/images/altImage.png"
 // import closeIcon from "../../public/images/close.png"
 import Link from "next/link"
 import { supabase } from "@/lib/supabaseClient"
@@ -70,6 +71,7 @@ export default function MyTour(props) {
   const [routePlaces, setRoutePlaces] = useState([]) // Array to store route places
 
   const [uploadedImagesTour, setUploadedImagesTour] = useState([])
+  const [images, setImages] = useState([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [itemToDelete, setItemToDelete] = useState<{
     type: 'place' | 'waypoint' | 'tag';
@@ -327,6 +329,24 @@ export default function MyTour(props) {
     }
   }
 
+  useEffect(() => {
+    const fetchImages = async () => {
+      const response = await fetch(
+        `/api/tour/image/getImagesFromEmail?email=${email}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setImages(data.images);
+        console.log("Fetched images: ", images);
+      } else {
+        console.error("Failed to fetch images");
+      }
+    };
+  
+
+    fetchImages()
+  }, []);
+
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
@@ -421,7 +441,7 @@ export default function MyTour(props) {
                       <figure className="lg:w-[5%]"><Image src={placePinIcon} alt="pic" /></figure>
                       <p className="font-normal flex-wrap">Places: {formatPlaces(data.places)}</p>
                     </div>
-                    <div className="flex gap-x-2 w-2/3 overflow-x-scroll">
+                    {/* <div className="flex gap-x-2 w-2/3 overflow-x-scroll">
                       <figure>
                         {" "}
                         <Image alt="pic" src={ferryWheelPic} />{" "}
@@ -430,6 +450,27 @@ export default function MyTour(props) {
                         {" "}
                         <Image alt="pic" src={holmesPic} />{" "}
                       </figure>
+                      <figure>
+                        {" "}
+                        <Image alt="pic" src={holmesPic} />{" "}
+                      </figure>
+                    </div> */}
+                    {/* <div className="h-[130px] flex-shrink-0"> */}
+                    <div className="flex gap-x-2 h-[100px] flex-shrink-0 overflow-x-scroll">
+                      {images && images.length > 0 ? (
+                        images.map((imgUrl, imgIndex) => (
+                            <Image
+                              key={imgIndex}
+                              alt={`image-${imgIndex}`}
+                              src={imgUrl ? imgUrl : altImage.src}
+                              className="w-[160px] h-[100px] object-cover rounded-md"                              
+                              width={100}
+                              height={100}
+                            />
+                        ))
+                      ) : (
+                        <p>Loading images...</p>
+                      )}
                     </div>
                     <button className="rounded-lg py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue"
                     onClick={() => {
