@@ -179,7 +179,7 @@ export default function EditNebu({ nebuId, onCancel }) {
               type="time"
               value={openTime}
               onChange={(e) => setOpenTime(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-grey"
             />
           </div>
           <div>
@@ -188,7 +188,7 @@ export default function EditNebu({ nebuId, onCancel }) {
               type="time"
               value={closeTime}
               onChange={(e) => setCloseTime(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-grey"
             />
           </div>
         </div>
