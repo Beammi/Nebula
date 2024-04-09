@@ -71,7 +71,7 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
       );
       if (response.ok) {
         const data = await response.json();
-        setImages(data);
+        setImages(data.images);
         console.log("Fetched images: ", images);
       } else {
         console.error("Failed to fetch images");
@@ -262,6 +262,8 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
                           src={imgUrl ? imgUrl : altImage.src}
                           className="w-full h-full object-cover"
                           style={{ width: '100%', height: 'auto' }}
+                          width={100}
+                          height={100}
 
                         />
                     ))
