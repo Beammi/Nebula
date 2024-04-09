@@ -56,7 +56,25 @@ const SearchBar = ({ text }) => {
   const [addNebuState, setAddnebu] = useState(false)
   const [addTourState, setAddTourState] = useState(false)
   const [recommendedPlace, setRecommendedPlace] = useState(null)
-  
+  const [profileName,setProfileName] = useState("")
+  async function checkSession() {
+
+    const { data: { user } ,error} = await supabase.auth.getUser()
+    // console.log(JSON.stringify(user))
+
+    if (error || user === null) {
+      router.push("/home_unregistered")
+
+    } else {
+      let str = JSON.stringify(user.email)
+      console.log("Session: "+JSON.stringify(user.app_metadata.provider))
+      setProfileName(str.substring(1,3))
+      console.log(profileName)
+    }
+  }
+  useEffect(() => {
+    checkSession()
+  }, []);
   const {
     currentPlace,
     setCurrentPlace,
@@ -290,7 +308,7 @@ const SearchBar = ({ text }) => {
           className="absolute left-6 top-1/2 transform -translate-y-1/2 w-6 h-6"
         />
         <div className="absolute right-8 top-8 transform -translate-y-1/2">
-          <Button buttonStyle="text-black bg-grey border-0 rounded-full btn-circle btn block md:hidden" label="TH" type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
+          <Button buttonStyle="text-black bg-grey border-0 rounded-full btn-circle btn block md:hidden" label={profileName} type="button" onClick={() => setIsOpen(!IsOpen)}></Button>
         </div>
 
         {showSuggestions && (          

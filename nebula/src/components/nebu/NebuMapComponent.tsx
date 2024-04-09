@@ -75,6 +75,11 @@ const MyMapNebu: React.FC = () => {
     }
     // setCurrentPosition([nebuDetails?.latitude,nebuDetails?.longitude])
   }, [])
+  useEffect(()=>{
+    if(nebuDetails?.latitude && nebuDetails.longitude){
+      setCurrentPosition([nebuDetails?.latitude,nebuDetails?.longitude])
+    }
+  },[nebuDetails?.latitude])
   const MapCenterEvents = ({ onCenterChange }) => {
     useMapEvents({
       moveend: (e) => {
@@ -97,7 +102,7 @@ const MyMapNebu: React.FC = () => {
   // console.log("current position" + currentPosition + currentPlace)
   const [placeName, setPlaceName] = useState("")
   const [nebus, setNebus] = useState([])
-
+  const [placePanelState, setPlacePanelState] = useState(true)
   if (currentPosition === null) {
     const defaultLocation = [13.7563, 100.5018]
     setCurrentPosition(defaultLocation)
@@ -114,7 +119,7 @@ const MyMapNebu: React.FC = () => {
 
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
-    iconSize: [20, 20],
+    iconSize: [50, 50],
   })
 
   const currentLocationIcon = new Icon({
@@ -124,12 +129,12 @@ const MyMapNebu: React.FC = () => {
 
   const handleMarkerClick = (nebu) => {
     setSelectedPlace(nebu)
-    setPlaceInfoPanel(true)
+    setPlacePanelState(true)
   }
 
   function closePlaceInfoPanel() {
     // for close
-    setPlaceInfoPanel(false)
+    setPlacePanelState(false)
   }
   const [mapCenter, setMapCenter] = useState({
     lat: currentPosition[0],
@@ -158,7 +163,7 @@ const MyMapNebu: React.FC = () => {
     <div className="h-screen relative">
       <PlaceInfoPanel
         nebu={nebuDetails}
-        toggle={true}
+        toggle={placePanelState}
         action={closePlaceInfoPanel}
         onRecommendTour={(selectedPlace) => {
           setRecommendedPlace(selectedPlace)
@@ -191,17 +196,21 @@ const MyMapNebu: React.FC = () => {
             <Marker
               position={[nebuDetails.latitude, nebuDetails.longitude]}
               icon={smallNebuPinIcon}
-            >
+              eventHandlers={{
+                click: () => {
+                  handleMarkerClick(nebuDetails); // Assuming you want to pass nebuDetails to the handler
+                },
+              }}            >
               <Popup>{nebuDetails.place_name}</Popup>
             </Marker>
           )}
-        <Marker
+        {/* <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
           position={currentPosition}
           icon={currentLocationIcon}
         >
           <Popup>Current Location.</Popup>
-        </Marker>
+        </Marker> */}
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
