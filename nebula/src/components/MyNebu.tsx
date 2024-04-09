@@ -12,29 +12,12 @@ import ferryWheelPic from "../../public/images/ferryWheelPic.png"
 import altImage from "../../public/images/altImage.png"
 // import closeIcon from "../../public/images/close.png"
 import { supabase } from "@/lib/supabaseClient"
-
+import EditNebu from "./nebu/EditNebu"
 import Link from "next/link"
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag"
 
 export default function MyNebu(props) {
-  const mockData = [
-    {
-      title: "Big Ben",
-      description:
-        "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-    },
-    {
-      title: "London Stadium",
-      description:
-        "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-    },
-    {
-      title: "Sherlock homes museum",
-      description:
-        "A must destination in UK. Coming in daytime makes your picture much better while the image at night also looks exceptional. This is worth it, there are many attractions near this place. You should come before you die. I recommend it!!",
-    },
-  ]
   const accountProfileState = props.toggle
   const action = props.action
   const accountName = props.accountName
@@ -45,6 +28,8 @@ export default function MyNebu(props) {
   const [showDeletePopUp, setShowDeletePopUp] = useState(false)
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
+  const [editingNebuId, setEditingNebuId] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   // console.log("This is account name: ", accountName);
 
@@ -132,7 +117,7 @@ export default function MyNebu(props) {
       .filter(
         (item) => selectedNebuIds.includes(item.nebu_id.toString()) // Convert to string if necessary
       )
-      .flatMap((item) => item.images) 
+      .flatMap((item) => item.images)
 
     try {
       const response = await fetch("/api/nebu/deleteNebu", {
@@ -147,7 +132,7 @@ export default function MyNebu(props) {
 
       // Handle successful deletion
       // For example, refetching the posts or updating the UI accordingly
-      await deleteImageList(imageUrlsToDelete);
+      await deleteImageList(imageUrlsToDelete)
 
       console.log("Deleted successfully")
       setShowDeletePopUp(false)
@@ -161,6 +146,24 @@ export default function MyNebu(props) {
   useEffect(() => {
     getEmail()
   }, []) // Empty dependency array means this effect runs once on mount
+
+  const handleEdit = (nebuId) => {
+    setEditingNebuId(nebuId)
+    setIsEditing(true)
+  }
+
+  // Handle canceling or finishing the edit
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    setEditingNebuId(null)
+  }
+  const handleCloseEdit = () => {
+    setIsEditing(false)
+  }
+  if (isEditing) {
+    return <EditNebu nebuId={editingNebuId} onCancel={handleCancelEdit} />
+  }
+
   return (
     <div
       className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 ${
@@ -251,7 +254,9 @@ export default function MyNebu(props) {
                     <p className="text-sm text-gray-600">
                       Duration: {item.duration}
                     </p>
-                    <p className="font-normal line-clamp-3 lg:line-clamp-4">{item.description}</p>
+                    <p className="font-normal line-clamp-3 lg:line-clamp-4">
+                      {item.description}
+                    </p>
                     <div className="flex flex-col md:flex-row">
                       <Button
                         type="button"
@@ -276,14 +281,17 @@ export default function MyNebu(props) {
                     <div className="flex gap-x-2 w-full overflow-x-scroll">
                       {item.images.map((imgUrl, imgIndex) =>
                         imgUrl ? ( // Check if imgUrl is truthy (not null, undefined, or empty)
-                          <figure key={imgIndex} className="w-[150px] flex-shrink-0">
+                          <figure
+                            key={imgIndex}
+                            className="w-[150px] flex-shrink-0"
+                          >
                             <Image
                               alt={`image-${imgIndex}`}
                               src={imgUrl}
                               width={150}
                               height={150}
                               className="object-cover w-full h-full "
-                            />                            
+                            />
                           </figure>
                         ) : (
                           // Optionally render a placeholder if the URL is not available
@@ -301,9 +309,21 @@ export default function MyNebu(props) {
                         )
                       )}
                     </div>
-                    <button className="rounded-lg py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue">
+                    <button
+                      className="rounded-lg py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue"
+                      onClick={() => {
+                        setEditingNebuId(item.nebu_id) // Set the Nebu ID to edit
+                        setIsEditing(true) // Open the EditNebu modal
+                      }}
+                    >
                       Edit
                     </button>
+                    {isEditing && (
+                      <EditNebu
+                        nebuId={editingNebuId}
+                        onCancel={handleCloseEdit}
+                      />
+                    )}
                   </div>
                 )}
               </div>

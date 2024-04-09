@@ -20,7 +20,8 @@ try {
   
     // First, delete related records from nebu_tag
     await db.query('DELETE FROM nebu_tag WHERE nebu_id = ANY($1::int[])', [nebu_ids]);
-  
+
+    await db.query('DELETE FROM bookmark WHERE nebu_id = ANY($1::int[])', [nebu_ids])
     // Then, delete the Nebu post(s)
     await db.query('DELETE FROM nebu WHERE nebu_id = ANY($1::int[])', [nebu_ids]);
   
