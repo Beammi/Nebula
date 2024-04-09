@@ -23,6 +23,7 @@ import { useTour } from "@/contexts/TourContext"
 import { TourContextType } from "../types/tourContext"
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"
 import closeImage from "../../public/images/close.png"
+import { useRouter } from "next/router"
 
 export default function MyTour(props) {
   const mockData = [
@@ -57,7 +58,7 @@ export default function MyTour(props) {
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
   const [showEditTour, setShowEditTour] = useState(false)
-  
+  const router = useRouter()
 
   const [confirmedAdditionalTags, setConfirmedAdditionalTags] = useState([])
   const [selected, setSelected] = useState("Official's Tag")
@@ -345,7 +346,7 @@ export default function MyTour(props) {
   
 
     fetchImages()
-  }, []);
+  }, [email]);
 
   return (
     <div
@@ -397,14 +398,15 @@ export default function MyTour(props) {
                 }`}
               >
                 {showInfo[index] && (
-                  <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md">
+                  <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md cursor-pointer"
+                    onClick={() => router.push(`/TourMapPage/${data.tour_id}`)}>
                     <h3 className="text-md mt-2">{data.tour_name}</h3>
                     <div className="flex flex-row lg:flex-row mt-1 gap-2 flex-wrap lg:w-auto">
                       <Button
                         type="button"
                         buttonStyle="px-1 lg:px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm font-normal"
                         label={`#${data.official_tag}`}
-                      ></Button>
+                      ></Button>                      
                       {data.tags &&
                         data.tags.filter((tag) => tag).length > 0 &&
                         data.tags
@@ -473,7 +475,8 @@ export default function MyTour(props) {
                       )}
                     </div>
                     <button className="rounded-lg py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue"
-                    onClick={() => {
+                    onClick={(event) => {
+                      event.stopPropagation()
                       handleEdit(data.tour_id)
                     }}>
                       Edit
