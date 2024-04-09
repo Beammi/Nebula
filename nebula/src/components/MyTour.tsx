@@ -62,6 +62,7 @@ export default function MyTour(props) {
   const [selected, setSelected] = useState("Official's Tag")
   const [OpenTag, setOpenTag] = useState(false)
   const [AddPlace, setAddPlace] = useState(false)
+  const [tourId, setTourId] = useState(0)
   const [tourName, setTourName] = useState("")
   const [description, setDescription] = useState("")
   const [places, setPlaces] = useState([])
@@ -203,62 +204,6 @@ export default function MyTour(props) {
     getEmail()
   }, [])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (email === "") {
-      alert("Please refresh")
-    }
-    // Check for required fields or any other validation you have
-    if (tourName === "" || tourData.officialTag === "Official's Tag") {
-      alert(
-        "Please name the nebu title before submitting or select an official's tag."
-      )
-      return // Stop execution if validation fails
-    }
-    // Upload images first if there are any
-
-    const tourDataToSend = {
-      tour_name: tourName,
-      description: description,
-      official_tag: tourData.officialTag,
-      // Directly use latitude and longitude without extracting from a location array
-      places: tourData.routePlaces.map(({ name, latitude, longitude }) => ({
-        name,
-        latitude, // Directly using latitude
-        longitude, // Directly using longitude
-      })),
-      waypoints: tourData.waypoints.map(({ name, latitude, longitude }) => ({
-        name,
-        latitude, // Directly using latitude
-        longitude, // Directly using longitude
-      })),
-      tags: tourData.additionalTags, // Assuming this is an array of string tags
-      user_email: email, // Use the actual user email
-    }
-
-    try {
-      const response = await fetch("/api/tour/addTour", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(tourDataToSend),
-      })
-
-      if (response.ok) {
-        // Handle successful response
-        console.log("Tour added successfully")
-        alert("Tour Form add successful")
-        // Possibly redirect the user or show a success message
-      } else {
-        // Handle errors or unsuccessful response
-        console.error("Failed to add tour")
-      }
-    } catch (error) {
-      console.error("Error submitting tour:", error)
-    }
-  }
-
   useEffect(() => {
     const savedTourName = localStorage.getItem("tourName")
     const savedDescription = localStorage.getItem("description")
@@ -347,10 +292,39 @@ export default function MyTour(props) {
     const response = await fetch(`/api/tour/getTourById?tour_id=${tour_id}`)
     const data = await response.json()
     
+    setTourId(tour_id)
     setTourName(data.tour_name)
     setDescription(data.description)
-    setPlaces(data.places)
-    setWaypoints(data.waypoints)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      const response = await fetch("/api/tour/editTour", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tourId,
+          tourName,
+          description        
+        }),
+      })
+
+      if (response.ok) {
+        // Handle successful response
+        console.log("Tour updated successfully")
+        alert("Tour Form update successful")
+        // Possibly redirect the user or show a success message
+      } else {
+        // Handle errors or unsuccessful response
+        console.error("Failed to update tour")
+      }
+    } catch (error) {
+      console.error("Error updating tour:", error)
+    }
   }
 
   return (
@@ -542,7 +516,7 @@ export default function MyTour(props) {
                   className="p-2 bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
                 />
               </div>
-              <div className="flex flex-col mt-4">
+              <div className="flex flex-col mt-4 mb-16">
                 <h3 className="text-lg">Description</h3>
                 <textarea
                   name="postContent"
@@ -553,7 +527,7 @@ export default function MyTour(props) {
                   className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
                 />
               </div>
-              <div className="flex flex-col mt-4">
+              { !showEditTour && <div className="flex flex-col mt-4">
                 <h3 className="text-lg">Tags</h3>
                 <div className="flex items-center ">
                   <div>
@@ -587,8 +561,8 @@ export default function MyTour(props) {
                     }}
                   ></Button>
                 </div>
-              </div>
-              <div className="flex flex-col mt-4">
+              </div>}
+              { !showEditTour && <div className="flex flex-col mt-4">
                 <h3 className="text-lg mt-8">Place</h3>
                 {places.map((place, index) => (
                   <div
@@ -622,11 +596,6 @@ export default function MyTour(props) {
                   itemName={itemToDelete.name}
                 />
                 <div className="flex flex-row items-center">
-                  {/* <Button
-                    type="button"
-                    buttonStyle="p-2 mt-2 bg-blue text-white rounded-lg"
-                    label="Add place"
-                  ></Button> */}
                   <Button
                     buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2 mb-6"
                     label="+"
@@ -641,7 +610,7 @@ export default function MyTour(props) {
                     action={() => setAddPlace(false)}
                   />
                 </div>
-              </div>
+              </div>}
               <button
                 className="btn btn-primary p-2"
                 onClick={(e) => {
