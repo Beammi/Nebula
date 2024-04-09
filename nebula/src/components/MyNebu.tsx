@@ -16,6 +16,7 @@ import EditNebu from "./nebu/EditNebu"
 import Link from "next/link"
 // import smallHashtag from "../../public/images/smallHashtag.png";
 import NebuTag from "./NebuTag"
+import { useRouter } from "next/router"
 
 export default function MyNebu(props) {
   const accountProfileState = props.toggle
@@ -30,6 +31,7 @@ export default function MyNebu(props) {
   const [provider, setProvider] = useState("")
   const [editingNebuId, setEditingNebuId] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
+  const router = useRouter()
 
   // console.log("This is account name: ", accountName);
 
@@ -249,7 +251,8 @@ export default function MyNebu(props) {
                 }`}
               >
                 {showInfo[index] && (
-                  <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md">
+                  <div className="flex flex-col bg-white mt-3 pl-5 py-2 pr-2 rounded-lg gap-y-3 drop-shadow-md cursor-pointer"
+                    onClick={() => router.push(`/NebuMapPage/${item.nebu_id}`)}>
                     <h3 className="text-lg mt-2">{item.title}</h3>
                     <p className="text-sm text-gray-600">
                       Duration: {item.duration}
@@ -257,7 +260,7 @@ export default function MyNebu(props) {
                     <p className="font-normal line-clamp-3 lg:line-clamp-4">
                       {item.description}
                     </p>
-                    <div className="flex flex-col md:flex-row">
+                    <div className="flex flex-col md:flex-row mt-1 gap-2 flex-wrap lg:w-auto">
                       <Button
                         type="button"
                         buttonStyle="px-1 lg:px-2 py-1 w-fit bg-yellow text-white rounded-lg normal-case border-0 text-sm font-normal"
@@ -290,7 +293,7 @@ export default function MyNebu(props) {
                               src={imgUrl}
                               width={150}
                               height={150}
-                              className="object-cover w-full h-full "
+                              className="object-cover w-full h-full rounded"
                             />
                           </figure>
                         ) : (
@@ -311,7 +314,8 @@ export default function MyNebu(props) {
                     </div>
                     <button
                       className="rounded-lg py-2 px-4 normal-case font-normal text-white ml-auto mr-5 bg-blue"
-                      onClick={() => {
+                      onClick={(event) => {
+                        event.stopPropagation()
                         setEditingNebuId(item.nebu_id) // Set the Nebu ID to edit
                         setIsEditing(true) // Open the EditNebu modal
                       }}
