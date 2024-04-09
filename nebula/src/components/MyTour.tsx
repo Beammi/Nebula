@@ -277,18 +277,6 @@ export default function MyTour(props) {
     return place.slice(0, index)
   }
 
-  // useEffect(() => {
-  //   async function getTour(){
-  //     if(showEditTour){
-  //       const response = await fetch(`/api/tour/getTourById?tour_id=${}`)
-  //       const data = await response.json()
-        
-  //     }
-  //   }
-
-  //   getTour
-  // }, [showEditTour])
-
   async function handleEdit(tour_id){
     setShowEditTour(true)
 
@@ -570,91 +558,7 @@ export default function MyTour(props) {
                   onChange={(e) => setDescription(e.target.value)}
                   className="p-2 resize-none bg-grey rounded-md focus:outline-none focus:border-blue focus:ring-2 focus:ring-blue"
                 />
-              </div>
-              { !showEditTour && <div className="flex flex-col mt-4">
-                <h3 className="text-lg">Tags</h3>
-                <div className="flex items-center ">
-                  <div>
-                    <Officialdropdown
-                      selected={tourData.officialTag}
-                      setSelected={setOfficialTag}
-                    />
-                  </div>
-                  <div className="pt-4 flex ml-2 overflow-x-auto">
-                    {tourData.additionalTags.map((tag, index) => (
-                      <div
-                        key={index}
-                        className="bg-blue p-2 rounded-lg text-white mr-2 w-max h-fit cursor-pointer"
-                        onClick={() => handleDeleteClick("tag",-1,tag)}>
-                        {tag}
-                      </div>
-                    ))}
-                  </div>
-                  <NebuTag
-                    toggle={OpenTag}
-                    action={() => setOpenTag(false)}
-                    onConfirm={handleTagConfirm}
-                  />
-                  <Button
-                    buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2"
-                    label="+"
-                    type="button"
-                    onClick={(event) => {
-                      event.preventDefault()
-                      openTagModal()
-                    }}
-                  ></Button>
-                </div>
-              </div>}
-              { !showEditTour && <div className="flex flex-col mt-4">
-                <h3 className="text-lg mt-8">Place</h3>
-                {places.map((place, index) => (
-                  <div
-                    key={place.place_id}
-                    className="w-fit text-black mb-1 cursor-pointer"
-                    onClick={() => handleDeleteClick("place", place.place_id, place.place_name)}
-                  >
-                    <h3 className="bg-white text-black">
-                      - {truncatePlace(String(place.place_name))}
-                    </h3>
-                  </div>
-                ))}
-                {waypoints.length > 0 && (
-                  <h3 className="text-lg mt-4">Waypoint</h3>
-                )}
-                {waypoints.length > 0 && waypoints.map((waypoint, index) => (
-                  <div
-                    key={waypoint.waypoint_id}
-                    className="w-fit text-black mb-1 cursor-pointer"
-                    onClick={() => handleDeleteClick("waypoint", waypoint.waypoint_id, waypoint.waypoint_name)}
-                  >
-                    <h3 className="bg-white text-black">
-                      - {truncatePlace(String(waypoint.waypoint_name))}
-                    </h3>
-                  </div>
-                ))}
-                <DeleteConfirmationModal
-                  isOpen={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                  onConfirm={confirmDelete}
-                  itemName={itemToDelete.name}
-                />
-                <div className="flex flex-row items-center">
-                  <Button
-                    buttonStyle="btn text-black border-none cursor-pointer bg-grey hover:bg-black hover:text-white md:py-2 md:px-4 text-center text-2xl rounded-full ml-2 mb-6"
-                    label="+"
-                    type="button"
-                    onClick={(event) => {
-                      event.preventDefault()
-                      openAddPlaceModal()
-                    }}
-                  ></Button>
-                  <AddPlaceModal
-                    toggle={AddPlace}
-                    action={() => setAddPlace(false)}
-                  />
-                </div>
-              </div>}
+              </div>              
               <button
                 className="btn btn-primary p-2"
                 onClick={(e) => {
