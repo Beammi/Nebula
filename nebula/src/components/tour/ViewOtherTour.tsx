@@ -1,13 +1,27 @@
 // components/ViewOtherTours.tsx
-import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import Button from "../Button"
+import React, { useEffect, useState } from "react"
+import ImageUpload from "../ImageUpload"
+import TimeLimitBox from "../TimeLimitBox"
 import Image from "next/image"
+import closeIcon from "../../../public/images/close.png"
+import smallHashtag from "../../../public/images/smallHashtag_blue.png"
 import flag from "../../../public/images/flagPurple.png"
+import filterIcon from "../../../public/images/filter-icon.png"
+import marketPic from "../../../public/images/marketPic.png"
+import bigBenPic from "../../../public/images/bigBenPic.png"
+import yellowPin from "../../../public/images/yellowPin.png"
+import yellowFlag from "../../../public/images/yellowFlag.png"
+import pic1 from "../../../public/images/ferryWheelPic.png"
+import pic2 from "../../../public/images/holmesPic.png"
+import pic3 from "../../../public/images/marketPic.png"
+import altImage from "../../../public/images/altImage.png"
 
-export default function ViewOtherTours({ toggle, placeName }) {
+export default function ViewOtherTours({ placeName, onClose }) {
   const [otherTours, setOtherTours] = useState([])
   const router = useRouter()
+  const [images, setImages] = useState([])
 
   useEffect(() => {
     const fetchOtherTours = async () => {
@@ -33,17 +47,27 @@ export default function ViewOtherTours({ toggle, placeName }) {
   const handleTourClick = (tourId) => {
     router.push(`/TourMapPage/${tourId}`)
   }
+  useEffect(() => {
+    const fetchImages = async () => {
+      const response = await fetch(
+        `/api/tour/getImagesFromNebus?place_name=${encodeURIComponent(placeName)}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setImages(data.images);
+        console.log("Fetched images: ", images);
+      } else {
+        console.error("Failed to fetch images");
+      }
+    };
+  
 
+    fetchImages()
+  }, []);
   return (
     <div
-      className={`absolute top-0 left-0 z-50 w-full h-full bg-white p-4 ${
-        toggle ? "" : "hidden"
-      }`}
+    className={"fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 max-h-[80vh] max-w-64" }
     >
-      <h2 className="text-xl font-bold">Other Tours</h2>
-      <button onClick={toggle} className="absolute top-4 right-4">
-        Close
-      </button>
       <div className="rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[65rem] h-[32rem] lg:h-[40rem] font-bold text-black p-7 ">
         <div className="flex justify-start my-2 items-center">
           <div className="flex gap-x-5 ml-3 items-center">
@@ -56,15 +80,50 @@ export default function ViewOtherTours({ toggle, placeName }) {
             </h3>
           </div>
           <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
-
- 
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-sm m-1 normal-case bg-white drop-shadow-md text-black border-none hover:border-none hover:bg-grey flex flex-nowrap"
+            >
+              Filter{" "}
+              <figure className="">
+                <Image src={filterIcon} alt="pic" className="" />
+              </figure>{" "}
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-1 bg-grey text-black border-none hover:border-none hover:bg-grey rounded-box w-max"
+            >
+              <li>
+                <a href="https://www.google.com/" className="hover:text-black">
+                  High Rated
+                </a>
+              </li>
+              <li>
+                <a href="https://www.google.com/" className="hover:text-black">
+                  Newest
+                </a>
+              </li>
+              <li>
+                <a href="https://www.google.com/" className="hover:text-black">
+                  Oldest
+                </a>
+              </li>
+            </ul>
           </div>
-
+          <button onClick={onClose}>
+            <Image
+              src={closeIcon}
+              alt="clsbtn"
+              className="ml-auto"
+              width={20}
+            />
+          </button>
         </div>
 
         <div className="w-full h-[3px] bg-grey "></div>
 
-        <div className="text-black mt-5 w-fit lg:w-[970px] h-[520px] flex flex-col overflow-y-auto lg:flex-row lg:overflow-x-auto gap-4  ">
+        <div className="text-black mt-5 w-fit lg:w-[970px] h-[390px] lg:h-[520px] flex flex-col overflow-y-auto lg:flex-row lg:overflow-x-auto gap-4  ">
           {otherTours.map((data, index) => (
             <div
               key={index}
@@ -112,8 +171,7 @@ export default function ViewOtherTours({ toggle, placeName }) {
                   type="button"
                   label={`#${data.official_tag}`}
                 ></Button>
-                {data.tags &&
-                  data.tags.length > 0 &&
+                {data.tags && data.tags.length > 0 && (
                   data.tags.map((tag, tagIndex) => (
                     <Button
                       key={tagIndex}
@@ -121,7 +179,9 @@ export default function ViewOtherTours({ toggle, placeName }) {
                       type="button"
                       label={`#${tag}`}
                     ></Button>
-                  ))}
+                    
+                  ))
+                )}
               </div>
               {/* <div className="flex flex-col font-normal text-base mt-8 justify-start">
                 {data.places && data.places.length > 0 ? (
@@ -137,16 +197,13 @@ export default function ViewOtherTours({ toggle, placeName }) {
               <div className="flex flex-col font-normal text-base mt-8 justify-start h-[150px] overflow-y-auto">
                 {data.places && data.places.length > 0 ? (
                   data.places.map((place, placeIndex) => {
-                    const firstCommaIndex = place.place_name.indexOf(",")
-                    const truncatedPlace =
-                      firstCommaIndex !== -1
-                        ? place.place_name.slice(0, firstCommaIndex)
-                        : place.place_name
+                    const firstCommaIndex = place.place_name.indexOf(',');
+                    const truncatedPlace = firstCommaIndex !== -1 ? place.place_name.slice(0, firstCommaIndex) : place.place_name;
                     return (
                       <p key={placeIndex} className="text-base">
                         - {truncatedPlace}
                       </p>
-                    )
+                    );
                   })
                 ) : (
                   <p className="text-xs text-grey">Error getting places</p>
@@ -172,7 +229,7 @@ export default function ViewOtherTours({ toggle, placeName }) {
                     src={pic3.src}
                   ></img>
                 </div> */}
-                {/* <div className="h-[130px] flex-shrink-0">
+                <div className="h-[130px] flex-shrink-0">
                   {images && images.length > 0 ? (
                     images.map((imgUrl, imgIndex) => (
                         <Image
@@ -181,15 +238,19 @@ export default function ViewOtherTours({ toggle, placeName }) {
                           src={imgUrl ? imgUrl : altImage.src}
                           className="w-full h-full object-cover"
                           style={{ width: '100%', height: 'auto' }}
-
+                          width={100}
+                          height={100}
                         />
                     ))
                   ) : (
                     <p>Loading images...</p>
 
                   )}
-
-                </div> */}
+                   {/* <img
+                    className="w-full h-full object-cover"
+                    src="https://nebulaimagestorage.blob.core.windows.net/nebuimages/1711824518161-thailand-2696706_1280.jpg"
+                  ></img> */}
+                </div>
               </div>
             </div>
           ))}

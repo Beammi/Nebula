@@ -54,9 +54,14 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
       )
       if (response.ok) {
         const data = await response.json()
+        if (data.length===0){
+          console.log("No tour for this place yet.")
+
+        }
         setTours(data)
         console.log("Tour", tours)
       } else {
+        alert("No tour for this place yet.")
         // Handle error or set some error state to give feedback to the user
         console.error("Failed to fetch tours")
       }
@@ -100,7 +105,7 @@ const ViewTourList: React.FC<IViewTourListProps> = ({ toggle, action, name, nebu
               <Image src={flag} alt="pic" width={25} />{" "}
             </figure>
             <h3 className="text-xl lg:text-2xl text-black flex gap-x-2">
-              {name}
+              Tour
             </h3>
           </div>
           <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">

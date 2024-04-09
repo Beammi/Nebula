@@ -22,8 +22,8 @@ import TourRatings from "./TourRatings"
 import TourRatingInput from "./TourRatingInput"
 import { saveBookmarkTour } from "@/utils/saveBookmarkTourAPI"
 import { supabase } from "@/lib/supabaseClient"
-
-export default function TourInfoPanel({ toggle, tour }) {
+import ViewOtherTours from "./ViewOtherTour"
+export default function TourInfoPanel({ toggle, tour, toggleViewOtherTours }) {
   const [overviewSection, setOverviewSection] = useState(true)
   const [rateCommentSection, setRateCommentSection] = useState(false)
   const [othersNebuSection, setOthersNebuSection] = useState(false)
@@ -32,7 +32,7 @@ export default function TourInfoPanel({ toggle, tour }) {
   const router = useRouter() // Add this line to get access to router query
   const { tourId } = router.query // Retrieve tourId from router query
   const [userId, setUserId] = useState("")
-  const [avgRating,setAvgRating] = useState(0)
+  const [avgRating, setAvgRating] = useState(0)
   const panelRef = useRef(null)
   const [scrollPosition, setScrollPosition] = useState(0)
   const [tourDetails, setTourDetails] = useState(null)
@@ -41,9 +41,11 @@ export default function TourInfoPanel({ toggle, tour }) {
   const [showViewTourList, setShowViewTourList] = useState(false)
   const [email, setEmail] = useState("")
   const [provider, setProvider] = useState("")
+  const [placeName, setPlaceName] = useState("")
   const toggleViewTourList = () => {
     setShowViewTourList(!showViewTourList)
   }
+
   async function getEmail() {
     console.log("Pass getEmail()")
 
@@ -105,10 +107,10 @@ export default function TourInfoPanel({ toggle, tour }) {
       console.error("Failed to fetch tour rating:", error)
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     getEmail()
     fetchAverageRatings()
-  },[])
+  }, [])
   const fetchPhotoFromNebu = async (place_name) => {
     try {
       const response = await fetch(
@@ -140,6 +142,7 @@ export default function TourInfoPanel({ toggle, tour }) {
           const data = await response.json()
           setTourDetails(data)
           fetchPhotoFromNebu(data.places[0].place_name)
+          setPlaceName(data.places[0].place_name)
         } else {
           console.error("Failed to fetch tour details")
         }
@@ -245,24 +248,27 @@ export default function TourInfoPanel({ toggle, tour }) {
   //   saveToDatabase() // This would ideally pass necessary data for the save operation
   // }
   const handleShare = () => {
-    const currentPageUrl = window.location.href;
-    navigator.clipboard.writeText(currentPageUrl).then(() => {
-      alert('Link copied to clipboard!');
-    }, (err) => {
-      console.error('Could not copy link: ', err);
-      alert('Failed to copy link.');
-    });
-  };
+    const currentPageUrl = window.location.href
+    navigator.clipboard.writeText(currentPageUrl).then(
+      () => {
+        alert("Link copied to clipboard!")
+      },
+      (err) => {
+        console.error("Could not copy link: ", err)
+        alert("Failed to copy link.")
+      }
+    )
+  }
   const checkBookmark = async (userId, tourId) => {
-    const url = `/api/bookmark/checkBookmarkTour?userId=${encodeURIComponent(userId)}&tourId=${encodeURIComponent(
-      tourId
-    )}`
+    const url = `/api/bookmark/checkBookmarkTour?userId=${encodeURIComponent(
+      userId
+    )}&tourId=${encodeURIComponent(tourId)}`
     try {
       const response = await fetch(url)
       const data = await response.json()
       if (response.ok) {
         setIsSaved(true)
-      }else{
+      } else {
         const resetSaved = !isSaved
         setIsSaved(false)
       }
@@ -294,7 +300,9 @@ export default function TourInfoPanel({ toggle, tour }) {
           <span
             key={index}
             className={`inline-block w-4 h-4 ${
-              index < (rating ?? 0) ? "text-yellow text-lg" : "text-slate-100 text-lg"
+              index < (rating ?? 0)
+                ? "text-yellow text-lg"
+                : "text-slate-100 text-lg"
             } `}
           >
             ★
@@ -303,6 +311,18 @@ export default function TourInfoPanel({ toggle, tour }) {
       </div>
     )
   }
+  const handleEdit = (place_name) => {
+    setShowViewTourList(true)
+  }
+
+  // Handle canceling or finishing the edit
+  const handleCancelEdit = () => {
+    setShowViewTourList(false)
+  }
+  const handleCloseEdit = () => {
+    setShowViewTourList(false)
+  }
+
   return (
     <div
       className={`absolute overflow-y-scroll  ${
@@ -390,10 +410,12 @@ export default function TourInfoPanel({ toggle, tour }) {
               </div>
 
               <div className="flex flex-row">
-                <div className="rating rating-md mb-2">                  
-                  <div className="-mt-2 mr-2">{renderStars(avgRating)}</div>                  
+                <div className="rating rating-md mb-2">
+                  <div className="-mt-2 mr-2">{renderStars(avgRating)}</div>
 
-                  <label className="text-sm leading-4 text-yellow">{avgRating}</label>
+                  <label className="text-sm leading-4 text-yellow">
+                    {avgRating}
+                  </label>
                 </div>
                 <label className="text-sm text-black-grey ml-3 leading-4">
                   Added by {tourDetails.creator_email}
@@ -403,7 +425,9 @@ export default function TourInfoPanel({ toggle, tour }) {
               <div className="flex flex-row mt-1 gap-x-1 overflow-x-auto">
                 <button
                   className="btn btn-outline btn-sm text-blue rounded-2xl normal-case hover:bg-light-grey"
-                  onClick={toggleViewTourList}
+                  onClick={() => {
+                    setShowViewTourList(true)
+                  }}
                 >
                   <figure>
                     <Image
@@ -441,8 +465,10 @@ export default function TourInfoPanel({ toggle, tour }) {
                   Save
                 </button>
 
-                <button className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
-                onClick={handleShare}>
+                <button
+                  className="btn btn-outline btn-sm text-black rounded-2xl normal-case hover:bg-light-grey "
+                  onClick={handleShare}
+                >
                   <figure>
                     <Image src={shareIcon} alt="pic" className="" width={23} />
                   </figure>
@@ -705,6 +731,10 @@ export default function TourInfoPanel({ toggle, tour }) {
           <p>No place selected</p>
         )}
       </div>
+      {showViewTourList && (
+        <ViewOtherTours placeName={placeName}     onClose={() => setShowViewTourList(false)} // Pass onClose prop
+        />
+      )}
     </div>
   )
 }

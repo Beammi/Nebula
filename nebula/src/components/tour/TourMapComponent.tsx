@@ -33,7 +33,7 @@ import LocationSearchPlaceInTour from "@/components/map/LocationSearchPlaceInTou
 import ViewTourList from "@/components/tour/ViewTourList"
 import TourInfoPanel from "./TourInfoPanel"
 import { useRouter } from "next/router"
-
+import ViewOtherTours from "./ViewOtherTour"
 const MyMapTour: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<{
     name: string
@@ -46,6 +46,9 @@ const MyMapTour: React.FC = () => {
   const { tourId } = router.query
   const [tourDetails, setTourDetails] = useState(null)
   const [tourPosition, setTourPosition] = useState([])
+  const [showViewOtherTours, setShowViewOtherTours] = useState(false);
+  const toggleViewOtherTours = () => setShowViewOtherTours(!showViewOtherTours);
+
   useEffect(() => {
     const fetchTourDetails = async () => {
       try {
@@ -162,7 +165,7 @@ const MyMapTour: React.FC = () => {
     <div className="h-screen relative">
       <TourInfoPanel
         tour={tourId}
-        toggle={placeInfoPanel}
+        toggleViewOtherTours={toggleViewOtherTours}
         // action={closePlaceInfoPanel}
       />
 
@@ -213,18 +216,23 @@ const MyMapTour: React.FC = () => {
         ) : (
           <p>Error in loading places...</p>
         )}
-        <Marker
+        {/* <Marker
           key={`position-${currentPosition[0]}-${currentPosition[1]}`}
           position={currentPosition}
           icon={currentLocationIcon}
         >
           <Popup>Current Location.</Popup>
-        </Marker>
+        </Marker> */}
         <ZoomControl position="bottomright" />
         <MapClickHandler handleMapClick={closePlaceInfoPanel} />
       </MapContainer>
-
-      <div className="fixed left-2/4 bottom-0 w-auto text-center z-10 transform -translate-x-1/2"></div>
+      {showViewOtherTours && (
+        <ViewOtherTours
+          toggle={showViewOtherTours}
+          action={toggleViewOtherTours}
+          placeName={tourDetails?.places[0].place_name}
+        />
+      )}
     </div>
   )
 }
