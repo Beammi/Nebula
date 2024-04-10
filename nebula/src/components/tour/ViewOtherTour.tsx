@@ -80,7 +80,7 @@ export default function ViewOtherTours({ placeName, onClose }) {
               Other Tours
             </h3>
           </div>
-          <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
+          {/* <div className="ml-auto dropdown dropdown-end dropdown-hover mr-4">
             <div
               tabIndex={0}
               role="button"
@@ -111,12 +111,12 @@ export default function ViewOtherTours({ placeName, onClose }) {
                 </a>
               </li>
             </ul>
-          </div>
-          <button onClick={onClose}>
+          </div> */}
+          <button onClick={onClose} className="ml-auto">
             <Image
               src={closeIcon}
               alt="clsbtn"
-              className="ml-auto"
+              className=""
               width={20}
             />
           </button>
