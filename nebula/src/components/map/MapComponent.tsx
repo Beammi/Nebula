@@ -113,7 +113,7 @@ const MyMap: React.FC = () => {
 
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
-    iconSize: [20, 20],
+    iconSize: [50, 50],
   })
 
   const currentLocationIcon = new Icon({
