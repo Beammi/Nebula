@@ -1,6 +1,7 @@
 // OtherNebu.tsx
 
 import React, { useState, useEffect } from "react"
+import { format } from "date-fns"
 
 const OtherNebu = ({ originalNebuId, placeName, sortOption }) => {
   const [nebus, setNebus] = useState([]);
@@ -37,6 +38,9 @@ const OtherNebu = ({ originalNebuId, placeName, sortOption }) => {
   };
 
   const getInitials = (email) => email.substring(0, 2).toUpperCase();
+  const formatDate = (dateString: string | null) => {
+    return dateString ? format(new Date(dateString), "PPPp") : "";
+  }
 
   return (
     <div className="flex flex-col gap-y-7 mt-2">
@@ -51,6 +55,7 @@ const OtherNebu = ({ originalNebuId, placeName, sortOption }) => {
           )}
           <div className="ml-4 pr-7">
             <p className="text-sm font-medium text-black -mb-0.5">{nebu.creator_email}</p>
+            <p className="text-xs text-black-grey">{formatDate(nebu.created_time)}</p>
             <div className="rating flex -mt-1">
               {renderStars(nebu.average_rating)} 
             </div>

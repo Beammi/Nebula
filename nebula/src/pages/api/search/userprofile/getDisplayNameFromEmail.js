@@ -8,20 +8,20 @@ export default async function handleer(req, res) {
 
   const { email } = req.query
 
-  if (!display_name) {
+  if (!email) {
     return res.status(400).json({ message: "Searching keyword is required" })
   }
 
   try {
     const query = `
       SELECT display_name FROM users
-      WHERE email = $1
+      WHERE email = $1;
 
     `
     const result = await db.query(query, [email])
 
     // const extractValue = result.rows.map(row => row.title);
-    const extractValue = result.rows.map(row => row);
+    const extractValue = result.rows.map(row => row.display_name);
 
     res.status(200).json(extractValue)
 

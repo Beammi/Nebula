@@ -22,6 +22,7 @@ export default function ViewOtherTours({ placeName, onClose }) {
   const [otherTours, setOtherTours] = useState([])
   const router = useRouter()
   const [images, setImages] = useState([])
+  const [avgRating, setAvgRating] = useState(0)
 
   useEffect(() => {
     const fetchOtherTours = async () => {
@@ -159,9 +160,9 @@ export default function ViewOtherTours({ placeName, onClose }) {
                     name="rating-1"
                     className="mask mask-star bg-yellow h-4"
                   />
-                  <label className="text-sm leading-4 text-yellow">4.0</label>
+                  {/* <label className="text-sm leading-4 text-yellow">4.0</label> */}
                 </div>
-              </div>
+              </div>              
               <label className="text-sm font-normal text-black-grey ml-3 leading-4">
                 Added by {data.creator_email}
               </label>
@@ -236,7 +237,7 @@ export default function ViewOtherTours({ placeName, onClose }) {
                         key={imgIndex}
                           alt={`image-${imgIndex}`}
                           src={imgUrl ? imgUrl : altImage.src}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-md"
                           style={{ width: '100%', height: 'auto' }}
                           width={100}
                           height={100}

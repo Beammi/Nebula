@@ -40,6 +40,7 @@ export default function Tag() {
     const [showPlaceInfoPanel, setShowPlaceInfoPanel] = useState(false)
     const [showViewTourList, setShowViewTourList] = useState(false)
     const [recommendedPlace, setRecommendedPlace] = useState(null)
+    const [images, setImages] = useState([])
     const {
       currentPlace,
       setCurrentPlace,
@@ -58,6 +59,7 @@ export default function Tag() {
     useEffect(() => {
       console.log("tag name: ", tagName);
       fetchData()
+      fetchImages()
     }, [tagName])
 
     useEffect(() => {
@@ -68,6 +70,19 @@ export default function Tag() {
     function tagNameClick(tagName) {
       router.push(`/tag/${tagName}`)
     }
+
+    const fetchImages = async () => {
+      const response = await fetch(
+        `/api/tour/image/getImagesFromTag?tagName=${tagName}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setImages(data.images);
+        console.log("Fetched images: ", images);
+      } else {
+        console.error("Failed to fetch images");
+      }
+    };
     
 
     async function fetchData() {
@@ -150,14 +165,15 @@ export default function Tag() {
     async function handleClickCard(data){
       if(data.type === "nebu"){
         try{
-          console.log("DDD: ", data);
-          const response = await fetch(`/api/search/getNebuByKeyword?searchKey=${data.value.title}`)
-          const nebuData = await response.json()
+          // console.log("DDD: ", data);
+          // const response = await fetch(`/api/search/getNebuByKeyword?searchKey=${data.value.title}`)
+          // const nebuData = await response.json()
 
-          setCurrentPosition([parseFloat(nebuData[0].latitude), parseFloat(nebuData[0].longitude)])
+          // setCurrentPosition([parseFloat(nebuData[0].latitude), parseFloat(nebuData[0].longitude)])
       
-          setShowPlaceInfoPanel(true)
-          setNebu(nebuData[0])
+          // setShowPlaceInfoPanel(true)
+          // setNebu(nebuData[0])
+          router.push(`/NebuMapPage/${data.value.nebu_id}`)
           
         }catch (error) {
           console.error("Error fetching image details:", error)
@@ -254,7 +270,7 @@ export default function Tag() {
           ></Button>
         </div>
 
-        <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
+        {/* <PlaceInfoPanel toggle={showPlaceInfoPanel} action={closePlaceInfoPanel} nebu={nebu} panelStyle="" 
           onRecommendTour={(selectedPlace) => {
             setRecommendedPlace(selectedPlace)
             setShowViewTourList(true)
@@ -266,7 +282,7 @@ export default function Tag() {
             action={() => setShowViewTourList(false)}
             nebu={nebu}
           />
-        )}
+        )} */}
         <div
           className={`fixed top-1/2 left-1/2 rounded-lg tranforms -translate-x-1/2 -translate-y-1/2 transition-all ease-in duration-500 visible opacity-100 drop-shadow-2xl
             ${showPlaceInfoPanel ? "hidden" : "visible"}`}
@@ -302,18 +318,23 @@ export default function Tag() {
               {Array.isArray(tagData) && tagData.map((data, index) =>(                
                 <div key={index} className="card lg:card-side bg-white shadow-md w-full px-4 lg:py-0 py-4 mb-4 flex flex-col lg:flex-row cursor-pointer"
                   onClick={() => handleClickCard(data)}>
-                  {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto text-center"/></figure>}
-                  {data.type === "tour" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={altImage.src} alt="There is no image." className=" lg:h-auto rounded-md"/></figure>}                  
+                  {!!data.value.images && data.type === "nebu" && <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0"><img src={data.value.images[0]} alt="There is no image." className=" lg:h-auto text-center rounded-lg"/></figure>}
+                  {data.type === "tour" && 
+                    <figure className="w-full lg:w-[260px] lg:h-[200px] flex-shrink-0">
+                      <img src={images && images.length > 0 ? images[Math.floor(Math.random() * images.length)] : "placeholder_image_url"} 
+                      alt="There is no image." className=" lg:h-auto rounded-lg"/>
+                    </figure>
+                  }                  
                   <div className="card-body flex flex-col justify-between">
                     { data.type === "nebu" &&                  
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">
+                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row lg:flex-wrap">
                         {data.type === "nebu" && <figure className="lg:w-[3%]"><Image src={purplePin} alt="pic" /></figure>}                        
                         {data.value.title}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.value.email}</p>
                       </h2>
                     }
                     { data.type === "tour" &&                  
-                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row">                        
+                      <h2 className="card-title w-full lg:w-full flex flex-col lg:flex-row lg:flex-wrap">                        
                         {data.type === "tour" && <figure className="lg:w-[3%]"><Image src={purpleFlag} alt="pic" /></figure>}
                         {data.value.tour_name}
                         <p className="font-normal text-sm inline text-black-grey w-fit text-center lg:text-start">added by {data.value.email}</p>

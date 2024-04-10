@@ -5,21 +5,22 @@ export default async function getToursByPlaceName(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { place_name } = req.query;
+  const { place_name, sortOption} = req.query;
 
   if (!place_name) {
     return res.status(400).json({ message: "Place name is required" });
   }
 
   try {
-    const toursQuery = `
+    let toursQuery = `
       SELECT 
         t.tour_id, 
         t.tour_name, 
         t.description, 
         t.official_tag, 
         t.created_time,
-        u.email AS creator_email
+        u.email AS creator_email,
+        AVG(rating.rate) AS average_rating
       FROM 
         tour t
       JOIN 
@@ -28,10 +29,22 @@ export default async function getToursByPlaceName(req, res) {
         users u ON t.user_id = u.user_id
       JOIN 
         place p ON tp.place_id = p.place_id
+      JOIN 
+        rating ON rating.tour_id = t.tour_id
       WHERE 
         p.place_name ILIKE $1
-      GROUP BY t.tour_id, u.email;
+      GROUP BY t.tour_id, u.email
     `;
+
+    if (sortOption === 'Newest') {
+      toursQuery += ' ORDER BY t.created_time DESC;';
+    } else if (sortOption === 'Oldest') {
+      toursQuery += ' ORDER BY t.created_time ASC;';
+    } else if (sortOption === 'High Rated') {
+      toursQuery += ' ORDER BY average_rating DESC;';
+    }
+
+    // const toursResult = await db.query(toursQuery, [`%${place_name}%`]);
     const toursResult = await db.query(toursQuery, [`%${place_name}%`]);
 
     let enrichedTours = [];

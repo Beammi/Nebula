@@ -63,13 +63,13 @@ const Ratings: React.FC<{ nebuId: string }> = ({ nebuId }) => {
               </div>
             )}
             <div className="ml-4 pr-7">
-              <p className="text-sm font-medium text-black mb-1">
+              <p className="text-sm font-medium text-black -mb-0.5">
                 {rating.email}
               </p>
               <p className="text-xs text-black-grey">{formatDate(rating.created_time)}</p>
               
               <div className="flex flex-col">
-                <div className="rating rating-xs flex -mt-2">
+                <div className="rating rating-xs flex -mt-1">
                   {renderStars(rating.rate)}
                 </div>
                 <p className="text-sm mt-2 font-normal text-black">
