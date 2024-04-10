@@ -131,7 +131,7 @@ export default function Bookmark(props) {
       } `}
     >
       <div className="rounded-lg shadow-md bg-dim-grey w-[23rem] lg:w-[35rem] h-auto lg:h-[40rem] font-bold text-black p-7">
-        <div className="flex justify-start my-2 items-center">
+        <div className="flex my-2 items-center justify-between">
           <div className="flex gap-x-5 ml-3 items-center">
             <figure className="">
               {" "}
@@ -141,9 +141,8 @@ export default function Bookmark(props) {
               Bookmark items
             </h3>
           </div>
-          <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
-            <select className="select bg-white rounded-2xl select-sm">
-              {/* <option disabled selected>Filter</option> */}
+          {/* <div className="select-container ml-auto bg-white relative rounded-lg mr-3">
+            <select className="select bg-white rounded-2xl select-sm">              
               <option>Newest</option>
               <option>High Rated</option>
               <option>Oldest</option>
@@ -151,7 +150,7 @@ export default function Bookmark(props) {
             <figure className="select-icon absolute right-3 top-1/2 transform -translate-y-1/2">
               <Image src={filterIcon} alt="pic" className="" />
             </figure>
-          </div>
+          </div> */}
           <button onClick={action}>
             <Image
               src={closeIcon}
