@@ -35,7 +35,7 @@ const MarkerCluster = ({ nebus, onMarkerClick }) => {
   const map = useMap()
   const smallNebuPinIcon = new Icon({
     iconUrl: smallPinIcon.src,
-    iconSize: [20, 20],
+    iconSize: [40, 40],
   })
 
   useEffect(() => {
